@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Jetstream
 
 @objc class TestModel: ModelObject {
     dynamic var string: String? = ""

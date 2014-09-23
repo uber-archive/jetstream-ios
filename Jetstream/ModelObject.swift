@@ -36,8 +36,8 @@ private var myContext = 0
     public var root: Bool = false {
         didSet {
             if (root != oldValue) {
-                parent = nil
                 attached = root
+                parent = nil
             }
         }
     }
@@ -75,12 +75,12 @@ private var myContext = 0
                 if let definiteParent = parent {
                     definiteParent.parent.onPropertyChange.removeListener(self)
                 }
-                if newValue == nil {
+                if newValue == nil && !root {
                     attached = false
                 }
             }
         }
-
+        
         didSet(oldValue) {
             if (parent != oldValue) {
                 if let newParent = parent {
@@ -95,9 +95,12 @@ private var myContext = 0
                         onMove.fire(parent: newParent.parent, keyPath: newParent.keyPath)
                     }
                 }
-            }
-            if let definiteParent = parent {
-                attached = definiteParent.parent.attached
+                if let definiteOldParent = oldValue {
+                    definiteOldParent.parent.setValue(nil, forKey: definiteOldParent.keyPath)
+                }
+                if let definiteParent = parent {
+                    attached = definiteParent.parent.attached
+                }
             }
         }
     }
@@ -173,3 +176,4 @@ private var myContext = 0
         }
     }
 }
+

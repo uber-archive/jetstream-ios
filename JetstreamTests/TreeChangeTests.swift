@@ -169,7 +169,7 @@ class TreeChangeTests: XCTestCase {
         XCTAssertEqual(detachCount[3], 0 , "Correct amount of detaches observed for child3")
         XCTAssertEqual(moveCount[3], 0 , "Correct amount of moves observed for child3")
     }
-    
+
     func testMoving() {
         parent.root = true
         parent.childModel = child
@@ -188,5 +188,41 @@ class TreeChangeTests: XCTestCase {
         XCTAssertEqual(attachCount[3], 1 , "Correct amount of attaches observed for child3")
         XCTAssertEqual(detachCount[3], 0 , "Correct amount of detaches observed for child3")
         XCTAssertEqual(moveCount[3], 0 , "Correct amount of moves observed for child3")
+        
+        XCTAssertNil(child.childModel, "Child moved to other branch")
     }
+    
+    func testRootAssigments() {
+        parent.root = true
+        parent.childModel = child
+        child.childModel = child2
+        child2.childModel = child3
+        
+        child2.root = true
+
+        XCTAssertEqual(attachCount[1], 1 , "Correct amount of attaches observed for child")
+        XCTAssertEqual(detachCount[1], 0 , "Correct amount of detaches observed for child")
+        XCTAssertEqual(moveCount[1], 0 , "Correct amount of moves observed for child")
+        
+        XCTAssertEqual(attachCount[2], 1 , "Correct amount of attaches observed for child2")
+        XCTAssertEqual(detachCount[2], 0 , "Correct amount of detaches observed for child2")
+        XCTAssertEqual(moveCount[2], 0 , "Correct amount of moves observed for child2")
+        
+        XCTAssertEqual(attachCount[3], 1 , "Correct amount of attaches observed for child3")
+        XCTAssertEqual(detachCount[3], 0 , "Correct amount of detaches observed for child3")
+        XCTAssertEqual(moveCount[3], 0 , "Correct amount of moves observed for child3")
+        XCTAssertNil(child.childModel, "New root was removed from parent")
+        
+        /*child2.root = false
+        
+        XCTAssertEqual(attachCount[2], 1 , "Correct amount of attaches observed for child2")
+        XCTAssertEqual(detachCount[2], 1 , "Correct amount of detaches observed for child2")
+        XCTAssertEqual(moveCount[2], 1 , "Correct amount of moves observed for child2")
+        
+        XCTAssertEqual(attachCount[3], 1 , "Correct amount of attaches observed for child3")
+        XCTAssertEqual(detachCount[3], 1 , "Correct amount of detaches observed for child3")
+        XCTAssertEqual(moveCount[3], 0 , "Correct amount of moves observed for child3")*/
+        
+    }
+    
 }
