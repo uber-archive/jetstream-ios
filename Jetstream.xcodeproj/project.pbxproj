@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		7291631B19CB5FE500320F15 /* Jetstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7291631A19CB5FE500320F15 /* Jetstream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7291632519CB5FE500320F15 /* JetstreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632419CB5FE500320F15 /* JetstreamTests.swift */; };
+		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
+		7291633119CB8B2C00320F15 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291633019CB8B2C00320F15 /* TestModel.swift */; };
+		7291633319CB8BB700320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
+		729F39DF19CB9CD200E38296 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729F39DE19CB9CD200E38296 /* Signal.swift */; };
+		729F39E019CB9D0400E38296 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729F39DE19CB9CD200E38296 /* Signal.swift */; };
+		72A6B5F519CD16F400B7BD94 /* TreeChangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +24,10 @@
 		7291632019CB5FE500320F15 /* JetstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JetstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7291632319CB5FE500320F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7291632419CB5FE500320F15 /* JetstreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetstreamTests.swift; sourceTree = "<group>"; };
+		7291632E19CB880200320F15 /* ModelObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelObject.swift; sourceTree = "<group>"; };
+		7291633019CB8B2C00320F15 /* TestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
+		729F39DE19CB9CD200E38296 /* Signal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal.swift; sourceTree = "<group>"; };
+		72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeChangeTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +71,8 @@
 			children = (
 				7291631A19CB5FE500320F15 /* Jetstream.h */,
 				7291631819CB5FE500320F15 /* Supporting Files */,
+				7291632E19CB880200320F15 /* ModelObject.swift */,
+				729F39DE19CB9CD200E38296 /* Signal.swift */,
 			);
 			path = Jetstream;
 			sourceTree = "<group>";
@@ -76,8 +88,10 @@
 		7291632119CB5FE500320F15 /* JetstreamTests */ = {
 			isa = PBXGroup;
 			children = (
+				72A6B5F619CD171500B7BD94 /* Models */,
 				7291632419CB5FE500320F15 /* JetstreamTests.swift */,
 				7291632219CB5FE500320F15 /* Supporting Files */,
+				72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */,
 			);
 			path = JetstreamTests;
 			sourceTree = "<group>";
@@ -88,6 +102,14 @@
 				7291632319CB5FE500320F15 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		72A6B5F619CD171500B7BD94 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				7291633019CB8B2C00320F15 /* TestModel.swift */,
+			);
+			name = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,6 +218,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7291632F19CB880200320F15 /* ModelObject.swift in Sources */,
+				729F39DF19CB9CD200E38296 /* Signal.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,7 +227,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72A6B5F519CD16F400B7BD94 /* TreeChangeTests.swift in Sources */,
 				7291632519CB5FE500320F15 /* JetstreamTests.swift in Sources */,
+				729F39E019CB9D0400E38296 /* Signal.swift in Sources */,
+				7291633319CB8BB700320F15 /* ModelObject.swift in Sources */,
+				7291633119CB8B2C00320F15 /* TestModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +326,7 @@
 		7291632919CB5FE500320F15 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -307,12 +336,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		7291632A19CB5FE500320F15 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -322,6 +353,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Release;
 		};
@@ -374,6 +406,7 @@
 				7291632A19CB5FE500320F15 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7291632B19CB5FE500320F15 /* Build configuration list for PBXNativeTarget "JetstreamTests" */ = {
 			isa = XCConfigurationList;
@@ -382,6 +415,7 @@
 				7291632D19CB5FE500320F15 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

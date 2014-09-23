@@ -9,28 +9,56 @@
 import UIKit
 import XCTest
 
+
 class JetstreamTests: XCTestCase {
     
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testGenericPropertyListeners() {
+        var model = TestModel()
+        var lastValue = ""
+        
+        model.onPropertyChange.listen(self, callback: {(keyPath, value) in
+            if keyPath == "string" {
+                lastValue = value as String
+            }
+        })
+        
+        model.string = "test"
+
+        XCTAssertEqual(lastValue, "test" , "Value change captured")
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
+    func testSpecificPropertyListeners() {
+        var model = TestModel()
+        var dispatchCount = 0
+        
+        model.onChange(self, keyPath: "string") {
+            dispatchCount += 1
         }
+
+        model.string = "test"
+        model.integer = 1
+        model.float = 2.5
+        
+        XCTAssertEqual(dispatchCount, 1 , "Dispatched once")
+        
+        model.string = nil
+        
+        XCTAssertEqual(dispatchCount, 2 , "Dispatched twice")
     }
     
+    func testMultiPropertyListeners() {
+        var model = TestModel()
+        var lastValue: NSString? = ""
+        var dispatchCount = 0
+        
+        model.onChange(self, keyPaths: ["string", "integer"]) {
+            dispatchCount += 1
+        }
+        
+        model.string = "test"
+        model.integer = 1
+        model.float = 2.5
+        
+        XCTAssertEqual(dispatchCount, 2 , "Dispatched twice")
+    }
 }
