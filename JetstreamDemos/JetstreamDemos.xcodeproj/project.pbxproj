@@ -480,6 +480,7 @@
 				11EEC42C19D236B400DCD737 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		11EEC42D19D236B400DCD737 /* Build configuration list for PBXNativeTarget "JetstreamDemosTests" */ = {
 			isa = XCConfigurationList;
@@ -488,6 +489,7 @@
 				11EEC42F19D236B400DCD737 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

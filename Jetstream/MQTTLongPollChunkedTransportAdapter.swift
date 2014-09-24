@@ -10,6 +10,12 @@ import Foundation
 
 class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
     
+    private struct Static {
+        static var onceToken : dispatch_once_t = 0
+    }
+    
+    let logger = Logging.loggerFor("MQTTLongPollChunkedTransportAdapter")
+    
     let onStatusChanged = Signal<(TransportStatus)>()
     let onMessage = Signal<(Message)>()
     
@@ -28,6 +34,7 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
     
     init(options: ConnectionOptions) {
         self.options = options
+        setupOnce()
     }
     
     func connect() {
@@ -36,6 +43,14 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
     
     func sendMessage(message: Message) {
         
+    }
+    
+    /// MARK: Private interface
+    
+    private func setupOnce() {
+        dispatch_once(&Static.onceToken) {
+//            mosquitto_lib_init()
+        }
     }
     
 }

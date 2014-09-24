@@ -15,8 +15,12 @@ public enum ClientStatus {
 
 public class Client {
     
+    /// MARK: Events
+    
     public let onStatusChanged = Signal<(ClientStatus)>()
     public let onSession = Signal<(Session)>()
+
+    /// MARK: Properties
     
     var __status: ClientStatus = .Offline
     var _status: ClientStatus {
@@ -43,19 +47,12 @@ public class Client {
     
     private let transport: Transport
     
+    /// MARK: Public interface
+    
     public init(options: ConnectionOptions) {
         var defaultAdapter = Transport.defaultTransportAdapter(options)
         transport = Transport(adapter: defaultAdapter)
-        transport.onStatusChanged.listen(self, callback: { (status: TransportStatus) -> Void in
-            switch status {
-            case .Closed:
-                self._status = .Offline
-            case .Connecting:
-                self._status = .Offline
-            case .Connected:
-                self._status = .Online
-            }
-        })
+        bindListeners()
     }
     
     public func connect() {
@@ -69,6 +66,41 @@ public class Client {
     public func removeListener(listener: AnyObject) {
         self.onStatusChanged.removeListener(listener)
         self.onSession.removeListener(listener)
+    }
+    
+    /// MARK: Private interface
+    
+    private func bindListeners() {
+        onStatusChanged.listen(self, callback: { (status) -> Void in
+            switch status {
+            case .Online:
+                if (self.session == nil) {
+                    self.createSession()
+                } else {
+                    self.resumeSession()
+                }
+            default:
+                return
+            }
+        })
+        transport.onStatusChanged.listen(self, callback: { (status: TransportStatus) -> Void in
+            switch status {
+            case .Closed:
+                self._status = .Offline
+            case .Connecting:
+                self._status = .Offline
+            case .Connected:
+                self._status = .Online
+            }
+        })
+    }
+    
+    private func createSession() {
+        transport.sendMessage(SessionCreateMessage())
+    }
+    
+    private func resumeSession() {
+        
     }
 
 }

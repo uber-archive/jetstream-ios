@@ -20,6 +20,8 @@ class Transport {
         return MQTTLongPollChunkedTransportAdapter(options: options)
     }
     
+    let logger = Logging.loggerFor("Transport")
+    
     let onStatusChanged: Signal<(TransportStatus)>
     
     var status: TransportStatus {
@@ -36,7 +38,12 @@ class Transport {
     }
     
     func connect() {
+        logger.info("Connecting")
         adapter.connect()
+    }
+    
+    func sendMessage(message: Message) {
+        adapter.sendMessage(message)
     }
     
 }
