@@ -14,15 +14,28 @@ enum TransportStatus {
     case Connected
 }
 
+protocol TransportAdapter {
+    
+    var onStatusChanged: Signal<(TransportStatus)> { get }
+    var onMessage: Signal<(Message)> { get }
+    
+    var status: TransportStatus { get }
+    
+    func connect()
+    func sendMessage(message: Message)
+    
+}
+
 class Transport {
     
     class func defaultTransportAdapter(options: ConnectionOptions) -> TransportAdapter {
-        return MQTTLongPollChunkedTransportAdapter(options: options)
+        return PollTransportAdapter(options: options)
     }
     
     let logger = Logging.loggerFor("Transport")
     
     let onStatusChanged: Signal<(TransportStatus)>
+    let onMessage: Signal<Message>
     
     var status: TransportStatus {
         get {
@@ -30,11 +43,12 @@ class Transport {
         }
     }
     
-    private let adapter: TransportAdapter
+    let adapter: TransportAdapter
     
     init(adapter: TransportAdapter) {
         self.adapter = adapter
         self.onStatusChanged = adapter.onStatusChanged
+        self.onMessage = adapter.onMessage
     }
     
     func connect() {

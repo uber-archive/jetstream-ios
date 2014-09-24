@@ -22,14 +22,14 @@ class ShapesDemoViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         client = Client(options: ConnectionOptions(url: "http://localhost:3000"))
         client?.connect()
-        client?.onSession.listenOnce(self, callback: { (session) -> Void in
+        client?.onSession.listenOnce(self) { [unowned self] (session) -> Void in
             self.session = session
             NSLog("Got session with token: %@", session.token)
-        })
+        }
     }
     
     override func viewDidDisappear(animated: Bool) {
-        client?.removeListener(self)
+        client?.onSession.removeListener(self)
         client?.close()
         client = nil
     }

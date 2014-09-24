@@ -22,30 +22,15 @@ public class Client {
 
     /// MARK: Properties
     
-    var __status: ClientStatus = .Offline
-    var _status: ClientStatus {
-        get {
-            return __status
-        }
-        set {
-            onStatusChanged.fire(newValue)
-            __status = newValue
-        }
-    }
-    public var status: ClientStatus {
-        get {
-            return _status
+    public private(set) var status: ClientStatus = .Offline {
+        didSet {
+            onStatusChanged.fire(status)
         }
     }
     
-    var _session: Session?
-    public var session: Session? {
-        get {
-            return _session
-        }
-    }
+    public private(set) var session: Session?
     
-    private let transport: Transport
+    let transport: Transport
     
     /// MARK: Public interface
     
@@ -63,15 +48,10 @@ public class Client {
         // Close up any resources
     }
     
-    public func removeListener(listener: AnyObject) {
-        self.onStatusChanged.removeListener(listener)
-        self.onSession.removeListener(listener)
-    }
-    
     /// MARK: Private interface
     
     private func bindListeners() {
-        onStatusChanged.listen(self, callback: { (status) -> Void in
+        onStatusChanged.listen(self) { (status) in
             switch status {
             case .Online:
                 if (self.session == nil) {
@@ -82,17 +62,20 @@ public class Client {
             default:
                 return
             }
-        })
-        transport.onStatusChanged.listen(self, callback: { (status: TransportStatus) -> Void in
+        }
+        transport.onStatusChanged.listen(self) { (status: TransportStatus) in
             switch status {
             case .Closed:
-                self._status = .Offline
+                self.status = .Offline
             case .Connecting:
-                self._status = .Offline
+                self.status = .Offline
             case .Connected:
-                self._status = .Online
+                self.status = .Online
             }
-        })
+        }
+        transport.onMessage.listen(self) { (message: Message) in
+            // TODO: implement
+        }
     }
     
     private func createSession() {
@@ -100,7 +83,7 @@ public class Client {
     }
     
     private func resumeSession() {
-        
+        // TODO: implement
     }
 
 }

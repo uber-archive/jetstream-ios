@@ -7,10 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		114F4A6719D3778C003ACAC5 /* PollTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A6619D3778C003ACAC5 /* PollTransportAdapter.swift */; };
 		11EEC44119D319DC00DCD737 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44019D319DC00DCD737 /* Session.swift */; };
 		11EEC44319D31A3800DCD737 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44219D31A3800DCD737 /* Transport.swift */; };
-		11EEC44619D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */; };
-		11EEC44819D31B8B00DCD737 /* TransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44719D31B8B00DCD737 /* TransportAdapter.swift */; };
 		11EEC44B19D31CA700DCD737 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44A19D31CA700DCD737 /* Message.swift */; };
 		11EEC44D19D31CE600DCD737 /* SessionCreateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44C19D31CE600DCD737 /* SessionCreateMessage.swift */; };
 		11EEC44F19D31F0300DCD737 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44E19D31F0300DCD737 /* Client.swift */; };
@@ -28,10 +27,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		114F4A6619D3778C003ACAC5 /* PollTransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollTransportAdapter.swift; sourceTree = "<group>"; };
 		11EEC44019D319DC00DCD737 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		11EEC44219D31A3800DCD737 /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
-		11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MQTTLongPollChunkedTransportAdapter.swift; sourceTree = "<group>"; };
-		11EEC44719D31B8B00DCD737 /* TransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransportAdapter.swift; sourceTree = "<group>"; };
 		11EEC44A19D31CA700DCD737 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		11EEC44C19D31CE600DCD737 /* SessionCreateMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCreateMessage.swift; sourceTree = "<group>"; };
 		11EEC44E19D31F0300DCD737 /* Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
@@ -74,8 +72,7 @@
 			children = (
 				11EEC45019D321A700DCD737 /* ConnectionOptions.swift */,
 				11EEC44219D31A3800DCD737 /* Transport.swift */,
-				11EEC44719D31B8B00DCD737 /* TransportAdapter.swift */,
-				11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */,
+				114F4A6619D3778C003ACAC5 /* PollTransportAdapter.swift */,
 			);
 			name = Transport;
 			sourceTree = "<group>";
@@ -280,11 +277,10 @@
 				729F39DF19CB9CD200E38296 /* Signal.swift in Sources */,
 				11EEC44D19D31CE600DCD737 /* SessionCreateMessage.swift in Sources */,
 				11EEC44119D319DC00DCD737 /* Session.swift in Sources */,
-				11EEC44619D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */,
 				11EEC45F19D3396300DCD737 /* Logging.swift in Sources */,
 				11EEC44319D31A3800DCD737 /* Transport.swift in Sources */,
 				11EEC44F19D31F0300DCD737 /* Client.swift in Sources */,
-				11EEC44819D31B8B00DCD737 /* TransportAdapter.swift in Sources */,
+				114F4A6719D3778C003ACAC5 /* PollTransportAdapter.swift in Sources */,
 				11EEC44B19D31CA700DCD737 /* Message.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
