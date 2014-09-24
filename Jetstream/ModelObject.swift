@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 public struct ParentRelationship: Equatable {
     var parent: ModelObject
     var keyPath: String
@@ -17,9 +16,6 @@ public struct ParentRelationship: Equatable {
 public func ==(lhs: ParentRelationship, rhs: ParentRelationship) -> Bool {
     return lhs.parent == rhs.parent && lhs.keyPath == rhs.keyPath
 }
-public func !=(lhs: ParentRelationship, rhs: ParentRelationship) -> Bool {
-    return !(lhs.parent == rhs.parent)
-}
 
 
 private var myContext = 0
@@ -27,41 +23,49 @@ private var myContext = 0
 @objc public class ModelObject: NSObject {
 
     public let onPropertyChange = Signal<(keyPath: String, value: AnyObject?)>()
-    public let onDetach = Signal<(parent: ModelObject, keyPath: String)>()
-    public let onAttach = Signal<(parent: ModelObject, keyPath: String)>()
+    public let onDetach = Signal<(ModelObject)>()
+    public let onAttach = Signal<(scopeRoot: ModelObject, parent: ModelObject, keyPath: String)>()
     public let onMove = Signal<(parent: ModelObject, keyPath: String)>()
     
+    public let uuid: NSUUID;
     private var properties: [String] = []
     
-    public var root: Bool = false {
+    public var isScopeRoot: Bool = false {
         didSet {
-            if (root != oldValue) {
-                attached = root
+            if (isScopeRoot != oldValue) {
+                if (oldValue == true) {
+                    onDetach.fire(self)
+                }
+                scopeRoot = isScopeRoot ? self : nil
                 parent = nil
             }
         }
     }
     
-    private var _attached: Bool = false
-    private var attached: Bool {
+    private var _scopeRoot: ModelObject?
+    private var scopeRoot: ModelObject? {
         get {
-            return _attached
+            return _scopeRoot
         }
         
         set(value) {
-            if (_attached != value) {
-                _attached = value
+            if (_scopeRoot != value) {
+                let oldScopeRoot = _scopeRoot
+                _scopeRoot = value
+                
+                
                 if let definiteParent = parent {
-                    if (attached) {
-                        onAttach.fire(parent: definiteParent.parent, keyPath: definiteParent.keyPath)
-                    } else {
-                        onDetach.fire(parent: definiteParent.parent, keyPath: definiteParent.keyPath)
+                    if let definiteOldScopeRoot = oldScopeRoot {
+                        onDetach.fire(definiteOldScopeRoot)
+                    }
+                    if let definiteScopeRoot = scopeRoot {
+                        onAttach.fire(scopeRoot: definiteScopeRoot, parent: definiteParent.parent, keyPath: definiteParent.keyPath)
                     }
                 }
                 
                 for child in childModelObjects {
                     if (child != self) {
-                        child.attached = attached
+                        child.scopeRoot = scopeRoot
                     }
                 }
             }
@@ -75,8 +79,8 @@ private var myContext = 0
                 if let definiteParent = parent {
                     definiteParent.parent.onPropertyChange.removeListener(self)
                 }
-                if newValue == nil && !root {
-                    attached = false
+                if newValue == nil && !isScopeRoot {
+                    scopeRoot = nil
                 }
             }
         }
@@ -91,7 +95,7 @@ private var myContext = 0
                             }
                         }
                     })
-                    if oldValue != nil && oldValue!.parent.attached {
+                    if oldValue != nil && oldValue!.parent.scopeRoot != nil {
                         onMove.fire(parent: newParent.parent, keyPath: newParent.keyPath)
                     }
                 }
@@ -99,7 +103,7 @@ private var myContext = 0
                     definiteOldParent.parent.setValue(nil, forKey: definiteOldParent.keyPath)
                 }
                 if let definiteParent = parent {
-                    attached = definiteParent.parent.attached
+                    scopeRoot = definiteParent.parent.scopeRoot
                 }
             }
         }
@@ -118,8 +122,29 @@ private var myContext = 0
     }
 
     public override init() {
+        uuid = NSUUID()
         super.init()
-        
+        setupPropertyListeners()
+    }
+    
+    init(uuidString: String) {
+        var uuid = NSUUID(UUIDString: uuidString)
+        if let definiteUUID = uuid {
+            self.uuid = definiteUUID
+        } else {
+            self.uuid = NSUUID()
+        }
+        super.init()
+        setupPropertyListeners()
+    }
+    
+    deinit {
+        for property in properties {
+            removeObserver(self, forKeyPath: property)
+        }
+    }
+    
+    private func setupPropertyListeners() {
         let mirror = reflect(self)
         for i in 0...mirror.count - 1 {
             var (name, type) = mirror[i]
@@ -130,24 +155,14 @@ private var myContext = 0
         }
     }
     
-    deinit {
-        for property in properties {
-            removeObserver(self, forKeyPath: property)
-        }
-    }
-    
     private func keyPathChanged(keyPath: String, oldValue: AnyObject?, newValue: AnyObject?) {
         onPropertyChange.fire(keyPath: keyPath, value: newValue)
         if let modelObject = newValue as? ModelObject {
             modelObject.parent = ParentRelationship(parent: self, keyPath: keyPath)
-            modelObject.attached = attached
+            modelObject.scopeRoot = scopeRoot
         }
     }
-    
-    func sameClass (object1: AnyObject, object2: AnyObject) -> Bool {
-        return (object_getClassName(object1) == object_getClassName(object2))
-    }
-    
+
     override public func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
         if context == &myContext {
             keyPathChanged(keyPath, oldValue: change[NSKeyValueChangeOldKey], newValue: change[NSKeyValueChangeNewKey])

@@ -34,15 +34,15 @@ class TreeChangeTests: XCTestCase {
         var i = 0
         for object in [parent, child, child2, child3] {
             func assignListeners(index: Int) -> Void {
-                object.onAttach.listen(self, callback: { (parent, keyPath) -> Void in
+                object.onAttach.listen(self) { (scopeRoot, parent, keyPath) -> Void in
                     self.attachCount[index] += 1
-                })
-                object.onDetach.listen(self, callback: { (parent, keyPath) -> Void in
+                }
+                object.onDetach.listen(self) { (scopeRoot) -> Void in
                     self.detachCount[index] += 1
-                })
-                object.onMove.listen(self, callback: { (parent, keyPath) -> Void in
+                }
+                object.onMove.listen(self) { (parent, keyPath) -> Void in
                     self.moveCount[index] += 1
-                })
+                }
             }
             assignListeners(i++)
         }
@@ -53,7 +53,7 @@ class TreeChangeTests: XCTestCase {
     }
 
     func testAssigmentAndRemoval() {
-        parent.root = true
+        parent.isScopeRoot = true
         parent.childModel = child
         parent.childModel = child2
         parent.childModel = child3
@@ -73,7 +73,7 @@ class TreeChangeTests: XCTestCase {
     }
  
     func testChainedAddition() {
-        parent.root = true
+        parent.isScopeRoot = true
         child.childModel = child2
         child2.childModel = child3
         
@@ -119,7 +119,7 @@ class TreeChangeTests: XCTestCase {
     }
     
     func testObserveActualyAssigments() {
-        parent.root = true
+        parent.isScopeRoot = true
         parent.childModel = child
         parent.childModel = child
         parent.childModel = nil
@@ -131,7 +131,7 @@ class TreeChangeTests: XCTestCase {
     }
     
     func testChainedRemoval() {
-        parent.root = true
+        parent.isScopeRoot = true
         parent.childModel = child
         parent.childModel = child2
         parent.childModel = child3
@@ -151,7 +151,7 @@ class TreeChangeTests: XCTestCase {
     }
 
     func testMovingWithoutRoot() {
-        parent.root = false
+        parent.isScopeRoot = false
         parent.childModel = child
         child.childModel = child2
         child2.childModel = child3
@@ -171,7 +171,7 @@ class TreeChangeTests: XCTestCase {
     }
 
     func testMoving() {
-        parent.root = true
+        parent.isScopeRoot = true
         parent.childModel = child
         child.childModel = child2
         child2.childModel = child3
@@ -193,36 +193,35 @@ class TreeChangeTests: XCTestCase {
     }
     
     func testRootAssigments() {
-        parent.root = true
+        parent.isScopeRoot = true
         parent.childModel = child
         child.childModel = child2
         child2.childModel = child3
         
-        child2.root = true
+        child2.isScopeRoot = true
 
         XCTAssertEqual(attachCount[1], 1 , "Correct amount of attaches observed for child")
         XCTAssertEqual(detachCount[1], 0 , "Correct amount of detaches observed for child")
         XCTAssertEqual(moveCount[1], 0 , "Correct amount of moves observed for child")
         
-        XCTAssertEqual(attachCount[2], 1 , "Correct amount of attaches observed for child2")
-        XCTAssertEqual(detachCount[2], 0 , "Correct amount of detaches observed for child2")
+        XCTAssertEqual(attachCount[2], 2 , "Correct amount of attaches observed for child2")
+        XCTAssertEqual(detachCount[2], 1 , "Correct amount of detaches observed for child2")
         XCTAssertEqual(moveCount[2], 0 , "Correct amount of moves observed for child2")
         
-        XCTAssertEqual(attachCount[3], 1 , "Correct amount of attaches observed for child3")
-        XCTAssertEqual(detachCount[3], 0 , "Correct amount of detaches observed for child3")
+        XCTAssertEqual(attachCount[3], 2 , "Correct amount of attaches observed for child3")
+        XCTAssertEqual(detachCount[3], 1 , "Correct amount of detaches observed for child3")
         XCTAssertEqual(moveCount[3], 0 , "Correct amount of moves observed for child3")
         XCTAssertNil(child.childModel, "New root was removed from parent")
         
-        /*child2.root = false
+        child2.isScopeRoot = false
         
-        XCTAssertEqual(attachCount[2], 1 , "Correct amount of attaches observed for child2")
-        XCTAssertEqual(detachCount[2], 1 , "Correct amount of detaches observed for child2")
-        XCTAssertEqual(moveCount[2], 1 , "Correct amount of moves observed for child2")
+        XCTAssertEqual(attachCount[2], 2 , "Correct amount of attaches observed for child2")
+        XCTAssertEqual(detachCount[2], 2 , "Correct amount of detaches observed for child2")
+        XCTAssertEqual(moveCount[2], 0 , "Correct amount of moves observed for child2")
         
-        XCTAssertEqual(attachCount[3], 1 , "Correct amount of attaches observed for child3")
-        XCTAssertEqual(detachCount[3], 1 , "Correct amount of detaches observed for child3")
-        XCTAssertEqual(moveCount[3], 0 , "Correct amount of moves observed for child3")*/
+        XCTAssertEqual(attachCount[3], 2 , "Correct amount of attaches observed for child3")
+        XCTAssertEqual(detachCount[3], 2 , "Correct amount of detaches observed for child3")
+        XCTAssertEqual(moveCount[3], 0 , "Correct amount of moves observed for child3")
         
     }
-    
 }

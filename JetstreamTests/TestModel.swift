@@ -12,7 +12,8 @@ import Foundation
     dynamic var string: String? = ""
     dynamic var integer = 0
     dynamic var float = 0
-    dynamic var array = []
+    dynamic var array: [String] = []
+    dynamic var nsArray = NSMutableArray()
     dynamic var childModel: TestModel?
     dynamic var childModel2: TestModel?
 }

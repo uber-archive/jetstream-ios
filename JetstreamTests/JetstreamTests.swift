@@ -61,4 +61,20 @@ class JetstreamTests: XCTestCase {
         
         XCTAssertEqual(dispatchCount, 2 , "Dispatched twice")
     }
+
+    func testArrayListeners() {
+        var model = TestModel()
+        var dispatchCount = 0
+        
+        model.onChange(self, keyPath: "array") {
+            dispatchCount += 1
+        }
+
+        model.array.append("test")
+        model.array[0] = "test2"
+        model.array.removeLast()
+        model.array = ["test3"]
+
+        XCTAssertEqual(dispatchCount, 4 , "Dispatched four times")
+    }
 }
