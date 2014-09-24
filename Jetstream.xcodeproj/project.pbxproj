@@ -7,7 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7291631B19CB5FE500320F15 /* Jetstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 7291631A19CB5FE500320F15 /* Jetstream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		11EEC44119D319DC00DCD737 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44019D319DC00DCD737 /* Session.swift */; };
+		11EEC44319D31A3800DCD737 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44219D31A3800DCD737 /* Transport.swift */; };
+		11EEC44619D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */; };
+		11EEC44819D31B8B00DCD737 /* TransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44719D31B8B00DCD737 /* TransportAdapter.swift */; };
+		11EEC44B19D31CA700DCD737 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44A19D31CA700DCD737 /* Message.swift */; };
+		11EEC44D19D31CE600DCD737 /* SessionCreateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44C19D31CE600DCD737 /* SessionCreateMessage.swift */; };
+		11EEC44F19D31F0300DCD737 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44E19D31F0300DCD737 /* Client.swift */; };
+		11EEC45119D321A700DCD737 /* ConnectionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC45019D321A700DCD737 /* ConnectionOptions.swift */; };
+		11EEC45B19D32B2200DCD737 /* Jetstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 11EEC45A19D32B2200DCD737 /* Jetstream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7291632519CB5FE500320F15 /* JetstreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632419CB5FE500320F15 /* JetstreamTests.swift */; };
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
 		7291633119CB8B2C00320F15 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291633019CB8B2C00320F15 /* TestModel.swift */; };
@@ -18,9 +26,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		11EEC44019D319DC00DCD737 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		11EEC44219D31A3800DCD737 /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
+		11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MQTTLongPollChunkedTransportAdapter.swift; sourceTree = "<group>"; };
+		11EEC44719D31B8B00DCD737 /* TransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransportAdapter.swift; sourceTree = "<group>"; };
+		11EEC44A19D31CA700DCD737 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		11EEC44C19D31CE600DCD737 /* SessionCreateMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCreateMessage.swift; sourceTree = "<group>"; };
+		11EEC44E19D31F0300DCD737 /* Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		11EEC45019D321A700DCD737 /* ConnectionOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionOptions.swift; sourceTree = "<group>"; };
+		11EEC45819D32AEC00DCD737 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		11EEC45A19D32B2200DCD737 /* Jetstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Jetstream.h; sourceTree = "<group>"; };
 		7291631519CB5FE500320F15 /* Jetstream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Jetstream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7291631919CB5FE500320F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7291631A19CB5FE500320F15 /* Jetstream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Jetstream.h; sourceTree = "<group>"; };
 		7291632019CB5FE500320F15 /* JetstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JetstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7291632319CB5FE500320F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7291632419CB5FE500320F15 /* JetstreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetstreamTests.swift; sourceTree = "<group>"; };
@@ -48,9 +65,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11EEC44419D31B0800DCD737 /* Transport */ = {
+			isa = PBXGroup;
+			children = (
+				11EEC45019D321A700DCD737 /* ConnectionOptions.swift */,
+				11EEC44219D31A3800DCD737 /* Transport.swift */,
+				11EEC44719D31B8B00DCD737 /* TransportAdapter.swift */,
+				11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */,
+			);
+			name = Transport;
+			sourceTree = "<group>";
+		};
+		11EEC44919D31C9C00DCD737 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				11EEC44A19D31CA700DCD737 /* Message.swift */,
+				11EEC44C19D31CE600DCD737 /* SessionCreateMessage.swift */,
+			);
+			name = Messages;
+			sourceTree = "<group>";
+		};
 		7291630B19CB5FE500320F15 = {
 			isa = PBXGroup;
 			children = (
+				11EEC45819D32AEC00DCD737 /* Foundation.framework */,
 				7291631719CB5FE500320F15 /* Jetstream */,
 				7291632119CB5FE500320F15 /* JetstreamTests */,
 				7291631619CB5FE500320F15 /* Products */,
@@ -69,10 +107,14 @@
 		7291631719CB5FE500320F15 /* Jetstream */ = {
 			isa = PBXGroup;
 			children = (
-				7291631A19CB5FE500320F15 /* Jetstream.h */,
-				7291631819CB5FE500320F15 /* Supporting Files */,
+				11EEC44919D31C9C00DCD737 /* Messages */,
+				11EEC44419D31B0800DCD737 /* Transport */,
+				11EEC44E19D31F0300DCD737 /* Client.swift */,
 				7291632E19CB880200320F15 /* ModelObject.swift */,
+				11EEC44019D319DC00DCD737 /* Session.swift */,
 				729F39DE19CB9CD200E38296 /* Signal.swift */,
+				11EEC45A19D32B2200DCD737 /* Jetstream.h */,
+				7291631819CB5FE500320F15 /* Supporting Files */,
 			);
 			path = Jetstream;
 			sourceTree = "<group>";
@@ -119,7 +161,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7291631B19CB5FE500320F15 /* Jetstream.h in Headers */,
+				11EEC45B19D32B2200DCD737 /* Jetstream.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,8 +260,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11EEC45119D321A700DCD737 /* ConnectionOptions.swift in Sources */,
 				7291632F19CB880200320F15 /* ModelObject.swift in Sources */,
 				729F39DF19CB9CD200E38296 /* Signal.swift in Sources */,
+				11EEC44D19D31CE600DCD737 /* SessionCreateMessage.swift in Sources */,
+				11EEC44119D319DC00DCD737 /* Session.swift in Sources */,
+				11EEC44619D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */,
+				11EEC44319D31A3800DCD737 /* Transport.swift in Sources */,
+				11EEC44F19D31F0300DCD737 /* Client.swift in Sources */,
+				11EEC44819D31B8B00DCD737 /* TransportAdapter.swift in Sources */,
+				11EEC44B19D31CA700DCD737 /* Message.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

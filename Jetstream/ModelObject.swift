@@ -26,12 +26,12 @@ private var myContext = 0
 
 @objc public class ModelObject: NSObject {
 
-    public let onPropertyChange = Signal<(keyPath: String, value: AnyObject?)>();
-    public let onDetach = Signal<(parent: ModelObject, keyPath: String)>();
-    public let onAttach = Signal<(parent: ModelObject, keyPath: String)>();
-    public let onMove = Signal<(parent: ModelObject, keyPath: String)>();
+    public let onPropertyChange = Signal<(keyPath: String, value: AnyObject?)>()
+    public let onDetach = Signal<(parent: ModelObject, keyPath: String)>()
+    public let onAttach = Signal<(parent: ModelObject, keyPath: String)>()
+    public let onMove = Signal<(parent: ModelObject, keyPath: String)>()
     
-    private var properties: [String] = [];
+    private var properties: [String] = []
     
     public var root: Bool = false {
         didSet {
@@ -45,7 +45,7 @@ private var myContext = 0
     private var _attached: Bool = false
     private var attached: Bool {
         get {
-            return _attached;
+            return _attached
         }
         
         set(value) {
@@ -87,7 +87,7 @@ private var myContext = 0
                     newParent.parent.onPropertyChange.listen(self, callback: { (keyPath, value) -> Void in
                         if (keyPath == newParent.keyPath) {
                             if (value as? ModelObject) != self {
-                                self.parent = nil;
+                                self.parent = nil
                             }
                         }
                     })
@@ -117,12 +117,12 @@ private var myContext = 0
         }
     }
 
-    override init() {
+    public override init() {
         super.init()
         
-        let mirror = reflect(self);
+        let mirror = reflect(self)
         for i in 0...mirror.count - 1 {
-            var (name, type) = mirror[i];
+            var (name, type) = mirror[i]
             if name != "super" {
                 properties.append(name)
                 self.addObserver(self, forKeyPath: name, options: .New | .Old, context: &myContext)
@@ -132,7 +132,7 @@ private var myContext = 0
     
     deinit {
         for property in properties {
-            removeObserver(self, forKeyPath: property);
+            removeObserver(self, forKeyPath: property)
         }
     }
     
