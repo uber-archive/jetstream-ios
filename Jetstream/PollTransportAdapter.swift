@@ -8,19 +8,23 @@
 
 import Foundation
 
+private let className = "PollTransportAdapter"
+
 class PollTransportAdapter: TransportAdapter {
     
-    let logger = Logging.loggerFor("PollTransportAdapter")
+    let logger = Logging.loggerFor(className)
     
     let onStatusChanged = Signal<(TransportStatus)>()
     let onMessage = Signal<(Message)>()
+
+    let adapterName = className
     
     var status: TransportStatus = .Closed {
         didSet {
             onStatusChanged.fire(status)
         }
     }
-    
+
     let options: ConnectionOptions
     
     init(options: ConnectionOptions) {

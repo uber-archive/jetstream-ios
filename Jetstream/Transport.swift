@@ -19,7 +19,9 @@ protocol TransportAdapter {
     var onStatusChanged: Signal<(TransportStatus)> { get }
     var onMessage: Signal<(Message)> { get }
     
+    var adapterName: String { get }
     var status: TransportStatus { get }
+    var options: ConnectionOptions { get }
     
     func connect()
     func sendMessage(message: Message)
@@ -49,10 +51,19 @@ class Transport {
         self.adapter = adapter
         self.onStatusChanged = adapter.onStatusChanged
         self.onMessage = adapter.onMessage
+        onStatusChanged.listen(self) { [unowned self] (status) in
+            switch (status) {
+            case .Closed:
+                self.logger.info("Closed")
+            case .Connecting:
+                self.logger.info("Connecting using \(adapter.adapterName) to \(adapter.options.url)")
+            case .Connected:
+                self.logger.info("Connected")
+            }
+        }
     }
     
     func connect() {
-        logger.info("Connecting")
         adapter.connect()
     }
     

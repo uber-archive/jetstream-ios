@@ -54,7 +54,7 @@ public class Client {
         onStatusChanged.listen(self) { (status) in
             switch status {
             case .Online:
-                if (self.session == nil) {
+                if self.session == nil {
                     self.createSession()
                 } else {
                     self.resumeSession()
