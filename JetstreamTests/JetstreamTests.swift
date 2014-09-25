@@ -64,17 +64,28 @@ class JetstreamTests: XCTestCase {
 
     func testArrayListeners() {
         var model = TestModel()
-        var dispatchCount = 0
+        var changedCount = 0
+        var addedCount = 0
+        var removedCount = 0
         
         model.onChange(self, keyPath: "array") {
-            dispatchCount += 1
+            changedCount += 1
+        }
+        model.onAdded.listen(self) { (keyPath, element, atIndex) in
+            addedCount += 1
+        }
+        
+        model.onRemoved.listen(self) { (keyPath, element, atIndex) -> Void in
+            removedCount += 1
         }
 
-        model.array.append("test")
-        model.array[0] = "test2"
+        model.array.append(TestModel())
+        model.array[0] = TestModel()
         model.array.removeLast()
-        model.array = ["test3"]
+        model.array = [TestModel()]
 
-        XCTAssertEqual(dispatchCount, 4 , "Dispatched four times")
+        XCTAssertEqual(changedCount, 0 , "Dispatched zero times")
+        XCTAssertEqual(addedCount, 3 , "Dispatched three times")
+        XCTAssertEqual(removedCount, 2 , "Dispatched three times")
     }
 }

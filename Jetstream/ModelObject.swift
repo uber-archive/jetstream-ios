@@ -8,6 +8,8 @@
 
 import Foundation
 
+
+
 public struct ParentRelationship: Equatable {
     var parent: ModelObject
     var keyPath: String
@@ -17,18 +19,25 @@ public func ==(lhs: ParentRelationship, rhs: ParentRelationship) -> Bool {
     return lhs.parent == rhs.parent && lhs.keyPath == rhs.keyPath
 }
 
-
 private var myContext = 0
+
+private struct PropertyInfo {
+    let key:String
+    let mirrorType: MirrorType
+}
+
 
 @objc public class ModelObject: NSObject {
 
     public let onPropertyChange = Signal<(keyPath: String, value: AnyObject?)>()
+    public let onAdded = Signal<(keyPath: String, element: AnyObject, atIndex:Int)>()
+    public let onRemoved = Signal<(keyPath: String, element: AnyObject, atIndex:Int)>()
     public let onDetach = Signal<(ModelObject)>()
     public let onAttach = Signal<(scopeRoot: ModelObject, parent: ModelObject, keyPath: String)>()
     public let onMove = Signal<(parent: ModelObject, keyPath: String)>()
     
     public let uuid: NSUUID;
-    private var properties: [String] = []
+    private var properties = Dictionary<String, PropertyInfo>()
     
     public var isScopeRoot: Bool = false {
         didSet {
@@ -75,7 +84,6 @@ private var myContext = 0
     public var parent: ParentRelationship? {
         willSet(newValue) {
             if (parent != newValue) {
-                println("Will set \(parent) to \(newValue)")
                 if let definiteParent = parent {
                     definiteParent.parent.onPropertyChange.removeListener(self)
                 }
@@ -112,8 +120,8 @@ private var myContext = 0
     private var childModelObjects: [ModelObject] {
         get {
             var objects = Array<ModelObject>()
-            for property in properties {
-                if let modelObject = self.valueForKey(property) as? ModelObject {
+            for property in properties.values {
+                if let modelObject = self.valueForKey(property.key) as? ModelObject {
                     objects.append(modelObject)
                 }
             }
@@ -139,8 +147,8 @@ private var myContext = 0
     }
     
     deinit {
-        for property in properties {
-            removeObserver(self, forKeyPath: property)
+        for property in properties.values {
+            removeObserver(self, forKeyPath: property.key)
         }
     }
     
@@ -149,17 +157,39 @@ private var myContext = 0
         for i in 0...mirror.count - 1 {
             var (name, type) = mirror[i]
             if name != "super" {
-                properties.append(name)
+                
+                var tuple = (key: "sdf", mirrorType: type)
+                
+                properties[name] = PropertyInfo(key: name, mirrorType: type)
                 self.addObserver(self, forKeyPath: name, options: .New | .Old, context: &myContext)
             }
         }
     }
     
     private func keyPathChanged(keyPath: String, oldValue: AnyObject?, newValue: AnyObject?) {
-        onPropertyChange.fire(keyPath: keyPath, value: newValue)
-        if let modelObject = newValue as? ModelObject {
-            modelObject.parent = ParentRelationship(parent: self, keyPath: keyPath)
-            modelObject.scopeRoot = scopeRoot
+        let newArray = newValue as? [ModelObject]
+        let oldArray = oldValue as? [ModelObject]
+        
+        if newArray != nil && oldArray != nil {
+            var index: Int = 0
+        
+            // TODO: Optimize this
+            for index in 0 ..< oldArray!.count {
+                if !contains(newArray!, oldArray![index]) {
+                    onRemoved.fire(keyPath: keyPath, element: oldArray![index] as AnyObject, atIndex: index)
+                }
+            }
+            for index in 0 ..< newArray!.count {
+                if !contains(oldArray!, newArray![index]) {
+                    onAdded.fire(keyPath: keyPath, element: newArray![index] as AnyObject, atIndex: index)
+                }
+            }
+        } else {
+            onPropertyChange.fire(keyPath: keyPath, value: newValue)
+            if let modelObject = newValue as? ModelObject {
+                modelObject.parent = ParentRelationship(parent: self, keyPath: keyPath)
+                modelObject.scopeRoot = scopeRoot
+            }
         }
     }
 
