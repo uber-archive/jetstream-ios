@@ -35,9 +35,6 @@ public class Scope {
     }
     
     public func getObjectById(uuidString: String) -> ModelObject? {
-        if let uuid = NSUUID(UUIDString: uuidString) {
-            return getObjectById(uuid)
-        }
-        return nil
+        return getObjectById(NSUUID(UUIDString: uuidString))
     }
 }

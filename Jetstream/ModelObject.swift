@@ -21,11 +21,10 @@ public func ==(lhs: ParentRelationship, rhs: ParentRelationship) -> Bool {
 
 private var myContext = 0
 
+// TODO: We might not need to struct this if key is the only info we're interested in
 private struct PropertyInfo {
     let key:String
-    let mirrorType: MirrorType
 }
-
 
 @objc public class ModelObject: NSObject {
 
@@ -151,12 +150,7 @@ private struct PropertyInfo {
     }
     
     init(uuidString: String) {
-        var uuid = NSUUID(UUIDString: uuidString)
-        if let definiteUUID = uuid {
-            self.uuid = definiteUUID
-        } else {
-            self.uuid = NSUUID()
-        }
+        self.uuid = NSUUID(UUIDString: uuidString)
         super.init()
         setupPropertyListeners()
     }
@@ -172,10 +166,7 @@ private struct PropertyInfo {
         for i in 0...mirror.count - 1 {
             var (name, type) = mirror[i]
             if name != "super" {
-                
-                var tuple = (key: "sdf", mirrorType: type)
-                
-                properties[name] = PropertyInfo(key: name, mirrorType: type)
+                properties[name] = PropertyInfo(key: name)
                 self.addObserver(self, forKeyPath: name, options: .New | .Old, context: &myContext)
             }
         }
