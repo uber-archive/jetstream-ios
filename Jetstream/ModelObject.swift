@@ -128,7 +128,7 @@ private var myContext = 0
     }
     
     init(uuidString: String) {
-        var uuid = NSUUID(UUIDString: uuidString)
+        var uuid: NSUUID? = NSUUID(UUIDString: uuidString)
         if let definiteUUID = uuid {
             self.uuid = definiteUUID
         } else {
