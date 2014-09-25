@@ -15,5 +15,5 @@ FOUNDATION_EXPORT double JetstreamVersionNumber;
 FOUNDATION_EXPORT const unsigned char JetstreamVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <Jetstream/PublicHeader.h>
-
-
+#import "MQTTKit.h"
+#import "ARISockets.h"

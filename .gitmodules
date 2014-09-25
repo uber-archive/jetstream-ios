@@ -1,0 +1,12 @@
+[submodule "Jetstream/MQTTKit"]
+	path = Jetstream/MQTTKit
+	url = https://github.com/mobile-web-messaging/MQTTKit.git
+[submodule "Jetstream/SwiftSockets"]
+	path = Jetstream/SwiftSockets
+	url = https://github.com/AlwaysRightInstitute/SwiftSockets.git
+[submodule "Jetstream/Swell"]
+	path = Jetstream/Swell
+	url = https://github.com/hubertr/Swell.git
+[submodule "Jetstream/Signals"]
+	path = Jetstream/Signals
+	url = https://github.com/artman/Signals.git

@@ -8,16 +8,18 @@
 
 import Foundation
 
-private let className = "PollTransportAdapter"
-
 class PollTransportAdapter: TransportAdapter {
     
-    let logger = Logging.loggerFor(className)
+    private struct Static {
+        static let className = "PollTransportAdapter"
+    }
+    
+    let logger = Logging.loggerFor(Static.className)
     
     let onStatusChanged = Signal<(TransportStatus)>()
     let onMessage = Signal<(Message)>()
 
-    let adapterName = className
+    let adapterName = Static.className
     
     var status: TransportStatus = .Closed {
         didSet {
