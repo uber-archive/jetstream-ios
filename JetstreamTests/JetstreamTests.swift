@@ -31,7 +31,7 @@ class JetstreamTests: XCTestCase {
         var model = TestModel()
         var dispatchCount = 0
         
-        model.onChange(self, keyPath: "string") {
+        model.observeChange(self, keyPath: "string") {
             dispatchCount += 1
         }
 
@@ -51,7 +51,7 @@ class JetstreamTests: XCTestCase {
         var lastValue: NSString? = ""
         var dispatchCount = 0
         
-        model.onChange(self, keyPaths: ["string", "integer"]) {
+        model.observeChange(self, keyPaths: ["string", "integer"]) {
             dispatchCount += 1
         }
         
@@ -68,16 +68,17 @@ class JetstreamTests: XCTestCase {
         var addedCount = 0
         var removedCount = 0
         
-        model.onChange(self, keyPath: "array") {
+        model.observeChange(self, keyPath: "array") {
             changedCount += 1
         }
-        model.onAdded.listen(self) { (keyPath, element, atIndex) in
+        model.observeCollectionAdd(self, keyPath: "array") { (element: ModelObject) -> Void in
             addedCount += 1
         }
         
-        model.onRemoved.listen(self) { (keyPath, element, atIndex) -> Void in
+        model.observeCollectionRemove(self, keyPath: "array") { (element: ModelObject) -> Void in
             removedCount += 1
         }
+        
 
         model.array.append(TestModel())
         model.array[0] = TestModel()

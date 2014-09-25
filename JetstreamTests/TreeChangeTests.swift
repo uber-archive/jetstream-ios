@@ -34,13 +34,13 @@ class TreeChangeTests: XCTestCase {
         var i = 0
         for object in [parent, child, child2, child3] {
             func assignListeners(index: Int) -> Void {
-                object.onAttach.listen(self) { (scopeRoot, parent, keyPath) -> Void in
+                object.observeAttach(self) {
                     self.attachCount[index] += 1
                 }
-                object.onDetach.listen(self) { (scopeRoot) -> Void in
+                object.observeDetach(self) {
                     self.detachCount[index] += 1
                 }
-                object.onMove.listen(self) { (parent, keyPath) -> Void in
+                object.observeMove(self) {
                     self.moveCount[index] += 1
                 }
             }
@@ -55,8 +55,14 @@ class TreeChangeTests: XCTestCase {
     func testAssigmentAndRemoval() {
         parent.isScopeRoot = true
         parent.childModel = child
+        XCTAssertEqual(parent.childModel!, child, "Correct child attached")
+        
         parent.childModel = child2
+        XCTAssertEqual(parent.childModel!, child2, "Correct child attached")
+        
         parent.childModel = child3
+        XCTAssertEqual(parent.childModel!, child3, "Correct child attached")
+        
         parent.childModel = nil
         
         XCTAssertEqual(attachCount[1], 1 , "Correct amount of attaches observed for child")
