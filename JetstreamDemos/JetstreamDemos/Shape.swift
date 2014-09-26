@@ -11,9 +11,9 @@ import Jetstream
 
 class Shape: ModelObject {
     
-    dynamic var x:CGFloat = 100
-    dynamic var y:CGFloat = 100
-    dynamic var width:CGFloat = 100
-    dynamic var height:CGFloat = 100
+    dynamic var x: CGFloat = 100
+    dynamic var y: CGFloat = 100
+    dynamic var width: CGFloat = 100
+    dynamic var height: CGFloat = 100
     
 }

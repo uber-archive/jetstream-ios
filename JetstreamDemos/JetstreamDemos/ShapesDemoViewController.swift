@@ -12,23 +12,24 @@ import Jetstream
 
 class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
     
+    var shapesDemo = ShapesDemo()
+    var scope = Scope(name: "ShapesDemo")
+    
     var headers = [String:String]()
     var client: Client?
     var session: Session?
     var appearing = false
-    var scope = Scope(name: "Kiva")
-    var shapesDemoModel = ShapesDemoModel()
+    var loader: UIView?
     
     override func viewDidLoad() {
         title = "Shapes Demo"
-        
+
         let tapRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleTap:"))
         self.view.addGestureRecognizer(tapRecognizer)
         
+        shapesDemo.setScopeAndMakeRootModel(scope)
         
-        shapesDemoModel.setScopeAndMakeRootModel(scope)
-        
-        shapesDemoModel.observeCollectionAdd(self, keyPath: "shapes") { (element: Shape) -> Void in
+        shapesDemo.observeCollectionAdd(self, keyPath: "shapes") { (element: Shape) in
             let shapeView = ShapeView(shape: element)
             self.view.addSubview(shapeView)
         }
@@ -36,8 +37,17 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
     
     override func viewWillAppear(animated: Bool) {
         appearing = true
-        return
         
+        var size = UIScreen.mainScreen().bounds.size
+        loader = UIView(frame: CGRectMake(0, 0, size.width, size.height))
+        loader?.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
+        navigationController?.view.addSubview(loader!)
+        
+        let activityIndicatorView = UIActivityIndicatorView()
+        loader?.addSubview(activityIndicatorView)
+        activityIndicatorView.center = loader!.center
+        activityIndicatorView.startAnimating()
+
         var request = NSMutableURLRequest(URL: NSURL(string: "http://localhost:3000/mqtt/register"))
         request.HTTPMethod = "POST"
         NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) {
@@ -64,7 +74,16 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         }
     }
     
+    func removeLoader() {
+        if loader != nil {
+            loader?.removeFromSuperview()
+            loader = nil
+        }
+    }
+    
     func error(message: String) {
+        removeLoader()
+        
         let alert = UIAlertView(
             title: "Error",
             message: message,
@@ -82,7 +101,19 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         client?.connect()
         client?.onSession.listenOnce(self) { [unowned self] (session) in
             self.session = session
+            self.onSession()
             NSLog("Got session with token: %@", session.token)
+        }
+    }
+    
+    func onSession() {
+        session!.fetch(scope) { [unowned self] (maybeError) in
+            if maybeError != nil {
+                NSLog("Request scope error: %@", maybeError!)
+            } else {
+                NSLog("Retrieved scope")
+                self.removeLoader()
+            }
         }
     }
     
@@ -101,7 +132,7 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         var point = recognizer.locationInView(self.view)
         shape.x = point.x - shape.width / 2
         shape.y = point.y - shape.height / 2
-        shapesDemoModel.shapes.append(shape)
+        shapesDemo.shapes.append(shape)
     }
     
 }

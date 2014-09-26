@@ -16,10 +16,10 @@ public class ShapeView: UIView, UIGestureRecognizerDelegate {
             shape.removeObservers(self)
         }
         didSet {
-            shape.observeChange(self, keyPaths: ["x", "y", "width", "height"], callback: { [unowned self] () -> Void in
+            shape.observeChange(self, keyPaths: ["x", "y", "width", "height"], callback: { [unowned self] in
                 self.updateView()
             })
-            shape.observeDetach(self, callback: { [unowned self] () -> Void in
+            shape.observeDetach(self, callback: { [unowned self] in
                 self.removeFromSuperview()
             })
             updateView()
@@ -59,6 +59,11 @@ public class ShapeView: UIView, UIGestureRecognizerDelegate {
     }
     
     func updateView() {
-        self.frame = CGRect(x: CGFloat(shape.x), y: CGFloat(shape.y), width: CGFloat(shape.width), height: CGFloat(shape.height))
+        self.frame = CGRect(
+            x: CGFloat(shape.x),
+            y: CGFloat(shape.y),
+            width: CGFloat(shape.width),
+            height: CGFloat(shape.height))
     }
+    
 }

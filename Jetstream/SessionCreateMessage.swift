@@ -42,7 +42,7 @@ class SessionCreateMessage: Message {
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var maybeParams: [String:String]?
+        var maybeParams: [String: String]?
         var maybeVersion: String?
         
         switch dictionary["params"] {

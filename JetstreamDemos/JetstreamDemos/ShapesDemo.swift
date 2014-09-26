@@ -7,10 +7,9 @@
 //
 
 import Foundation
-
 import Jetstream
 
-class ShapesDemoModel: ModelObject {
+class ShapesDemo: ModelObject {
     
     dynamic var shapes = [Shape]()
     

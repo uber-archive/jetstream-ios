@@ -107,7 +107,7 @@ public class Client {
             } else {
                 let token = sessionCreateResponse.sessionToken
                 logger.info("Starting session with token: \(token)")
-                session = Session(token: token)
+                session = Session(client: self, token: token)
             }
         default:
             logger.debug("Unrecognized message received")
@@ -120,6 +120,10 @@ public class Client {
     
     private func resumeSession() {
         // TODO: implement
+    }
+    
+    func fetchScope(scope: Scope, callback: (NSError?) -> Void) {
+        transport.sendMessage(ScopeFetchMessage(session: session!, name: scope.name))
     }
 
 }

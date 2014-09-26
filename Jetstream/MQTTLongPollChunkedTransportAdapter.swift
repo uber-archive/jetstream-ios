@@ -103,19 +103,30 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
             if json != nil {
                 if let array = json as? Array<AnyObject> {
                     for object in array {
-                        tryReadSerliazedMessage(object)
+                        tryReadSerializedMessage(object)
                     }
                 } else {
-                    tryReadSerliazedMessage(json!)
+                    tryReadSerializedMessage(json!)
                 }
             }
         }
     }
     
-    private func tryReadSerliazedMessage(object: AnyObject) {
+    private func tryReadSerializedMessage(object: AnyObject) {
         if let dictionary = object as? [String: AnyObject] {
             let message = Message.unserialize(dictionary)
             if message != nil {
+                switch message {
+                case let sessionCreateResponse as SessionCreateResponseMessage:
+                    var str = "{\"syncSessionToken\": \"\(sessionCreateResponse.sessionToken)\"}"
+                    mqttClient.publishString(str, toTopic: "/attribute", withQos: AtLeastOnce, retain: false) {
+                        [unowned self] (mid) in
+                        self.logger.debug("sent (mid=\(mid)): \(str)")
+                    }
+                default:
+                    return
+                }
+                
                 onMessage.fire(message!)
             }
         }

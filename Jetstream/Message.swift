@@ -35,3 +35,23 @@ class Message {
     }
     
 }
+
+class IndexedMessage: Message {
+    
+    let index: UInt
+    
+    convenience init(session: Session) {
+        self.init(index: session.getIndexForMessage())
+    }
+    
+    init(index: UInt) {
+        self.index = index
+    }
+    
+    override func serialize() -> [String: AnyObject] {
+        var dictionary = super.serialize()
+        dictionary["index"] = index
+        return dictionary
+    }
+    
+}
