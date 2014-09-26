@@ -42,6 +42,8 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
         var uuid = UIDevice.currentDevice().identifierForVendor.UUIDString
         mqttClient = MQTTClient(clientId: "mqttios_\(uuid)", cleanSession: true)
         mqttClient.port = UInt16(longPollListenPort)
+        // TODO: read ping from connection options
+        mqttClient.keepAlive = 5
         mqttClient.messageHandler = { [unowned self] (message) in
             self.mqttMessageReceived(message)
         }
@@ -67,7 +69,7 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
     }
     
     private func mqttSetupSubscriptions() {
-        mqttClient.subscribe("/sync", withQos: AtLeastOnce, completionHandler: nil)
+        mqttClient.subscribe("/sync/\(mqttClient.clientID)", withQos: AtLeastOnce, completionHandler: nil)
     }
     
     private func mqttMessageReceived(message: MQTTMessage) {
