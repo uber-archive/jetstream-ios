@@ -18,35 +18,35 @@ class SessionCreateMessage: Message {
         get { return SessionCreateMessage.messageType }
     }
     
-    let params: [String:String]
+    let params: [String: String]
     let version: String
 
     convenience override init() {
-        self.init(params: [String:String]())
+        self.init(params: [String: String]())
     }
     
-    convenience init(params: [String:String]) {
+    convenience init(params: [String: String]) {
         self.init(params: params, version: clientVersion)
     }
     
-    init(params: [String:String], version: String) {
+    init(params: [String: String], version: String) {
         self.params = params
         self.version = version
     }
     
-    override func serialize() -> Dictionary<String, AnyObject> {
+    override func serialize() -> [String: AnyObject] {
         var dictionary = super.serialize()
         dictionary["params"] = params
         dictionary["version"] = version
         return dictionary
     }
     
-    override class func unserialize(dictionary: Dictionary<String, AnyObject>) -> Message? {
+    override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
         var maybeParams: [String:String]?
         var maybeVersion: String?
         
         switch dictionary["params"] {
-        case let params as [String:String]:
+        case let params as [String: String]:
             maybeParams = params
         default:
             maybeParams = nil

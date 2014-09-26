@@ -28,7 +28,7 @@ class SessionCreateResponseMessage: Message {
         self.response = response
     }
     
-    override class func unserialize(dictionary: Dictionary<String, AnyObject>) -> Message? {
+    override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
         var maybeSuccess: Bool?
         var maybeSessionToken: String?
         var maybeResponse: AnyObject? = dictionary["response"]
