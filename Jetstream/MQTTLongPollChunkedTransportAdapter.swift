@@ -65,7 +65,22 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
     }
     
     func sendMessage(message: Message) {
+        let dictionary = message.serialize()
+        let error = NSErrorPointer()
+        let json = NSJSONSerialization.dataWithJSONObject(
+            dictionary,
+            options: NSJSONWritingOptions(0),
+            error: error)
         
+        if json != nil {
+            let str = NSString(data: json!, encoding: NSUTF8StringEncoding)
+            
+            mqttClient.publishString(str, toTopic: "/sync", withQos: AtLeastOnce, retain: false) {
+                [unowned self] (mid) in
+                
+                self.logger.debug("Sent message (mid=\(mid)")
+            }
+        }
     }
     
     private func mqttSetupSubscriptions() {

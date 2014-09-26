@@ -10,4 +10,13 @@ import Foundation
 
 class Message {
     
+    // Override to provide message type
+    var type: String {
+        get { return "Message" }
+    }
+    
+    func serialize() -> Dictionary<String, AnyObject> {
+        return ["type": type]
+    }
+    
 }

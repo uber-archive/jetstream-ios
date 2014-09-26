@@ -10,4 +10,14 @@ import Foundation
 
 class SessionCreateMessage: Message {
     
+    override var type: String {
+        get { return "SessionCreate" }
+    }
+    
+    override func serialize() -> Dictionary<String, AnyObject> {
+        var dictionary = super.serialize()
+        dictionary["params"] = [String:String]()
+        return dictionary
+    }
+    
 }
