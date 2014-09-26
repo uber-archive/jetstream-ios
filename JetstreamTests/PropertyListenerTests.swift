@@ -1,5 +1,5 @@
 //
-//  JetstreamTests.swift
+//  PropertyListenerTests.swift
 //  JetstreamTests
 //
 //  Created by Tuomas Artman on 9/18/14.
@@ -8,9 +8,10 @@
 
 import UIKit
 import XCTest
+import Jetstream
 
 
-class JetstreamTests: XCTestCase {
+class PropertyListenerTests: XCTestCase {
     
     func testGenericPropertyListeners() {
         var model = TestModel()

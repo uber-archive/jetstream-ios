@@ -1,5 +1,5 @@
 //
-//  JetstreamTests.swift
+//  ScopeTests.swift
 //  JetstreamTests
 //
 //  Created by Tuomas Artman on 9/25/14.
@@ -8,6 +8,7 @@
 
 import UIKit
 import XCTest
+import Jetstream
 
 
 class ScopeTests: XCTestCase {

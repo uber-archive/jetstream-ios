@@ -61,11 +61,18 @@
 		11EEC45F19D3396300DCD737 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC45E19D3396300DCD737 /* Logging.swift */; };
 		7233FE2F19D4C9AE004B680C /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
 		7233FE3019D4CA09004B680C /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6D19D47B5A00D31133 /* Signal.swift */; };
-		727EAA4119D4CB6000B7990A /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
-		7291632519CB5FE500320F15 /* JetstreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632419CB5FE500320F15 /* JetstreamTests.swift */; };
+		727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
+		727EAA4419D4CE2100B7990A /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
+		727EAA4819D4D21300B7990A /* JTSObjectFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 727EAA4619D4D21300B7990A /* JTSObjectFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		727EAA4919D4D21300B7990A /* JTSObjectFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4719D4D21300B7990A /* JTSObjectFactory.m */; };
+		727EAA4A19D4D26B00B7990A /* JTSObjectFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4719D4D21300B7990A /* JTSObjectFactory.m */; };
+		727EAA4C19D4DF8800B7990A /* ScopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4B19D4DF8800B7990A /* ScopeTests.swift */; };
+		727EAA4E19D4DFB800B7990A /* SyncFragmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */; };
+		727EAA5419D4E2A900B7990A /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
+		727EAA5519D4E2A900B7990A /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
+		7291632519CB5FE500320F15 /* PropertyListenerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632419CB5FE500320F15 /* PropertyListenerTests.swift */; };
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
 		7291633119CB8B2C00320F15 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291633019CB8B2C00320F15 /* TestModel.swift */; };
-		7291633319CB8BB700320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
 		72A6B5F519CD16F400B7BD94 /* TreeChangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -124,11 +131,16 @@
 		11EEC45A19D32B2200DCD737 /* Jetstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Jetstream.h; sourceTree = "<group>"; };
 		11EEC45E19D3396300DCD737 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		7233FE2E19D4C9AE004B680C /* Scope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scope.swift; sourceTree = "<group>"; };
+		727EAA4219D4CD2100B7990A /* SyncFragment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragment.swift; sourceTree = "<group>"; };
+		727EAA4619D4D21300B7990A /* JTSObjectFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JTSObjectFactory.h; sourceTree = "<group>"; };
+		727EAA4719D4D21300B7990A /* JTSObjectFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JTSObjectFactory.m; sourceTree = "<group>"; };
+		727EAA4B19D4DF8800B7990A /* ScopeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeTests.swift; sourceTree = "<group>"; };
+		727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragmentTests.swift; sourceTree = "<group>"; };
 		7291631519CB5FE500320F15 /* Jetstream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Jetstream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7291631919CB5FE500320F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7291632019CB5FE500320F15 /* JetstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JetstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7291632319CB5FE500320F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7291632419CB5FE500320F15 /* JetstreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetstreamTests.swift; sourceTree = "<group>"; };
+		7291632419CB5FE500320F15 /* PropertyListenerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyListenerTests.swift; sourceTree = "<group>"; };
 		7291632E19CB880200320F15 /* ModelObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelObject.swift; sourceTree = "<group>"; };
 		7291633019CB8B2C00320F15 /* TestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
 		72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeChangeTests.swift; sourceTree = "<group>"; };
@@ -271,6 +283,15 @@
 			name = Dependencies;
 			sourceTree = "<group>";
 		};
+		727EAA4519D4D1E000B7990A /* Objective-C */ = {
+			isa = PBXGroup;
+			children = (
+				727EAA4619D4D21300B7990A /* JTSObjectFactory.h */,
+				727EAA4719D4D21300B7990A /* JTSObjectFactory.m */,
+			);
+			name = "Objective-C";
+			sourceTree = "<group>";
+		};
 		7291630B19CB5FE500320F15 = {
 			isa = PBXGroup;
 			children = (
@@ -293,6 +314,7 @@
 		7291631719CB5FE500320F15 /* Jetstream */ = {
 			isa = PBXGroup;
 			children = (
+				727EAA4519D4D1E000B7990A /* Objective-C */,
 				11EEC45A19D32B2200DCD737 /* Jetstream.h */,
 				11EEC44E19D31F0300DCD737 /* Client.swift */,
 				11EEC45E19D3396300DCD737 /* Logging.swift */,
@@ -303,6 +325,7 @@
 				11EEC44919D31C9C00DCD737 /* Messages */,
 				7291631819CB5FE500320F15 /* Supporting Files */,
 				11EEC44419D31B0800DCD737 /* Transport */,
+				727EAA4219D4CD2100B7990A /* SyncFragment.swift */,
 			);
 			path = Jetstream;
 			sourceTree = "<group>";
@@ -318,10 +341,12 @@
 		7291632119CB5FE500320F15 /* JetstreamTests */ = {
 			isa = PBXGroup;
 			children = (
-				72A6B5F619CD171500B7BD94 /* Models */,
-				7291632419CB5FE500320F15 /* JetstreamTests.swift */,
-				7291632219CB5FE500320F15 /* Supporting Files */,
+				7291632419CB5FE500320F15 /* PropertyListenerTests.swift */,
+				727EAA4B19D4DF8800B7990A /* ScopeTests.swift */,
+				727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */,
 				72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */,
+				72A6B5F619CD171500B7BD94 /* Models */,
+				7291632219CB5FE500320F15 /* Supporting Files */,
 			);
 			path = JetstreamTests;
 			sourceTree = "<group>";
@@ -364,6 +389,7 @@
 				114F4A4D19D35D60003ACAC5 /* tls_mosq.h in Headers */,
 				114F4A3719D35D60003ACAC5 /* logging_mosq.h in Headers */,
 				114F4A3919D35D60003ACAC5 /* memory_mosq.h in Headers */,
+				727EAA4819D4D21300B7990A /* JTSObjectFactory.h in Headers */,
 				114F4A3F19D35D60003ACAC5 /* mqtt3_protocol.h in Headers */,
 				114F4A4F19D35D60003ACAC5 /* util_mosq.h in Headers */,
 				114F4A3519D35D60003ACAC5 /* dummypthread.h in Headers */,
@@ -481,6 +507,7 @@
 				114F4A4719D35D60003ACAC5 /* send_mosq.c in Sources */,
 				11EEC44619D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */,
 				118B0B6419D479BC00D31133 /* PollTransportAdapter.swift in Sources */,
+				727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */,
 				7233FE2F19D4C9AE004B680C /* Scope.swift in Sources */,
 				114F4A6019D36444003ACAC5 /* Socket.swift in Sources */,
 				114F4A6119D36444003ACAC5 /* SocketAddress.swift in Sources */,
@@ -489,6 +516,7 @@
 				118B0B6219D479AD00D31133 /* SwellAll.swift in Sources */,
 				11EEC44319D31A3800DCD737 /* Transport.swift in Sources */,
 				114F4A5019D35D60003ACAC5 /* will_mosq.c in Sources */,
+				727EAA4919D4D21300B7990A /* JTSObjectFactory.m in Sources */,
 				114F4A4619D35D60003ACAC5 /* send_client_mosq.c in Sources */,
 				118B0B6A19D47AD900D31133 /* MQTTKit.m in Sources */,
 				11EEC44F19D31F0300DCD737 /* Client.swift in Sources */,
@@ -508,11 +536,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				727EAA4C19D4DF8800B7990A /* ScopeTests.swift in Sources */,
 				72A6B5F519CD16F400B7BD94 /* TreeChangeTests.swift in Sources */,
+				727EAA4E19D4DFB800B7990A /* SyncFragmentTests.swift in Sources */,
+				727EAA5519D4E2A900B7990A /* Scope.swift in Sources */,
 				7233FE3019D4CA09004B680C /* Signal.swift in Sources */,
-				7291632519CB5FE500320F15 /* JetstreamTests.swift in Sources */,
-				7291633319CB8BB700320F15 /* ModelObject.swift in Sources */,
-				727EAA4119D4CB6000B7990A /* Scope.swift in Sources */,
+				7291632519CB5FE500320F15 /* PropertyListenerTests.swift in Sources */,
+				727EAA5419D4E2A900B7990A /* ModelObject.swift in Sources */,
+				727EAA4419D4CE2100B7990A /* SyncFragment.swift in Sources */,
+				727EAA4A19D4D26B00B7990A /* JTSObjectFactory.m in Sources */,
 				7291633119CB8B2C00320F15 /* TestModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

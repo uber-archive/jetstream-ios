@@ -28,6 +28,10 @@ public class Scope {
         modelHash.removeValueForKey(object.uuid)
     }
     
+    func applySyncFragment(syncFragment: SyncFragment) {
+        syncFragment.applyChangesToScope(self)
+    }
+    
     // MARK: - Public API
     
     public func getObjectById(uuid: NSUUID) -> ModelObject? {
