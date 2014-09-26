@@ -15,11 +15,11 @@ class Message {
         get { return "Message" }
     }
     
-    func serialize() -> Dictionary<String, AnyObject> {
+    func serialize() -> [String: AnyObject] {
         return ["type": type]
     }
     
-    class func unserialize(dictionary: Dictionary<String, AnyObject>) -> Message? {
+    class func unserialize(dictionary: [String: AnyObject]) -> Message? {
         let maybeType: AnyObject? = dictionary["type"]
         if let type = maybeType as? String {
             switch type {

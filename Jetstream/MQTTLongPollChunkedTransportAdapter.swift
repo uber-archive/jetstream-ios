@@ -113,7 +113,7 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
     }
     
     private func tryReadSerliazedMessage(object: AnyObject) {
-        if let dictionary = object as? Dictionary<String, AnyObject> {
+        if let dictionary = object as? [String: AnyObject] {
             let message = Message.unserialize(dictionary)
             if message != nil {
                 onMessage.fire(message!)
