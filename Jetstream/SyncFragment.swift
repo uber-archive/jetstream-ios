@@ -9,27 +9,27 @@
 import Foundation
 import Jetstream
 
-enum SyncFragmentType: String {
+public enum SyncFragmentType: String {
     case Change = "change"
     case Add = "add"
     case Remove = "remove"
     case MoveChange = "movechange"
 }
 
-class SyncFragment {
+public class SyncFragment {
 
     let type: SyncFragmentType
     let objectUUID: NSUUID
-    let clsName: String
-    let properties: Dictionary<String, AnyObject>
+    let clsName: String?
+    var properties: [String: AnyObject?]?
     let parentUUID: NSUUID?
     let keyPath: String?
     
     // TODO: Return nil when not able to parse
-    init(dictionary: Dictionary<String, AnyObject>) {
+    init(dictionary: [String: AnyObject]) {
         self.type = .Change
         self.objectUUID = NSUUID.UUID()
-        self.properties = Dictionary<String, AnyObject>()
+        self.properties = [String: AnyObject?]()
         self.clsName = ""
         self.keyPath = ""
         
@@ -67,10 +67,48 @@ class SyncFragment {
             }
         }
     }
+    
+    init(type:SyncFragmentType, modelObject: ModelObject) {
+        self.type = type
+        self.objectUUID = modelObject.uuid
+        
+        if (type == .Add) {
+            //self.clsName = NSStringFromClass(modelObject.dynamicType)
+            self.keyPath = modelObject.parent?.keyPath
+            self.properties = Dictionary<String, AnyObject>()
+            applyPropertiesFromModelObject(modelObject)
+        } else if (type == .Change) {
+            self.properties = Dictionary<String, AnyObject>()
+        } else if (type == .MoveChange) {
+            self.properties = Dictionary<String, AnyObject>()
+            self.keyPath = modelObject.parent?.keyPath
+        }
+    }
 
     func applyPropertiesToModelObject(modelObject: ModelObject) {
-        for (key, value) in properties {
-            modelObject.setValue(value, forKey: key)
+        if let definiteProperties = properties {
+            for (key, value) in definiteProperties {
+                modelObject.setValue(value, forKey: key)
+            }
+        }
+    }
+    
+    func newValueForKey(key: String, value:AnyObject?) {
+        if (properties == nil) {
+            properties = [String: AnyObject]()
+        }
+        properties![key] = value
+    }
+    
+    func applyPropertiesFromModelObject(modelObject: ModelObject) {
+        if (properties == nil) {
+            properties = [String: AnyObject]()
+        }
+        for (name, property) in modelObject.properties {
+            if (!property.isArray) {
+                let value: AnyObject? = modelObject.valueForKey(property.key)
+                properties![name] = value
+            }
         }
     }
     

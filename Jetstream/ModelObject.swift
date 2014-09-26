@@ -21,9 +21,9 @@ public func ==(lhs: ParentRelationship, rhs: ParentRelationship) -> Bool {
 
 private var myContext = 0
 
-// TODO: We might not need to struct this if key is the only info we're interested in
-private struct PropertyInfo {
-    let key:String
+struct PropertyInfo {
+    let key: String
+    let isArray: Bool
 }
 
 @objc public class ModelObject: NSObject {
@@ -36,7 +36,7 @@ private struct PropertyInfo {
     public let onMovedBetweenScopes = Signal<(parent: ModelObject, keyPath: String)>()
     
     public let uuid: NSUUID;
-    private var properties = Dictionary<String, PropertyInfo>()
+    var properties = Dictionary<String, PropertyInfo>()
     
     private var internalIsScopeRoot = false;
     public var isScopeRoot: Bool {
@@ -166,7 +166,12 @@ private struct PropertyInfo {
         for i in 0...mirror.count - 1 {
             var (name, type) = mirror[i]
             if name != "super" {
-                properties[name] = PropertyInfo(key: name)
+                var isArray = false
+                if let asArray = self.valueForKey(name) as? [ModelObject] {
+                    isArray = true
+                }
+                
+                properties[name] = PropertyInfo(key: name, isArray:isArray)
                 self.addObserver(self, forKeyPath: name, options: .New | .Old, context: &myContext)
             }
         }

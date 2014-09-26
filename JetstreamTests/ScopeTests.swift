@@ -71,4 +71,56 @@ class ScopeTests: XCTestCase {
         
         XCTAssertEqual(scope.modelObjects.count, 2 , "Correct amount of models in scope")
     }
+    
+    func testScopeFragmentCount() {
+        parent.setScopeAndMakeRootModel(scope)
+        parent.childModel = child
+        child.childModel = child2
+        var fragments = scope.getAndClearSyncFragments()
+        XCTAssertEqual(fragments.count, 3 , "Correct amount of fragments")
+        
+        fragments = scope.getAndClearSyncFragments()
+        XCTAssertEqual(fragments.count, 0 , "Fragments cleared out after getting")
+        
+        child.string = "Testing"
+        fragments = scope.getAndClearSyncFragments()
+        XCTAssertEqual(fragments.count, 1 , "Correct amount of fragments")
+        
+        parent.childModel = nil
+        fragments = scope.getAndClearSyncFragments()
+        XCTAssertEqual(fragments.count, 1 , "Removal captured")
+
+        child.string = "Testing more"
+        fragments = scope.getAndClearSyncFragments()
+        XCTAssertEqual(fragments.count, 0 , "Removed object no longer listened to")
+    }
+    
+    func testScopeFragmentCountWhenAddingAndChanging() {
+        parent.setScopeAndMakeRootModel(scope)
+        parent.childModel = child
+        child.childModel = child2
+        
+        parent.string = "testing more"
+        child.string = "testing more"
+        
+        var fragments = scope.getAndClearSyncFragments()
+        
+        XCTAssertEqual(fragments.count, 3 , "Changes don't create fragments when object have been added")
+    }
+    
+    func testScopeFragmentListening() {
+        let expectation = expectationWithDescription("onChange")
+
+        scope.onChanges.listen(self, callback: { (fragments) -> Void in
+            XCTAssertEqual(fragments.count, 3, "Changes don't create fragments when object have been added")
+            expectation.fulfill()
+        })
+        parent.setScopeAndMakeRootModel(scope)
+        parent.childModel = child
+        child.childModel = child2
+        parent.string = "testing more"
+        child.string = "testing more"
+
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
 }
