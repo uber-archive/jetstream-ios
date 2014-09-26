@@ -21,93 +21,110 @@ public class SyncFragment {
     let type: SyncFragmentType
     let objectUUID: NSUUID
     let clsName: String?
-    var properties: [String: AnyObject?]?
     let parentUUID: NSUUID?
     let keyPath: String?
+    var properties: [String: AnyObject?]
     
-    // TODO: Return nil when not able to parse
-    init(dictionary: [String: AnyObject]) {
-        self.type = .Change
-        self.objectUUID = NSUUID.UUID()
-        self.properties = [String: AnyObject?]()
-        self.clsName = ""
-        self.keyPath = ""
-        
+    init(type: SyncFragmentType, objectUUID: NSUUID, clsName: String?, parentUUID: NSUUID?, keyPath: String?, properties: [String: AnyObject?]?) {
+        self.type = type
+        self.objectUUID = objectUUID
+        self.clsName = clsName
+        self.keyPath = keyPath
+        self.parentUUID = parentUUID
+        self.properties = properties != nil ? properties! : [String: AnyObject?]()
+    }
+    
+    func serialize() -> [String: AnyObject] {
+        let dictionary = [String: AnyObject]()
+        return dictionary
+    }
+    
+    class func unserialize(dictionary: [String: AnyObject]) -> SyncFragment? {
+        var type: SyncFragmentType?
+        var objectUUID: NSUUID?
+        var clsName: String?
+        var parentUUID: NSUUID?
+        var keyPath: String?
+        var properties: [String: AnyObject?]?
+
         for (key, value) in dictionary {
             switch key {
             case "type":
                 if let valueAsString = value as? String {
                     if let definiteType = SyncFragmentType.fromRaw(valueAsString) {
-                        self.type = definiteType
+                        type = definiteType
                     }
                 }
             case "uuid":
                 if let valueAsString = value as? String {
-                    self.objectUUID = NSUUID(UUIDString: valueAsString)
+                    objectUUID = NSUUID(UUIDString: valueAsString)
                 }
             case "properties":
-                if let properties = value as? Dictionary<String, AnyObject> {
-                    self.properties = properties
+                if let propertyDictionary = value as? Dictionary<String, AnyObject> {
+                    properties = propertyDictionary
                 }
             case "clsName":
                 if let valueAsString = value as? String {
-                    self.clsName = valueAsString
+                    clsName = valueAsString
                 }
             case "keyPath":
                 if let valueAsString = value as? String {
-                    self.keyPath = valueAsString
+                    keyPath = valueAsString
                 }
             case "parent":
                 if let valueAsString = value as? String {
-                    self.parentUUID = NSUUID(UUIDString: valueAsString)
+                    parentUUID = NSUUID(UUIDString: valueAsString)
                 }
             default:
                 // TODO: Log error
                 println("unused value")
             }
         }
+        
+        // Check validity of properties
+        if type == nil || objectUUID == nil {
+            return nil
+        }
+        if type == .Add && (clsName == nil || parentUUID == nil || keyPath == nil) {
+            return nil
+        }
+        if type == .MoveChange && (parentUUID == nil || keyPath == nil) {
+            return nil
+        }
+
+        return SyncFragment(type: type!, objectUUID: objectUUID!, clsName: clsName, parentUUID: parentUUID, keyPath: keyPath, properties: properties)
     }
+    
     
     init(type:SyncFragmentType, modelObject: ModelObject) {
         self.type = type
         self.objectUUID = modelObject.uuid
+        self.properties = Dictionary<String, AnyObject>()
         
         if (type == .Add) {
-            //self.clsName = NSStringFromClass(modelObject.dynamicType)
+            self.clsName = NSStringFromClass(modelObject.dynamicType)
             self.keyPath = modelObject.parent?.keyPath
-            self.properties = Dictionary<String, AnyObject>()
             applyPropertiesFromModelObject(modelObject)
-        } else if (type == .Change) {
-            self.properties = Dictionary<String, AnyObject>()
         } else if (type == .MoveChange) {
-            self.properties = Dictionary<String, AnyObject>()
             self.keyPath = modelObject.parent?.keyPath
         }
     }
 
     func applyPropertiesToModelObject(modelObject: ModelObject) {
-        if let definiteProperties = properties {
-            for (key, value) in definiteProperties {
-                modelObject.setValue(value, forKey: key)
-            }
+        for (key, value) in properties {
+            modelObject.setValue(value, forKey: key)
         }
     }
     
     func newValueForKey(key: String, value:AnyObject?) {
-        if (properties == nil) {
-            properties = [String: AnyObject]()
-        }
-        properties![key] = value
+        properties[key] = value
     }
     
     func applyPropertiesFromModelObject(modelObject: ModelObject) {
-        if (properties == nil) {
-            properties = [String: AnyObject]()
-        }
         for (name, property) in modelObject.properties {
             if (!property.isArray) {
                 let value: AnyObject? = modelObject.valueForKey(property.key)
-                properties![name] = value
+                properties[name] = value
             }
         }
     }

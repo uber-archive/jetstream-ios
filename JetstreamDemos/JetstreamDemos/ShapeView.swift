@@ -64,6 +64,5 @@ public class ShapeView: UIView, UIGestureRecognizerDelegate {
             y: CGFloat(shape.y),
             width: CGFloat(shape.width),
             height: CGFloat(shape.height))
-    }
-    
+    }    
 }

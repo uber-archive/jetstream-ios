@@ -18,12 +18,12 @@ class SyncFragmentTests: XCTestCase {
         var model = TestModel()
         
         var json = [
-            "type": "add",
+            "type": "remove",
             "uuid": model.uuid.UUIDString
         ]
 
-        var fragment = SyncFragment(dictionary: json)
+        var fragment = SyncFragment.unserialize(json)
         
-        XCTAssertEqual(fragment.objectUUID, model.uuid , "Value change captured")
+        XCTAssertEqual(fragment!.objectUUID, model.uuid , "Value change captured")
     }
 }

@@ -27,13 +27,14 @@ class Message {
                 return SessionCreateMessage.unserialize(dictionary)
             case SessionCreateResponseMessage.messageType:
                 return SessionCreateResponseMessage.unserialize(dictionary)
+            case ScopeStateMessage.messageType:
+                return ScopeStateMessage.unserialize(dictionary)
             default:
                 return nil
             }
         }
         return nil
     }
-    
 }
 
 class IndexedMessage: Message {
@@ -53,5 +54,4 @@ class IndexedMessage: Message {
         dictionary["index"] = index
         return dictionary
     }
-    
 }

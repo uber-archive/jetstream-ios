@@ -67,5 +67,4 @@ class SessionCreateMessage: Message {
             return SessionCreateMessage()
         }
     }
-    
 }

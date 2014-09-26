@@ -222,9 +222,9 @@ struct PropertyInfo {
     /// :param: The scope to add the model object to.
     public func setScopeAndMakeRootModel(scope: Scope) {
         internalIsScopeRoot = true
-        parent = nil
         self.scope = scope
         scope.addModelObject(self)
+        parent = nil
     }
     
     // MARK: - Public API
