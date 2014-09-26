@@ -17,6 +17,9 @@
 		11EEC43D19D267F800DCD737 /* DemosListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC43C19D267F800DCD737 /* DemosListCollectionViewCell.swift */; };
 		11EEC43F19D3166F00DCD737 /* ShapesDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC43E19D3166F00DCD737 /* ShapesDemoViewController.swift */; };
 		11EEC45719D329F600DCD737 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11EEC45619D329F600DCD737 /* Foundation.framework */; };
+		7202D09619D5E5B4004E9A47 /* ShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7202D09519D5E5B4004E9A47 /* ShapeView.swift */; };
+		7202D09919D5ED41004E9A47 /* Shape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7202D09819D5ED41004E9A47 /* Shape.swift */; };
+		7202D09B19D5F14F004E9A47 /* ShapeDemoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7202D09A19D5F14F004E9A47 /* ShapeDemoModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +68,9 @@
 		11EEC43C19D267F800DCD737 /* DemosListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemosListCollectionViewCell.swift; sourceTree = "<group>"; };
 		11EEC43E19D3166F00DCD737 /* ShapesDemoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapesDemoViewController.swift; sourceTree = "<group>"; };
 		11EEC45619D329F600DCD737 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		7202D09519D5E5B4004E9A47 /* ShapeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeView.swift; sourceTree = "<group>"; };
+		7202D09819D5ED41004E9A47 /* Shape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shape.swift; sourceTree = "<group>"; };
+		7202D09A19D5F14F004E9A47 /* ShapeDemoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeDemoModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,12 +117,13 @@
 			isa = PBXGroup;
 			children = (
 				11EEC41019D236B400DCD737 /* AppDelegate.swift */,
-				11EEC41219D236B400DCD737 /* DemosListViewController.swift */,
 				11EEC43C19D267F800DCD737 /* DemosListCollectionViewCell.swift */,
-				11EEC43E19D3166F00DCD737 /* ShapesDemoViewController.swift */,
-				11EEC41419D236B400DCD737 /* Main.storyboard */,
+				11EEC41219D236B400DCD737 /* DemosListViewController.swift */,
 				11EEC41719D236B400DCD737 /* Images.xcassets */,
 				11EEC41919D236B400DCD737 /* LaunchScreen.xib */,
+				11EEC41419D236B400DCD737 /* Main.storyboard */,
+				7202D09319D5E599004E9A47 /* ShapesDemo */,
+				11EEC43E19D3166F00DCD737 /* ShapesDemoViewController.swift */,
 				11EEC40E19D236B400DCD737 /* Supporting Files */,
 			);
 			path = JetstreamDemos;
@@ -154,6 +161,24 @@
 				11EEC43819D236C800DCD737 /* JetstreamTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7202D09319D5E599004E9A47 /* ShapesDemo */ = {
+			isa = PBXGroup;
+			children = (
+				7202D09719D5ED32004E9A47 /* Model */,
+				7202D09519D5E5B4004E9A47 /* ShapeView.swift */,
+			);
+			name = ShapesDemo;
+			sourceTree = "<group>";
+		};
+		7202D09719D5ED32004E9A47 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7202D09819D5ED41004E9A47 /* Shape.swift */,
+				7202D09A19D5F14F004E9A47 /* ShapeDemoModel.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,6 +305,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7202D09619D5E5B4004E9A47 /* ShapeView.swift in Sources */,
+				7202D09B19D5F14F004E9A47 /* ShapeDemoModel.swift in Sources */,
+				7202D09919D5ED41004E9A47 /* Shape.swift in Sources */,
 				11EEC41319D236B400DCD737 /* DemosListViewController.swift in Sources */,
 				11EEC43F19D3166F00DCD737 /* ShapesDemoViewController.swift in Sources */,
 				11EEC41119D236B400DCD737 /* AppDelegate.swift in Sources */,

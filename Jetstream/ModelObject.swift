@@ -187,12 +187,17 @@ struct PropertyInfo {
             // TODO: Optimize this
             for index in 0 ..< oldArray!.count {
                 if !contains(newArray!, oldArray![index]) {
-                    onModelRemovedFromCollection.fire(keyPath: keyPath, element: oldArray![index] as AnyObject, atIndex: index)
+                    let model = oldArray![index]
+                    model.parent = nil
+                    onModelRemovedFromCollection.fire(keyPath: keyPath, element: model as AnyObject, atIndex: index)
                 }
             }
             for index in 0 ..< newArray!.count {
                 if !contains(oldArray!, newArray![index]) {
-                    onModelAddedToCollection.fire(keyPath: keyPath, element: newArray![index] as AnyObject, atIndex: index)
+                    let model = newArray![index]
+                    model.parent = ParentRelationship(parent: self, keyPath: keyPath)
+                    model.scope = scope
+                    onModelAddedToCollection.fire(keyPath: keyPath, element: model as AnyObject, atIndex: index)
                 }
             }
         } else {
@@ -324,5 +329,10 @@ struct PropertyInfo {
         onDetachedFromScope.removeListener(listener)
         onAttachToScope.removeListener(listener)
         onMovedBetweenScopes.removeListener(listener)
+    }
+    
+    /// Removes the ModelObject from its scope.
+    public func detach() {
+        parent = nil
     }
 }

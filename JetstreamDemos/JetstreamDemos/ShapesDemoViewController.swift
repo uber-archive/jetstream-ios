@@ -16,13 +16,28 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
     var client: Client?
     var session: Session?
     var appearing = false
+    var scope = Scope(name: "Kiva")
+    var shapesDemoModel = ShapesDemoModel()
     
     override func viewDidLoad() {
         title = "Shapes Demo"
+        
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleTap:"))
+        self.view.addGestureRecognizer(tapRecognizer)
+        
+        
+        shapesDemoModel.setScopeAndMakeRootModel(scope)
+        
+        shapesDemoModel.observeCollectionAdd(self, keyPath: "shapes") { (element: Shape) -> Void in
+            let shapeView = ShapeView(shape: element)
+            self.view.addSubview(shapeView)
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
         appearing = true
+        return
+        
         var request = NSMutableURLRequest(URL: NSURL(string: "http://localhost:3000/mqtt/register"))
         request.HTTPMethod = "POST"
         NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) {
@@ -79,6 +94,14 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         client?.onSession.removeListener(self)
         client?.close()
         client = nil
+    }
+    
+    func handleTap(recognizer: UITapGestureRecognizer) {
+        let shape = Shape()
+        var point = recognizer.locationInView(self.view)
+        shape.x = point.x - shape.width / 2
+        shape.y = point.y - shape.height / 2
+        shapesDemoModel.shapes.append(shape)
     }
     
 }

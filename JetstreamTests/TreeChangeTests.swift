@@ -57,9 +57,12 @@ class TreeChangeTests: XCTestCase {
         parent.isScopeRoot = true
         parent.childModel = child
         XCTAssertEqual(parent.childModel!, child, "Correct child attached")
+        XCTAssertEqual(child.parent!.parent, parent, "Correct parentRelationship attached")
         
         parent.childModel = child2
         XCTAssertEqual(parent.childModel!, child2, "Correct child attached")
+        XCTAssert(child.parent == nil, "parentRelationship removed")
+        XCTAssertEqual(child2.parent!.parent, parent, "Correct parentRelationship attached")
         
         parent.childModel = child3
         XCTAssertEqual(parent.childModel!, child3, "Correct child attached")
@@ -229,6 +232,24 @@ class TreeChangeTests: XCTestCase {
         XCTAssertEqual(attachCount[3], 2 , "Correct amount of attaches observed for child3")
         XCTAssertEqual(detachCount[3], 2 , "Correct amount of detaches observed for child3")
         XCTAssertEqual(moveCount[3], 0 , "Correct amount of moves observed for child3")
+    }
+    
+    func testArrayAssigments() {
+        parent.isScopeRoot = true
+        parent.array.append(child)
+        XCTAssert(parent.array.count == 1, "Child accessible via array")
+        XCTAssertEqual(child.parent!.parent, parent, "Correct parentRelationship attached")
+        XCTAssert(child.scope === parent.scope, "Correct scope attached")
         
+        parent.array.removeLast()
+        XCTAssert(parent.array.count == 0, "Child accessible via array")
+        XCTAssert(child.parent == nil,  "parentRelationship removed")
+        XCTAssert(child.scope == nil,  "scope removed")
+
+        parent.childModel = nil
+        
+        XCTAssertEqual(attachCount[1], 1 , "Correct amount of attaches observed for child")
+        XCTAssertEqual(detachCount[1], 1 , "Correct amount of detaches observed for child")
+        XCTAssertEqual(moveCount[1], 0 , "Correct amount of moves observed for child")
     }
 }

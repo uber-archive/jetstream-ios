@@ -22,7 +22,7 @@ public class Scope {
     var timer: NSTimer?
     var changeInterval: NSTimeInterval
     
-    init(name: String, changeInterval: NSTimeInterval = 0.01) {
+    public init(name: String, changeInterval: NSTimeInterval = 0.01) {
         self.name = name
         self.changeInterval = changeInterval
     }
