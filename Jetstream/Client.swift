@@ -15,6 +15,8 @@ public enum ClientStatus {
 
 public class Client {
     
+    let logger = Logging.loggerFor("Client")
+    
     /// MARK: Events
     
     public let onStatusChanged = Signal<(ClientStatus)>()
@@ -40,6 +42,12 @@ public class Client {
         bindListeners()
     }
     
+    public init(options: MQTTLongPollChunkedConnectionOptions) {
+        var adapter = MQTTLongPollChunkedTransportAdapter(options: options)
+        transport = Transport(adapter: adapter)
+        bindListeners()
+    }
+    
     public func connect() {
         transport.connect()
     }
@@ -51,19 +59,20 @@ public class Client {
     /// MARK: Private interface
     
     private func bindListeners() {
-        onStatusChanged.listen(self) { (status) in
+        onStatusChanged.listen(self) { [unowned self] (status) in
             switch status {
             case .Online:
+                self.logger.info("Online")
                 if self.session == nil {
                     self.createSession()
                 } else {
                     self.resumeSession()
                 }
-            default:
-                return
+            case .Offline:
+                self.logger.info("Offline")
             }
         }
-        transport.onStatusChanged.listen(self) { (status: TransportStatus) in
+        transport.onStatusChanged.listen(self) { [unowned self] (status: TransportStatus) in
             switch status {
             case .Closed:
                 self.status = .Offline
@@ -73,7 +82,7 @@ public class Client {
                 self.status = .Online
             }
         }
-        transport.onMessage.listen(self) { (message: Message) in
+        transport.onMessage.listen(self) { [unowned self] (message: Message) in
             // TODO: implement
         }
     }

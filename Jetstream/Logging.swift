@@ -8,6 +8,11 @@
 
 import Foundation
 
+let disabledLoggers = [
+    "LongPollChunkedSocketServerClient": true,
+    "LongPollChunkedSocketServer": true
+]
+
 public class Logging {
     
     class var loggerName: String {
@@ -25,7 +30,11 @@ public class Logging {
     
     class func loggerFor(str: String) -> Logger {
         var loggerName = "\(Logging.loggerName).\(str)"
-        return Swell.getLogger(loggerName)
+        var logger = Swell.getLogger(loggerName)
+        if disabledLoggers[str] == true {
+            logger.enabled = false
+        }
+        return logger
     }
     
     public class func disable() {

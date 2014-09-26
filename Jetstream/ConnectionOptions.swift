@@ -10,7 +10,7 @@ import Foundation
 
 public class ConnectionOptions {
     
-    public private(set) var url: String
+    public let url: String
     
     public init(url: String) {
         self.url = url

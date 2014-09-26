@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11181CEB19D5079300B0BA59 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11181CEA19D5079300B0BA59 /* Functions.swift */; };
 		114F4A3419D35D60003ACAC5 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 114F4A1219D35D60003ACAC5 /* config.h */; };
 		114F4A3519D35D60003ACAC5 /* dummypthread.h in Headers */ = {isa = PBXBuildFile; fileRef = 114F4A1319D35D60003ACAC5 /* dummypthread.h */; };
 		114F4A3619D35D60003ACAC5 /* logging_mosq.c in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A1419D35D60003ACAC5 /* logging_mosq.c */; };
@@ -50,6 +51,7 @@
 		118B0B6819D47A3300D31133 /* MQTTKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 118B0B6719D47A3300D31133 /* MQTTKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		118B0B6A19D47AD900D31133 /* MQTTKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6919D47AD900D31133 /* MQTTKit.m */; };
 		118B0B6E19D47B5A00D31133 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6D19D47B5A00D31133 /* Signal.swift */; };
+		118B0B7119D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B7019D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift */; };
 		11EEC44119D319DC00DCD737 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44019D319DC00DCD737 /* Session.swift */; };
 		11EEC44319D31A3800DCD737 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44219D31A3800DCD737 /* Transport.swift */; };
 		11EEC44619D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */; };
@@ -77,6 +79,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		11181CEA19D5079300B0BA59 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		114F4A1219D35D60003ACAC5 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		114F4A1319D35D60003ACAC5 /* dummypthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dummypthread.h; sourceTree = "<group>"; };
 		114F4A1419D35D60003ACAC5 /* logging_mosq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = logging_mosq.c; sourceTree = "<group>"; };
@@ -120,9 +123,10 @@
 		118B0B6719D47A3300D31133 /* MQTTKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MQTTKit.h; path = Jetstream/MQTTKitBuild/MQTTKit.h; sourceTree = SOURCE_ROOT; };
 		118B0B6919D47AD900D31133 /* MQTTKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MQTTKit.m; path = Jetstream/MQTTKitBuild/MQTTKit.m; sourceTree = SOURCE_ROOT; };
 		118B0B6D19D47B5A00D31133 /* Signal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Signal.swift; path = Signals/Signals/Signal.swift; sourceTree = "<group>"; };
+		118B0B7019D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MQTTLongPollChunkedConnectionOptions.swift; sourceTree = "<group>"; };
 		11EEC44019D319DC00DCD737 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		11EEC44219D31A3800DCD737 /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
-		11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MQTTLongPollChunkedTransportAdapter.swift; sourceTree = "<group>"; };
+		11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; path = MQTTLongPollChunkedTransportAdapter.swift; sourceTree = "<group>"; };
 		11EEC44A19D31CA700DCD737 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		11EEC44C19D31CE600DCD737 /* SessionCreateMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCreateMessage.swift; sourceTree = "<group>"; };
 		11EEC44E19D31F0300DCD737 /* Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
@@ -252,13 +256,22 @@
 			name = Signal;
 			sourceTree = "<group>";
 		};
+		118B0B6F19D47D7900D31133 /* Adapters */ = {
+			isa = PBXGroup;
+			children = (
+				118B0B7019D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift */,
+				11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */,
+				118B0B6319D479BC00D31133 /* PollTransportAdapter.swift */,
+			);
+			name = Adapters;
+			sourceTree = "<group>";
+		};
 		11EEC44419D31B0800DCD737 /* Transport */ = {
 			isa = PBXGroup;
 			children = (
+				118B0B6F19D47D7900D31133 /* Adapters */,
 				11EEC45019D321A700DCD737 /* ConnectionOptions.swift */,
 				11EEC44219D31A3800DCD737 /* Transport.swift */,
-				11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */,
-				118B0B6319D479BC00D31133 /* PollTransportAdapter.swift */,
 			);
 			name = Transport;
 			sourceTree = "<group>";
@@ -314,18 +327,19 @@
 		7291631719CB5FE500320F15 /* Jetstream */ = {
 			isa = PBXGroup;
 			children = (
+				11EEC49D19D33E8B00DCD737 /* Dependencies */,
+				11EEC44919D31C9C00DCD737 /* Messages */,
 				727EAA4519D4D1E000B7990A /* Objective-C */,
-				11EEC45A19D32B2200DCD737 /* Jetstream.h */,
+				7291631819CB5FE500320F15 /* Supporting Files */,
+				11EEC44419D31B0800DCD737 /* Transport */,
 				11EEC44E19D31F0300DCD737 /* Client.swift */,
+				11181CEA19D5079300B0BA59 /* Functions.swift */,
 				11EEC45E19D3396300DCD737 /* Logging.swift */,
 				7291632E19CB880200320F15 /* ModelObject.swift */,
 				7233FE2E19D4C9AE004B680C /* Scope.swift */,
 				11EEC44019D319DC00DCD737 /* Session.swift */,
-				11EEC49D19D33E8B00DCD737 /* Dependencies */,
-				11EEC44919D31C9C00DCD737 /* Messages */,
-				7291631819CB5FE500320F15 /* Supporting Files */,
-				11EEC44419D31B0800DCD737 /* Transport */,
 				727EAA4219D4CD2100B7990A /* SyncFragment.swift */,
+				11EEC45A19D32B2200DCD737 /* Jetstream.h */,
 			);
 			path = Jetstream;
 			sourceTree = "<group>";
@@ -512,12 +526,14 @@
 				114F4A6019D36444003ACAC5 /* Socket.swift in Sources */,
 				114F4A6119D36444003ACAC5 /* SocketAddress.swift in Sources */,
 				114F4A4419D35D60003ACAC5 /* read_handle_client.c in Sources */,
+				11181CEB19D5079300B0BA59 /* Functions.swift in Sources */,
 				11EEC45F19D3396300DCD737 /* Logging.swift in Sources */,
 				118B0B6219D479AD00D31133 /* SwellAll.swift in Sources */,
 				11EEC44319D31A3800DCD737 /* Transport.swift in Sources */,
 				114F4A5019D35D60003ACAC5 /* will_mosq.c in Sources */,
 				727EAA4919D4D21300B7990A /* JTSObjectFactory.m in Sources */,
 				114F4A4619D35D60003ACAC5 /* send_client_mosq.c in Sources */,
+				118B0B7119D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift in Sources */,
 				118B0B6A19D47AD900D31133 /* MQTTKit.m in Sources */,
 				11EEC44F19D31F0300DCD737 /* Client.swift in Sources */,
 				114F4A4519D35D60003ACAC5 /* read_handle_shared.c in Sources */,
@@ -697,6 +713,7 @@
 				INFOPLIST_FILE = JetstreamTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
 			name = Debug;
 		};
@@ -710,6 +727,7 @@
 				INFOPLIST_FILE = JetstreamTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
 			name = Release;
 		};
