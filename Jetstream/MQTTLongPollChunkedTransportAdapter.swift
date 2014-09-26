@@ -78,7 +78,7 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
             mqttClient.publishString(str, toTopic: "/sync", withQos: AtLeastOnce, retain: false) {
                 [unowned self] (mid) in
                 
-                self.logger.debug("Sent message (mid=\(mid)")
+                self.logger.debug("sent (mid=\(mid)): \(str)")
             }
         }
     }
@@ -88,7 +88,37 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
     }
     
     private func mqttMessageReceived(message: MQTTMessage) {
-        logger.debug("Received MQTTMessage \(message.payloadString())")
+        let str = message.payloadString()
+        logger.debug("received: \(str)")
+        
+        let data = str.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        
+        if data != nil {
+            let error = NSErrorPointer()
+            let json: AnyObject? = NSJSONSerialization.JSONObjectWithData(
+                data!,
+                options: NSJSONReadingOptions(0),
+                error: error)
+            
+            if json != nil {
+                if let array = json as? Array<AnyObject> {
+                    for object in array {
+                        tryReadSerliazedMessage(object)
+                    }
+                } else {
+                    tryReadSerliazedMessage(json!)
+                }
+            }
+        }
+    }
+    
+    private func tryReadSerliazedMessage(object: AnyObject) {
+        if let dictionary = object as? Dictionary<String, AnyObject> {
+            let message = Message.unserialize(dictionary)
+            if message != nil {
+                onMessage.fire(message!)
+            }
+        }
     }
     
 }

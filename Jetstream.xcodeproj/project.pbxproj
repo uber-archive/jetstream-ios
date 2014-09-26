@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		11181CEB19D5079300B0BA59 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11181CEA19D5079300B0BA59 /* Functions.swift */; };
+		112EEB4119D5D2F500114268 /* SessionCreateResponseMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112EEB4019D5D2F500114268 /* SessionCreateResponseMessage.swift */; };
 		114F4A3419D35D60003ACAC5 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 114F4A1219D35D60003ACAC5 /* config.h */; };
 		114F4A3519D35D60003ACAC5 /* dummypthread.h in Headers */ = {isa = PBXBuildFile; fileRef = 114F4A1319D35D60003ACAC5 /* dummypthread.h */; };
 		114F4A3619D35D60003ACAC5 /* logging_mosq.c in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A1419D35D60003ACAC5 /* logging_mosq.c */; };
@@ -80,6 +81,7 @@
 
 /* Begin PBXFileReference section */
 		11181CEA19D5079300B0BA59 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
+		112EEB4019D5D2F500114268 /* SessionCreateResponseMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCreateResponseMessage.swift; sourceTree = "<group>"; };
 		114F4A1219D35D60003ACAC5 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		114F4A1319D35D60003ACAC5 /* dummypthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dummypthread.h; sourceTree = "<group>"; };
 		114F4A1419D35D60003ACAC5 /* logging_mosq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = logging_mosq.c; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 			children = (
 				11EEC44A19D31CA700DCD737 /* Message.swift */,
 				11EEC44C19D31CE600DCD737 /* SessionCreateMessage.swift */,
+				112EEB4019D5D2F500114268 /* SessionCreateResponseMessage.swift */,
 			);
 			name = Messages;
 			sourceTree = "<group>";
@@ -515,6 +518,7 @@
 				11EEC44119D319DC00DCD737 /* Session.swift in Sources */,
 				114F4A5E19D36444003ACAC5 /* DNS.swift in Sources */,
 				114F4A4919D35D60003ACAC5 /* thread_mosq.c in Sources */,
+				112EEB4119D5D2F500114268 /* SessionCreateResponseMessage.swift in Sources */,
 				114F4A3A19D35D60003ACAC5 /* messages_mosq.c in Sources */,
 				114F4A6319D36444003ACAC5 /* UnixUtils.swift in Sources */,
 				114F4A4A19D35D60003ACAC5 /* time_mosq.c in Sources */,

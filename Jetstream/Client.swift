@@ -8,6 +8,8 @@
 
 import Foundation
 
+let clientVersion = "0.1.0"
+
 public enum ClientStatus {
     case Offline
     case Online
@@ -21,6 +23,7 @@ public class Client {
     
     public let onStatusChanged = Signal<(ClientStatus)>()
     public let onSession = Signal<(Session)>()
+    public let onSessionDenied = Signal<(Void)>()
 
     /// MARK: Properties
     
@@ -30,7 +33,13 @@ public class Client {
         }
     }
     
-    public private(set) var session: Session?
+    public private(set) var session: Session? {
+        didSet {
+            if session != nil {
+                onSession.fire(session!)
+            }
+        }
+    }
     
     let transport: Transport
     
@@ -83,7 +92,25 @@ public class Client {
             }
         }
         transport.onMessage.listen(self) { [unowned self] (message: Message) in
-            // TODO: implement
+            self.receivedMessage(message)
+        }
+    }
+    
+    private func receivedMessage(message: Message) {
+        switch message {
+        case let sessionCreateResponse as SessionCreateResponseMessage:
+            if session != nil {
+                logger.error("Received session create response with existing session")
+            } else if sessionCreateResponse.success == false {
+                logger.info("Denied starting session")
+                onSessionDenied.fire()
+            } else {
+                let token = sessionCreateResponse.sessionToken
+                logger.info("Starting session with token: \(token)")
+                session = Session(token: token)
+            }
+        default:
+            logger.debug("Unrecognized message received")
         }
     }
     

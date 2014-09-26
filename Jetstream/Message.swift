@@ -19,4 +19,19 @@ class Message {
         return ["type": type]
     }
     
+    class func unserialize(dictionary: Dictionary<String, AnyObject>) -> Message? {
+        let maybeType: AnyObject? = dictionary["type"]
+        if let type = maybeType as? String {
+            switch type {
+            case SessionCreateMessage.messageType:
+                return SessionCreateMessage.unserialize(dictionary)
+            case SessionCreateResponseMessage.messageType:
+                return SessionCreateResponseMessage.unserialize(dictionary)
+            default:
+                return nil
+            }
+        }
+        return nil
+    }
+    
 }
