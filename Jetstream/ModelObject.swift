@@ -8,8 +8,6 @@
 
 import Foundation
 
-
-
 public struct ParentRelationship: Equatable {
     var parent: ModelObject
     var keyPath: String
@@ -27,7 +25,7 @@ struct PropertyInfo {
 }
 
 @objc public class ModelObject: NSObject {
-
+    
     public let onPropertyChange = Signal<(keyPath: String, value: AnyObject?)>()
     public let onModelAddedToCollection = Signal<(keyPath: String, element: AnyObject, atIndex:Int)>()
     public let onModelRemovedFromCollection = Signal<(keyPath: String, element: AnyObject, atIndex:Int)>()
@@ -143,14 +141,14 @@ struct PropertyInfo {
         }
     }
 
-    public override init() {
+    override init() {
         uuid = NSUUID()
         super.init()
         setupPropertyListeners()
     }
     
     init(uuidString: String) {
-        self.uuid = NSUUID(UUIDString: uuidString)
+        uuid = NSUUID(UUIDString: uuidString)
         super.init()
         setupPropertyListeners()
     }

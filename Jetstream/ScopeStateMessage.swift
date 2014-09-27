@@ -15,7 +15,7 @@ class ScopeStateMessage: Message {
     }
     
     override var type: String {
-        get { return ScopeStateMessage.messageType }
+        get { return ScopeSyncMessage.messageType }
     }
     
     var syncFragments: [SyncFragment]
@@ -27,7 +27,7 @@ class ScopeStateMessage: Message {
     
     override func serialize() -> [String: AnyObject] {
         var dictionary = super.serialize()
-
+        
         dictionary["fragments"] = syncFragments.map({ (syncFragment) -> [String: AnyObject] in
             return syncFragment.serialize()
         })
@@ -53,7 +53,7 @@ class ScopeStateMessage: Message {
                 println("Unknown object")
             }
         }
-
+        
         if (syncFragments == nil) {
             return nil
         } else {

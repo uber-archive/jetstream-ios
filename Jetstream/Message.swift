@@ -27,8 +27,8 @@ class Message {
                 return SessionCreateMessage.unserialize(dictionary)
             case SessionCreateResponseMessage.messageType:
                 return SessionCreateResponseMessage.unserialize(dictionary)
-            case ScopeStateMessage.messageType:
-                return ScopeStateMessage.unserialize(dictionary)
+            case ScopeSyncMessage.messageType:
+                return ScopeSyncMessage.unserialize(dictionary)
             default:
                 return nil
             }

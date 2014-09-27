@@ -12,7 +12,9 @@
 
 + (id)create:(NSString *)className
 {
-    return [NSClassFromString(className) new];
+    id var = NSClassFromString(className);
+    id instance = [NSClassFromString(className) new];
+    return instance;
 }
 
 @end

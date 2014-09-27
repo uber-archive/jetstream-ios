@@ -18,9 +18,7 @@ class ScopeTests: XCTestCase {
     var child2 = TestModel()
     var child3 = TestModel()
     var scope = Scope(name: "Testing")
-    
 
-    
     override func setUp() {
         parent = TestModel()
         child = TestModel()

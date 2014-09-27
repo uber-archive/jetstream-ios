@@ -16,6 +16,8 @@ public enum SyncFragmentType: String {
     case MoveChange = "movechange"
 }
 
+private var classPrefix: String?
+
 public class SyncFragment {
 
     let type: SyncFragmentType
@@ -63,7 +65,7 @@ public class SyncFragment {
                 if let propertyDictionary = value as? Dictionary<String, AnyObject> {
                     properties = propertyDictionary
                 }
-            case "clsName":
+            case "cls":
                 if let valueAsString = value as? String {
                     clsName = valueAsString
                 }
@@ -77,7 +79,7 @@ public class SyncFragment {
                 }
             default:
                 // TODO: Log error
-                println("unused value")
+                println("unkown key \(key)")
             }
         }
         
@@ -94,7 +96,6 @@ public class SyncFragment {
 
         return SyncFragment(type: type!, objectUUID: objectUUID!, clsName: clsName, parentUUID: parentUUID, keyPath: keyPath, properties: properties)
     }
-    
     
     init(type:SyncFragmentType, modelObject: ModelObject) {
         self.type = type
@@ -130,17 +131,32 @@ public class SyncFragment {
     }
     
     func applyChangesToScope(scope: Scope) {
+        if (scope.modelObjects.count == 0) {
+            return
+        }
+        
         switch type {
         case .Change:
             if let modelObject = scope.getObjectById(objectUUID) {
                 applyPropertiesToModelObject(modelObject)
             }
         case .Add:
-            if let parentObject = scope.getObjectById(objectUUID) {
-                if let modelObject = JTSObjectFactory.create(clsName) as? ModelObject {
-                    applyPropertiesToModelObject(modelObject)
-                    if let definiteKeyPath = keyPath {
-                        parentObject.setValue(modelObject, forKey: definiteKeyPath)
+            if let definiteParentUUID = parentUUID {
+                if let parentObject = scope.getObjectById(definiteParentUUID) {
+                    
+                    // TODO: Treading on freaking daggers here... Need to fix once swift allows string-to-class mapping
+                    if (classPrefix == nil) {
+                        var name = NSStringFromClass(scope.modelObjects.first!.dynamicType)
+                        var split = name.componentsSeparatedByString(".")
+                        split.removeLast()
+                        classPrefix = ".".join(split)
+                    }
+
+                    if let modelObject = JTSObjectFactory.create("\(classPrefix!).\(clsName!)") as? ModelObject {
+                        applyPropertiesToModelObject(modelObject)
+                        if let definiteKeyPath = keyPath {
+                            parentObject.setValue(modelObject, forKey: definiteKeyPath)
+                        }
                     }
                 }
             }
