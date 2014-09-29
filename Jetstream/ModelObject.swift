@@ -141,16 +141,20 @@ struct PropertyInfo {
         }
     }
 
-    override init() {
+    public override init() {
         uuid = NSUUID()
         super.init()
         setupPropertyListeners()
     }
     
-    init(uuidString: String) {
-        uuid = NSUUID(UUIDString: uuidString)
+    required public init(uuid: NSUUID) {
+        self.uuid = uuid
         super.init()
         setupPropertyListeners()
+    }
+    
+    convenience init(uuidString: String) {
+        self.init(uuid: NSUUID(UUIDString: uuidString))
     }
     
     deinit {

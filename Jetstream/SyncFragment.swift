@@ -151,8 +151,9 @@ public class SyncFragment {
                         split.removeLast()
                         classPrefix = ".".join(split)
                     }
-
-                    if let modelObject = JTSObjectFactory.create("\(classPrefix!).\(clsName!)") as? ModelObject {
+                    
+                    if let cls = NSClassFromString("\(classPrefix!).\(clsName!)") as? ModelObject.Type {
+                        let modelObject = cls(uuid: objectUUID)
                         applyPropertiesToModelObject(modelObject)
                         if let definiteKeyPath = keyPath {
                             parentObject.setValue(modelObject, forKey: definiteKeyPath)

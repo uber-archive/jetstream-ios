@@ -74,12 +74,9 @@
 		7202D16619D63AED004E9A47 /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
 		7202D16719D63AED004E9A47 /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
 		7202D16819D63AF1004E9A47 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6D19D47B5A00D31133 /* Signal.swift */; };
-		7202D16919D63AFD004E9A47 /* JTSObjectFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4719D4D21300B7990A /* JTSObjectFactory.m */; };
 		7202D16B19D63BC6004E9A47 /* Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7202D16A19D63BC6004E9A47 /* Serializer.swift */; };
 		7233FE2F19D4C9AE004B680C /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
 		727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
-		727EAA4819D4D21300B7990A /* JTSObjectFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 727EAA4619D4D21300B7990A /* JTSObjectFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		727EAA4919D4D21300B7990A /* JTSObjectFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4719D4D21300B7990A /* JTSObjectFactory.m */; };
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
 /* End PBXBuildFile section */
 
@@ -146,8 +143,6 @@
 		7202D16A19D63BC6004E9A47 /* Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializer.swift; sourceTree = "<group>"; };
 		7233FE2E19D4C9AE004B680C /* Scope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scope.swift; sourceTree = "<group>"; };
 		727EAA4219D4CD2100B7990A /* SyncFragment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragment.swift; sourceTree = "<group>"; };
-		727EAA4619D4D21300B7990A /* JTSObjectFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JTSObjectFactory.h; sourceTree = "<group>"; };
-		727EAA4719D4D21300B7990A /* JTSObjectFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JTSObjectFactory.m; sourceTree = "<group>"; };
 		727EAA4B19D4DF8800B7990A /* ScopeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeTests.swift; sourceTree = "<group>"; };
 		727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragmentTests.swift; sourceTree = "<group>"; };
 		7291631519CB5FE500320F15 /* Jetstream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Jetstream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -311,15 +306,6 @@
 			name = Dependencies;
 			sourceTree = "<group>";
 		};
-		727EAA4519D4D1E000B7990A /* Objective-C */ = {
-			isa = PBXGroup;
-			children = (
-				727EAA4619D4D21300B7990A /* JTSObjectFactory.h */,
-				727EAA4719D4D21300B7990A /* JTSObjectFactory.m */,
-			);
-			name = "Objective-C";
-			sourceTree = "<group>";
-		};
 		7291630B19CB5FE500320F15 = {
 			isa = PBXGroup;
 			children = (
@@ -344,7 +330,6 @@
 			children = (
 				11EEC49D19D33E8B00DCD737 /* Dependencies */,
 				11EEC44919D31C9C00DCD737 /* Messages */,
-				727EAA4519D4D1E000B7990A /* Objective-C */,
 				7291631819CB5FE500320F15 /* Supporting Files */,
 				11EEC44419D31B0800DCD737 /* Transport */,
 				11EEC44E19D31F0300DCD737 /* Client.swift */,
@@ -419,7 +404,6 @@
 				114F4A4D19D35D60003ACAC5 /* tls_mosq.h in Headers */,
 				114F4A3719D35D60003ACAC5 /* logging_mosq.h in Headers */,
 				114F4A3919D35D60003ACAC5 /* memory_mosq.h in Headers */,
-				727EAA4819D4D21300B7990A /* JTSObjectFactory.h in Headers */,
 				114F4A3F19D35D60003ACAC5 /* mqtt3_protocol.h in Headers */,
 				114F4A4F19D35D60003ACAC5 /* util_mosq.h in Headers */,
 				114F4A3519D35D60003ACAC5 /* dummypthread.h in Headers */,
@@ -550,7 +534,6 @@
 				118B0B6219D479AD00D31133 /* SwellAll.swift in Sources */,
 				11EEC44319D31A3800DCD737 /* Transport.swift in Sources */,
 				114F4A5019D35D60003ACAC5 /* will_mosq.c in Sources */,
-				727EAA4919D4D21300B7990A /* JTSObjectFactory.m in Sources */,
 				114F4A4619D35D60003ACAC5 /* send_client_mosq.c in Sources */,
 				118B0B7119D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift in Sources */,
 				118B0B6A19D47AD900D31133 /* MQTTKit.m in Sources */,
@@ -577,7 +560,6 @@
 				7202D16119D63ACF004E9A47 /* ScopeTests.swift in Sources */,
 				7202D16019D63ACF004E9A47 /* PropertyListenerTests.swift in Sources */,
 				7202D16819D63AF1004E9A47 /* Signal.swift in Sources */,
-				7202D16919D63AFD004E9A47 /* JTSObjectFactory.m in Sources */,
 				7202D16419D63ACF004E9A47 /* TestModel.swift in Sources */,
 				7202D16519D63AED004E9A47 /* ModelObject.swift in Sources */,
 				7202D16719D63AED004E9A47 /* SyncFragment.swift in Sources */,

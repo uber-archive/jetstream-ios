@@ -29,6 +29,53 @@ class SyncFragmentTests: XCTestCase {
         super.tearDown()
     }
     
+    func testSerializationFailure() {
+        var uuid = NSUUID()
+        
+        var json: [String: AnyObject] = [
+            "uuid": child.uuid.UUIDString
+        ]
+        var fragment = SyncFragment.unserialize(json)
+        XCTAssertNil(fragment , "Fragment with missing type shouldn't be created")
+        
+        json = [
+            "type": "remove",
+        ]
+        fragment = SyncFragment.unserialize(json)
+        XCTAssertNil(fragment , "Fragment with missing uuid shouldn't be created")
+        
+        json = [
+            "type": "add",
+            "uuid": uuid.UUIDString,
+            "parent": child.uuid.UUIDString,
+            "properties": ["string": "set correctly"],
+            "cls": "TestModel"
+        ]
+        fragment = SyncFragment.unserialize(json)
+        XCTAssertNil(fragment , "Add fragment with missing keyPath property shouldn't be created")
+        
+        json = [
+            "type": "add",
+            "uuid": uuid.UUIDString,
+            "keyPath": "childModel",
+            "parent": child.uuid.UUIDString,
+            "properties": ["string": "set correctly"],
+        ]
+        fragment = SyncFragment.unserialize(json)
+        XCTAssertNil(fragment , "Add fragment with missing cls property shouldn't be created")
+        
+        
+        json = [
+            "type": "add",
+            "uuid": uuid.UUIDString,
+            "keyPath": "childModel",
+            "properties": ["string": "set correctly"],
+            "cls": "TestModel"
+        ]
+        fragment = SyncFragment.unserialize(json)
+        XCTAssertNil(fragment , "Add fragment with missing parent property shouldn't be created")
+    }
+    
     func testRemove() {
         var json = [
             "type": "remove",
@@ -43,18 +90,19 @@ class SyncFragmentTests: XCTestCase {
     }
     
     func testAdd() {
-        
         var uuid = NSUUID()
-        var json = [
+
+        var json: [String: AnyObject] = [
             "type": "add",
             "uuid": uuid.UUIDString,
             "parent": child.uuid.UUIDString,
             "keyPath": "childModel",
+            "properties": ["string": "set correctly"],
             "cls": "TestModel"
         ]
         var fragment = SyncFragment.unserialize(json)
-        XCTAssertEqual(fragment!.objectUUID, child.uuid , "UUID unserialized")
-        XCTAssertEqual(fragment!.parentUUID!, parent.uuid , "Parent UUID unserialized")
+        XCTAssertEqual(fragment!.objectUUID, uuid , "UUID unserialized")
+        XCTAssertEqual(fragment!.parentUUID!, child.uuid , "Parent UUID unserialized")
         XCTAssertEqual(fragment!.keyPath!, "childModel" , "Keypath unserialized")
         XCTAssertEqual(fragment!.clsName!, "TestModel" , "Class name unserialized")
         
@@ -63,6 +111,9 @@ class SyncFragmentTests: XCTestCase {
         
         XCTAssertEqual(child.childModel!, testModel, "Child added")
         XCTAssertEqual(testModel.parent!.parent, child , "Child has correct parent")
+        XCTAssert(testModel.scope === scope , "Scope set correctly")
+        XCTAssertEqual(testModel.string!, "set correctly" , "Properties set correctly")
+        XCTAssertEqual(scope.modelObjects.count, 3 , "Scope knows of added model")
     }
     
     func testChange() {
@@ -77,4 +128,25 @@ class SyncFragmentTests: XCTestCase {
         XCTAssertEqual(fragment!.properties.count, 1 , "Properties unserialized")
     }
     
+    func testMoveChange() {
+        var json: [String: AnyObject] = [
+            "type": "movechange",
+            "uuid": child.uuid.UUIDString,
+            "parent": parent.uuid.UUIDString,
+            "keyPath": "childModel2",
+            "properties": ["string": "new value"]
+            
+        ]
+        var fragment = SyncFragment.unserialize(json)
+        XCTAssertEqual(fragment!.objectUUID, child.uuid , "UUID unserialized")
+        XCTAssertEqual(fragment!.parentUUID!, parent.uuid , "Parent UUID unserialized")
+        XCTAssertEqual(fragment!.keyPath!, "childModel2" , "Keypath unserialized")
+        
+        fragment?.applyChangesToScope(scope)
+        
+        XCTAssertEqual(parent.childModel2!, child, "Child moved")
+        XCTAssertEqual(child.parent!.parent, parent , "Child has correct parent")
+        XCTAssert(child.scope === scope , "Scope set correctly")
+        XCTAssertEqual(child.string!, "new value" , "Properties set correctly")
+    }
 }
