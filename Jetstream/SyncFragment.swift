@@ -18,7 +18,11 @@ public enum SyncFragmentType: String {
 
 private var classPrefix: String?
 
-public class SyncFragment {
+public func ==(lhs: SyncFragment, rhs: SyncFragment) -> Bool {
+    return lhs === rhs
+}
+
+public class SyncFragment: Equatable {
 
     let type: SyncFragmentType
     let objectUUID: NSUUID

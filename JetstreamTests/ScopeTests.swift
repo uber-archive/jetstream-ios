@@ -149,4 +149,14 @@ class ScopeTests: XCTestCase {
 
         waitForExpectationsWithTimeout(1, handler: nil)
     }
+
+    func testSubsequentRemoval() {
+        parent.setScopeAndMakeRootModel(scope)
+        var fragments = scope.getAndClearSyncFragments()
+  
+        parent.childModel = child
+        parent.childModel = nil
+        fragments = scope.getAndClearSyncFragments()
+        XCTAssertEqual(fragments.count, 0 , "Correct amount of fragments")
+    }
 }

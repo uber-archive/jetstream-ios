@@ -38,15 +38,14 @@ public class Scope {
             
             if (oldModelObject == nil && newModelObject == nil) {
                 // Only create change fragments for changes that don't affect child Model Objects
-                let fragment = self.syncFragmentWithType(.Change, modelObject: modelObject)
-                fragment.newValueForKey(keyPath, value: value)
-                self.setChangeTimer()
+                if let fragment = self.syncFragmentWithType(.Change, modelObject: modelObject) {
+                    fragment.newValueForKey(keyPath, value: value)
+                }
             }
         })
         
         if let definiteParent = modelObject.parent {
-            let fragment = self.syncFragmentWithType(.Add, modelObject: modelObject)
-            setChangeTimer()
+            self.syncFragmentWithType(.Add, modelObject: modelObject)
         }
     }
     
@@ -55,25 +54,44 @@ public class Scope {
         modelHash.removeValueForKey(modelObject.uuid)
         modelObject.onPropertyChange.removeListener(self)
         modelObject.onDetachedFromScope.removeListener(self)
-        
-        let fragment = self.syncFragmentWithType(.Remove, modelObject: modelObject)
-        self.setChangeTimer()
-        
-        setChangeTimer()
+        self.syncFragmentWithType(.Remove, modelObject: modelObject)
     }
     
     func applySyncFragment(syncFragment: SyncFragment) {
         syncFragment.applyChangesToScope(self)
     }
     
-    func syncFragmentWithType(type: SyncFragmentType, modelObject: ModelObject) -> SyncFragment {
+    func syncFragmentWithType(type: SyncFragmentType, modelObject: ModelObject) -> SyncFragment? {
         if let fragment = syncFragmentLookup[modelObject.uuid] {
+            if (type == SyncFragmentType.Remove && fragment.type == SyncFragmentType.Add) {
+                // Previous add fragment was reverted by remove fragment
+                removeFragment(fragment)
+                return nil
+            } else if (type == SyncFragmentType.Add && fragment.type == SyncFragmentType.Remove) {
+                // Delete remove fragment and create new add fragment
+                removeFragment(fragment)
+                return addFragment(SyncFragment(type: type, modelObject: modelObject))
+            }
+            // TODO: Support movechange
+            
+            self.setChangeTimer()
             return fragment
         }
-        let fragment = SyncFragment(type: type, modelObject: modelObject)
+        return addFragment(SyncFragment(type: type, modelObject: modelObject))
+    }
+    
+    private func addFragment(fragment: SyncFragment) -> SyncFragment {
         syncFragments.append(fragment)
-        syncFragmentLookup[modelObject.uuid] = fragment
+        syncFragmentLookup[fragment.objectUUID] = fragment
+        self.setChangeTimer()
         return fragment
+    }
+    
+    private func removeFragment(fragment: SyncFragment) {
+        if let index = find(syncFragments, fragment) {
+            syncFragments.removeAtIndex(index)
+            syncFragmentLookup.removeValueForKey(fragment.objectUUID)
+        }
     }
     
     private func setChangeTimer() {
