@@ -125,7 +125,7 @@ class SyncFragmentTests: XCTestCase {
         ]
         var fragment = SyncFragment.unserialize(json)
         XCTAssertEqual(fragment!.objectUUID, child.uuid , "UUID unserialized")
-        XCTAssertEqual(fragment!.properties.count, 1 , "Properties unserialized")
+        XCTAssertEqual(fragment!.properties!.count, 1 , "Properties unserialized")
     }
     
     func testMoveChange() {

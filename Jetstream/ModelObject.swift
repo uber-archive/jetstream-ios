@@ -26,7 +26,7 @@ struct PropertyInfo {
 
 @objc public class ModelObject: NSObject {
     
-    public let onPropertyChange = Signal<(keyPath: String, value: AnyObject?)>()
+    public let onPropertyChange = Signal<(keyPath: String, oldValue: AnyObject?, value: AnyObject?)>()
     public let onModelAddedToCollection = Signal<(keyPath: String, element: AnyObject, atIndex:Int)>()
     public let onModelRemovedFromCollection = Signal<(keyPath: String, element: AnyObject, atIndex:Int)>()
     public let onDetachedFromScope = Signal<(Scope)>()
@@ -106,7 +106,7 @@ struct PropertyInfo {
         didSet(oldValue) {
             if parent != oldValue {
                 if let newParent = parent {
-                    newParent.parent.onPropertyChange.listen(self, callback: { (keyPath, value) -> Void in
+                    newParent.parent.onPropertyChange.listen(self, callback: { (keyPath, oldValue, value) -> Void in
                         if (keyPath == newParent.keyPath) {
                             if (value as? ModelObject) != self {
                                 self.parent = nil
@@ -140,6 +140,23 @@ struct PropertyInfo {
             return objects
         }
     }
+    
+    var propertyValuePairs: [String: AnyObject]? {
+        get {
+            var propertyValues = [String: AnyObject]()
+            for (key, value) in properties {
+                if let propertyValue: AnyObject = valueForKey(key) as AnyObject? {
+                    propertyValues[key] = propertyValue
+                }
+                
+            }
+            if propertyValues.count > 0 {
+                return propertyValues
+            } else {
+                return nil
+            }
+        }
+    }
 
     public override init() {
         uuid = NSUUID()
@@ -162,7 +179,7 @@ struct PropertyInfo {
             removeObserver(self, forKeyPath: property.key)
         }
     }
-    
+
     private func setupPropertyListeners() {
         let mirror = reflect(self)
         for i in 0...mirror.count - 1 {
@@ -172,7 +189,6 @@ struct PropertyInfo {
                 if let asArray = self.valueForKey(name) as? [ModelObject] {
                     isArray = true
                 }
-                
                 properties[name] = PropertyInfo(key: name, isArray:isArray)
                 self.addObserver(self, forKeyPath: name, options: .New | .Old, context: &myContext)
             }
@@ -203,7 +219,7 @@ struct PropertyInfo {
                 }
             }
         } else {
-            onPropertyChange.fire(keyPath: keyPath, value: newValue)
+            onPropertyChange.fire(keyPath: keyPath, oldValue: oldValue, value: newValue)
             if let modelObject = newValue as? ModelObject {
                 modelObject.parent = ParentRelationship(parent: self, keyPath: keyPath)
                 modelObject.scope = scope
@@ -237,10 +253,10 @@ struct PropertyInfo {
     /// :param: keyPath The keyPath of the property to listen to.
     /// :param: callback The closure that gets executed every time the property changes.
     public func observeChange(listener: AnyObject, keyPath: String, callback: () -> Void) {
-        let listener = onPropertyChange.listen(listener) { (keyPath, value) -> Void in
+        let listener = onPropertyChange.listen(listener) { (keyPath, oldValue, value) -> Void in
             callback()
         }
-        listener.setFilter { (changedKeyPath, value) -> Bool in
+        listener.setFilter { (changedKeyPath, oldValue, value) -> Bool in
             return keyPath == changedKeyPath
         }
     }
@@ -251,10 +267,10 @@ struct PropertyInfo {
     /// :param: keyPaths An array of keyPaths to listen to
     /// :param: callback The closure that gets executed every time any of the  properties change.
     public func observeChange(listener: AnyObject, keyPaths: [String], callback: () -> Void) {
-        let listener = onPropertyChange.listen(listener) { (keyPath, value) -> Void in
+        let listener = onPropertyChange.listen(listener) { (keyPath, oldValue, value) -> Void in
             callback()
         }
-        listener.setFilter { (changedKeyPath, value) -> Bool in
+        listener.setFilter { (changedKeyPath, oldValue, value) -> Bool in
             return keyPaths.reduce(false, combine: { return $0 || $1 == changedKeyPath })
         }
     }

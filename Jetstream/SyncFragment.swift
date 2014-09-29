@@ -25,15 +25,15 @@ public class SyncFragment {
     let clsName: String?
     let parentUUID: NSUUID?
     let keyPath: String?
-    var properties: [String: AnyObject?]
+    var properties: [String: AnyObject]?
     
-    init(type: SyncFragmentType, objectUUID: NSUUID, clsName: String?, parentUUID: NSUUID?, keyPath: String?, properties: [String: AnyObject?]?) {
+    init(type: SyncFragmentType, objectUUID: NSUUID, clsName: String?, parentUUID: NSUUID?, keyPath: String?, properties: [String: AnyObject]?) {
         self.type = type
         self.objectUUID = objectUUID
         self.clsName = clsName
         self.keyPath = keyPath
         self.parentUUID = parentUUID
-        self.properties = properties != nil ? properties! : [String: AnyObject?]()
+        self.properties = properties
     }
     
     func serialize() -> [String: AnyObject] {
@@ -47,7 +47,7 @@ public class SyncFragment {
         var clsName: String?
         var parentUUID: NSUUID?
         var keyPath: String?
-        var properties: [String: AnyObject?]?
+        var properties: [String: AnyObject]?
 
         for (key, value) in dictionary {
             switch key {
@@ -97,13 +97,13 @@ public class SyncFragment {
         return SyncFragment(type: type!, objectUUID: objectUUID!, clsName: clsName, parentUUID: parentUUID, keyPath: keyPath, properties: properties)
     }
     
-    init(type:SyncFragmentType, modelObject: ModelObject) {
+    init(type: SyncFragmentType, modelObject: ModelObject) {
         self.type = type
         self.objectUUID = modelObject.uuid
-        self.properties = Dictionary<String, AnyObject>()
-        
+
         if (type == .Add) {
             self.clsName = NSStringFromClass(modelObject.dynamicType)
+            self.parentUUID = modelObject.parent?.parent.uuid
             self.keyPath = modelObject.parent?.keyPath
             applyPropertiesFromModelObject(modelObject)
         } else if (type == .MoveChange) {
@@ -112,20 +112,29 @@ public class SyncFragment {
     }
 
     func applyPropertiesToModelObject(modelObject: ModelObject) {
-        for (key, value) in properties {
-            modelObject.setValue(value, forKey: key)
+        if let definiteProperties = properties {
+            for (key, value) in definiteProperties {
+                modelObject.setValue(value, forKey: key)
+            }
         }
     }
     
     func newValueForKey(key: String, value:AnyObject?) {
-        properties[key] = value
+        if (properties == nil) {
+            properties = [String: AnyObject]()
+        }
+        properties![key] = value
     }
     
     func applyPropertiesFromModelObject(modelObject: ModelObject) {
         for (name, property) in modelObject.properties {
             if (!property.isArray) {
-                let value: AnyObject? = modelObject.valueForKey(property.key)
-                properties[name] = value
+                if let value: AnyObject = modelObject.valueForKey(property.key) {
+                    if (properties == nil) {
+                        properties = [String: AnyObject]()
+                    }
+                    properties![name] = value
+                }
             }
         }
     }

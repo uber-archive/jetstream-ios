@@ -16,7 +16,8 @@ public class Scope {
     
     public var name: String
     
-    var syncFragments = [NSUUID: SyncFragment]()
+    var syncFragmentLookup = [NSUUID: SyncFragment]()
+    var syncFragments = [SyncFragment]()
     var modelObjects = [ModelObject]()
     var modelHash = [NSUUID: ModelObject]()
     var timer: NSTimer?
@@ -30,21 +31,34 @@ public class Scope {
     func addModelObject(modelObject: ModelObject) {
         modelObjects.append(modelObject)
         modelHash[modelObject.uuid] = modelObject
-        var syncFragment = SyncFragment(type: .Add, modelObject: modelObject)
-        syncFragments[modelObject.uuid] = syncFragment
-        setChangeTimer()
         
-        modelObject.onPropertyChange.listen(self, callback: { [unowned self] (keyPath, value) -> Void in
-            let fragment = self.syncFragmentWithType(SyncFragmentType.Change, modelObject: modelObject)
-            fragment.newValueForKey(keyPath, value: value)
-            self.setChangeTimer()
+        modelObject.onPropertyChange.listen(self, callback: { [unowned self] (keyPath, oldValue, value) -> Void in
+            let oldModelObject = oldValue as? ModelObject
+            let newModelObject = value as? ModelObject
+            
+            if (oldModelObject == nil && newModelObject == nil) {
+                // Only create change fragments for changes that don't affect child Model Objects
+                let fragment = self.syncFragmentWithType(.Change, modelObject: modelObject)
+                fragment.newValueForKey(keyPath, value: value)
+                self.setChangeTimer()
+            }
         })
+        
+        if let definiteParent = modelObject.parent {
+            let fragment = self.syncFragmentWithType(.Add, modelObject: modelObject)
+            setChangeTimer()
+        }
     }
     
     func removeModelObject(modelObject: ModelObject) {
         modelObjects = modelObjects.filter { $0 != modelObject }
         modelHash.removeValueForKey(modelObject.uuid)
         modelObject.onPropertyChange.removeListener(self)
+        modelObject.onDetachedFromScope.removeListener(self)
+        
+        let fragment = self.syncFragmentWithType(.Remove, modelObject: modelObject)
+        self.setChangeTimer()
+        
         setChangeTimer()
     }
     
@@ -53,11 +67,12 @@ public class Scope {
     }
     
     func syncFragmentWithType(type: SyncFragmentType, modelObject: ModelObject) -> SyncFragment {
-        if let fragment = syncFragments[modelObject.uuid] {
+        if let fragment = syncFragmentLookup[modelObject.uuid] {
             return fragment
         }
         let fragment = SyncFragment(type: type, modelObject: modelObject)
-        syncFragments[modelObject.uuid] = fragment
+        syncFragments.append(fragment)
+        syncFragmentLookup[modelObject.uuid] = fragment
         return fragment
     }
     
@@ -78,8 +93,9 @@ public class Scope {
     // MARK: - Public API
     
     public func getAndClearSyncFragments() -> [SyncFragment] {
-        let fragments = syncFragments.values.array
+        let fragments = syncFragments
         syncFragments.removeAll(keepCapacity: false)
+        syncFragmentLookup.removeAll(keepCapacity: false)
         return fragments
     }
     

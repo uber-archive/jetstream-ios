@@ -17,7 +17,7 @@ class PropertyListenerTests: XCTestCase {
         var model = TestModel()
         var lastValue = ""
         
-        model.onPropertyChange.listen(self, callback: {(keyPath, value) in
+        model.onPropertyChange.listen(self, callback: {(keyPath, oldValue, value) in
             if keyPath == "string" {
                 lastValue = value as String
             }
