@@ -101,27 +101,26 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         client?.connect()
         client?.onSession.listenOnce(self) { [unowned self] (session) in
             self.session = session
-            self.onSession()
+            let scope = self.scope
+            session.fetch(scope) { [unowned self] (maybeError) in
+                if maybeError != nil {
+                    NSLog("Request scope error: %@", maybeError!)
+                } else {
+                    NSLog("Retrieved scope")
+                    self.removeLoader()
+                }
+            }
             NSLog("Got session with token: %@", session.token)
         }
     }
     
-    func onSession() {
-        session!.fetch(scope) { [unowned self] (maybeError) in
-            if maybeError != nil {
-                NSLog("Request scope error: %@", maybeError!)
-            } else {
-                NSLog("Retrieved scope")
-                self.removeLoader()
-            }
-        }
-    }
-    
     override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
         appearing = false
     }
     
     override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
         client?.onSession.removeListener(self)
         client?.close()
         client = nil
