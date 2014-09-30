@@ -29,23 +29,9 @@ class SessionCreateResponseMessage: Message {
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var maybeSuccess: Bool?
-        var maybeSessionToken: String?
+        var maybeSuccess: Bool? = dictionary.valueForKey("success")
+        var maybeSessionToken: String? = dictionary.valueForKey("sessionToken")
         var maybeResponse: AnyObject? = dictionary["response"]
-        
-        switch dictionary["success"] {
-        case let success as Bool:
-            maybeSuccess = success
-        default:
-            maybeSuccess = nil
-        }
-        
-        switch dictionary["sessionToken"] {
-        case let sessionToken as String:
-            maybeSessionToken = sessionToken
-        default:
-            maybeSessionToken = nil
-        }
         
         if maybeSuccess == nil || maybeSessionToken == nil {
             return nil

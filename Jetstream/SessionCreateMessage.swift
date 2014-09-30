@@ -42,22 +42,8 @@ class SessionCreateMessage: Message {
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var maybeParams: [String: String]?
-        var maybeVersion: String?
-        
-        switch dictionary["params"] {
-        case let params as [String: String]:
-            maybeParams = params
-        default:
-            maybeParams = nil
-        }
-        
-        switch dictionary["version"] {
-        case let version as String:
-            maybeVersion = version
-        default:
-            maybeVersion = nil
-        }
+        var maybeParams: [String: String]? = dictionary.valueForKey("params")
+        var maybeVersion: String? = dictionary.valueForKey("version")
         
         if maybeParams != nil && maybeVersion != nil {
             return SessionCreateMessage(params: maybeParams!, version: maybeVersion!)

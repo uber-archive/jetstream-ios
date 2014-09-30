@@ -124,7 +124,7 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
                         self.logger.debug("sent (mid=\(mid)): \(str)")
                     }
                 default:
-                    return
+                    break
                 }
                 
                 onMessage.fire(message!)
