@@ -9,6 +9,7 @@
 import Foundation
 
 extension Dictionary {
+    
     func valueForKey<T>(key: Key) -> T? {
         if let value = self[key] as? T {
             return value
@@ -16,4 +17,5 @@ extension Dictionary {
             return nil
         }
     }
+    
 }

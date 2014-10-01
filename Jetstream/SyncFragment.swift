@@ -27,11 +27,11 @@ public class SyncFragment: Equatable {
     let type: SyncFragmentType
     let objectUUID: NSUUID
     let clsName: String?
-    let parentUUID: NSUUID?
     let keyPath: String?
+    let parentUUID: NSUUID?
     var properties: [String: AnyObject]?
     
-    init(type: SyncFragmentType, objectUUID: NSUUID, clsName: String?, parentUUID: NSUUID?, keyPath: String?, properties: [String: AnyObject]?) {
+    init(type: SyncFragmentType, objectUUID: NSUUID, clsName: String?, keyPath: String?, parentUUID: NSUUID?, properties: [String: AnyObject]?) {
         self.type = type
         self.objectUUID = objectUUID
         self.clsName = clsName
@@ -41,7 +41,21 @@ public class SyncFragment: Equatable {
     }
     
     func serialize() -> [String: AnyObject] {
-        let dictionary = [String: AnyObject]()
+        var dictionary = [String: AnyObject]()
+        dictionary["type"] = type.toRaw()
+        dictionary["uuid"] = objectUUID.UUIDString;
+        if clsName != nil {
+            dictionary["cls"] = clsName
+        }
+        if keyPath != nil {
+            dictionary["keyPath"] = keyPath
+        }
+        if parentUUID != nil {
+            dictionary["parent"] = parentUUID?.UUIDString;
+        }
+        if properties != nil {
+            dictionary["properties"] = properties
+        }
         return dictionary
     }
     
@@ -65,10 +79,6 @@ public class SyncFragment: Equatable {
                 if let valueAsString = value as? String {
                     objectUUID = NSUUID(UUIDString: valueAsString)
                 }
-            case "properties":
-                if let propertyDictionary = value as? Dictionary<String, AnyObject> {
-                    properties = propertyDictionary
-                }
             case "cls":
                 if let valueAsString = value as? String {
                     clsName = valueAsString
@@ -80,6 +90,10 @@ public class SyncFragment: Equatable {
             case "parent":
                 if let valueAsString = value as? String {
                     parentUUID = NSUUID(UUIDString: valueAsString)
+                }
+            case "properties":
+                if let propertyDictionary = value as? Dictionary<String, AnyObject> {
+                    properties = propertyDictionary
                 }
             default:
                 // TODO: Log error
@@ -98,7 +112,7 @@ public class SyncFragment: Equatable {
             return nil
         }
 
-        return SyncFragment(type: type!, objectUUID: objectUUID!, clsName: clsName, parentUUID: parentUUID, keyPath: keyPath, properties: properties)
+        return SyncFragment(type: type!, objectUUID: objectUUID!, clsName: clsName, keyPath: keyPath, parentUUID: parentUUID, properties: properties)
     }
     
     init(type: SyncFragmentType, modelObject: ModelObject) {
