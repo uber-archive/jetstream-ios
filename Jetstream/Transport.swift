@@ -101,5 +101,4 @@ class Transport {
         adapter.sendMessage(message)
         waitingReply[message.index] = withCallback
     }
-    
 }

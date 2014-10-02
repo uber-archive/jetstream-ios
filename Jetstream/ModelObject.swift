@@ -55,7 +55,7 @@ struct PropertyInfo {
         return [String :[String]]()
     }
     
-    public let uuid: NSUUID;
+    public internal(set) var uuid: NSUUID;
     var properties = Dictionary<String, PropertyInfo>()
     
     private var internalIsScopeRoot = false;

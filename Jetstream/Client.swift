@@ -113,7 +113,20 @@ public class Client {
             }
         case let scopeSyncMessage as ScopeSyncMessage:
             if let scope = scopes[scopeSyncMessage.scopeIndex] {
-                scope.applySyncFragments(scopeSyncMessage.syncFragments)
+                if let rootModel = scope.rootModel {
+                    if scopeSyncMessage.syncFragments.count > 0 {
+                        if scopeSyncMessage.fullState {
+                            var syncFragments = scopeSyncMessage.syncFragments
+                            let stateMessage = syncFragments.removeAtIndex(0)
+                            stateMessage.applyAddToRootModelInScope(scope)
+                            scope.applySyncFragments(syncFragments)
+                        } else {
+                            scope.applySyncFragments(scopeSyncMessage.syncFragments)
+                        }
+                    } else {
+                        logger.error("Received sync message without fragments")
+                    }
+                }
             }
         default:
             logger.debug("Unrecognized message received")

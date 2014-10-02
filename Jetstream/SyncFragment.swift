@@ -158,7 +158,7 @@ public class SyncFragment: Equatable {
     }
     
     func applyChangesToScope(scope: Scope) {
-        if (scope.modelObjects.count == 0) {
+        if (scope.rootModel == nil) {
             return
         }
         
@@ -204,5 +204,14 @@ public class SyncFragment: Equatable {
                 }
             }
         }
+    }
+    
+    func applyAddToRootModelInScope(scope: Scope) {
+        if (scope.rootModel == nil || type != .Add) {
+            return
+        }
+        
+        applyPropertiesToModelObject(scope.rootModel!)
+        scope.updateUUIDForModel(scope.rootModel!, uuid: self.objectUUID)
     }
 }

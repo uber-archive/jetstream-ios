@@ -16,6 +16,14 @@ public class Scope {
     
     public var name: String
     
+    /// The root model associates with the scope
+    public var rootModel: ModelObject? {
+        if modelObjects.count > 0 {
+            return modelObjects[0]
+        }
+        return nil
+    }
+    
     var syncFragmentLookup = [NSUUID: SyncFragment]()
     var syncFragments = [SyncFragment]()
     var modelObjects = [ModelObject]()
@@ -82,6 +90,14 @@ public class Scope {
             return fragment
         }
         return addFragment(SyncFragment(type: type, modelObject: modelObject))
+    }
+    
+    func updateUUIDForModel(modelObject: ModelObject, uuid: NSUUID) {
+        if modelHash[modelObject.uuid] != nil {
+            modelHash.removeValueForKey(modelObject.uuid)
+            modelHash[uuid] = modelObject
+            modelObject.uuid = uuid
+        }
     }
     
     private func addFragment(fragment: SyncFragment) -> SyncFragment {

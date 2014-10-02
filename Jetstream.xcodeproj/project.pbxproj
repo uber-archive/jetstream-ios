@@ -106,6 +106,16 @@
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		7296633419DDFADD00F68441 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7291630C19CB5FE500320F15 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7291631419CB5FE500320F15;
+			remoteInfo = Jetstream;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		11181CEA19D5079300B0BA59 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		112EEB4019D5D2F500114268 /* SessionCreateResponseMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCreateResponseMessage.swift; sourceTree = "<group>"; };
@@ -472,6 +482,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				7296633519DDFADD00F68441 /* PBXTargetDependency */,
 			);
 			name = JetstreamTests;
 			productName = JetstreamTests;
@@ -624,6 +635,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7296633519DDFADD00F68441 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7291631419CB5FE500320F15 /* Jetstream */;
+			targetProxy = 7296633419DDFADD00F68441 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		7291632619CB5FE500320F15 /* Debug */ = {
