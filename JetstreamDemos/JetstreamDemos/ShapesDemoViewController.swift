@@ -12,8 +12,8 @@ import Jetstream
 
 class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
     
-    var shapesDemo = ShapesDemo()
     var scope = Scope(name: "ShapesDemo")
+    var shapesDemo = ShapesDemo()
     
     var headers = [String:String]()
     var client: Client?
@@ -28,7 +28,6 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         self.view.addGestureRecognizer(tapRecognizer)
         
         shapesDemo.setScopeAndMakeRootModel(scope)
-        
         shapesDemo.observeCollectionAdd(self, keyPath: "shapes") { (element: Shape) in
             let shapeView = ShapeView(shape: element)
             self.view.addSubview(shapeView)

@@ -33,6 +33,28 @@ struct PropertyInfo {
     public let onAttachToScope = Signal<(scope: Scope, parent: ModelObject, keyPath: String)>()
     public let onMovedBetweenScopes = Signal<(parent: ModelObject, keyPath: String)>()
     
+    private struct Static {
+        static var compositeDependencies = [String: [String: [String]]]()
+    }
+
+    override public class func initialize() {
+        var keyToDependencies = [String: [String]]()
+        for (prop, dependencies) in getCompositeDependencies() {
+            for dependency in dependencies {
+                if var definiteDependecy = keyToDependencies[dependency] {
+                    definiteDependecy.append(prop)
+                } else {
+                    keyToDependencies[dependency] = [prop]
+                }
+            }
+        }
+        Static.compositeDependencies[NSStringFromClass(self)] = keyToDependencies
+    }
+    
+    public class func getCompositeDependencies() -> [String: [String]] {
+        return [String :[String]]()
+    }
+    
     public let uuid: NSUUID;
     var properties = Dictionary<String, PropertyInfo>()
     
@@ -57,16 +79,15 @@ struct PropertyInfo {
         }
     }
     
-    var _scope: Scope?
+    private var internalScope: Scope?
     var scope: Scope? {
         get {
-            return _scope
+            return internalScope
         }
-        
         set(value) {
-            if (_scope !== value) {
-                let oldScope = _scope
-                _scope = value
+            if (internalScope !== value) {
+                let oldScope = internalScope
+                internalScope = value
                 
                 if (oldScope != nil) {
                     oldScope!.removeModelObject(self)
@@ -180,7 +201,7 @@ struct PropertyInfo {
         }
     }
 
-    private func setupPropertyListeners() {
+    func setupPropertyListeners() {
         let mirror = reflect(self)
         for i in 0...mirror.count - 1 {
             var (name, type) = mirror[i]
@@ -195,7 +216,14 @@ struct PropertyInfo {
         }
     }
     
-    private func keyPathChanged(keyPath: String, oldValue: AnyObject?, newValue: AnyObject?) {
+    func dependenciesForKey(key: String) -> [String]? {
+        if let definiteKeyToDependencies = Static.compositeDependencies[NSStringFromClass(self.dynamicType)] {
+            return definiteKeyToDependencies[key]
+        }
+        return nil
+    }
+    
+    func keyPathChanged(keyPath: String, oldValue: AnyObject?, newValue: AnyObject?) {
         let newArray = newValue as? [ModelObject]
         let oldArray = oldValue as? [ModelObject]
         
@@ -223,6 +251,11 @@ struct PropertyInfo {
             if let modelObject = newValue as? ModelObject {
                 modelObject.parent = ParentRelationship(parent: self, keyPath: keyPath)
                 modelObject.scope = scope
+            }
+        }
+        if let dependencies = dependenciesForKey(keyPath) {
+            for dependency in dependencies {
+                onPropertyChange.fire(keyPath: dependency, oldValue: nil, value: nil)
             }
         }
     }
@@ -352,5 +385,9 @@ struct PropertyInfo {
     /// Removes the ModelObject from its scope.
     public func detach() {
         parent = nil
+    }
+    
+    public func setupCompositeProperty(property: String, dependedProperties: [String]) {
+        
     }
 }

@@ -76,6 +76,7 @@
 		7202D16719D63AED004E9A47 /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
 		7202D16819D63AF1004E9A47 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6D19D47B5A00D31133 /* Signal.swift */; };
 		7202D16B19D63BC6004E9A47 /* Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7202D16A19D63BC6004E9A47 /* Serializer.swift */; };
+		722231A319DC9DB900D99795 /* DependcyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722231A219DC9DB900D99795 /* DependcyTests.swift */; };
 		7233FE2F19D4C9AE004B680C /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
 		727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
@@ -143,6 +144,7 @@
 		11EEC45E19D3396300DCD737 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		7202D09E19D62E70004E9A47 /* MessageSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageSerialization.swift; sourceTree = "<group>"; };
 		7202D16A19D63BC6004E9A47 /* Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializer.swift; sourceTree = "<group>"; };
+		722231A219DC9DB900D99795 /* DependcyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependcyTests.swift; sourceTree = "<group>"; };
 		7233FE2E19D4C9AE004B680C /* Scope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scope.swift; sourceTree = "<group>"; };
 		727EAA4219D4CD2100B7990A /* SyncFragment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragment.swift; sourceTree = "<group>"; };
 		727EAA4B19D4DF8800B7990A /* ScopeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeTests.swift; sourceTree = "<group>"; };
@@ -358,6 +360,7 @@
 		7291632119CB5FE500320F15 /* JetstreamTests */ = {
 			isa = PBXGroup;
 			children = (
+				722231A219DC9DB900D99795 /* DependcyTests.swift */,
 				7202D09E19D62E70004E9A47 /* MessageSerialization.swift */,
 				7291632419CB5FE500320F15 /* PropertyListenerTests.swift */,
 				727EAA4B19D4DF8800B7990A /* ScopeTests.swift */,
@@ -568,6 +571,7 @@
 				7202D16519D63AED004E9A47 /* ModelObject.swift in Sources */,
 				7202D16719D63AED004E9A47 /* SyncFragment.swift in Sources */,
 				7202D16219D63ACF004E9A47 /* SyncFragmentTests.swift in Sources */,
+				722231A319DC9DB900D99795 /* DependcyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

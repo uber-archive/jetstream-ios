@@ -1,5 +1,5 @@
 //
-//  Shape.swift
+//  ShapeView.swift
 //  JetstreamDemos
 //
 //  Created by Tuomas Artman on 9/26/14.
