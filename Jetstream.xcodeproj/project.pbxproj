@@ -45,7 +45,6 @@
 		114F4A5E19D36444003ACAC5 /* DNS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5719D36444003ACAC5 /* DNS.swift */; };
 		114F4A5F19D36444003ACAC5 /* PassiveSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5819D36444003ACAC5 /* PassiveSocket.swift */; };
 		114F4A6019D36444003ACAC5 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5919D36444003ACAC5 /* Socket.swift */; };
-		114F4A6119D36444003ACAC5 /* SocketAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5A19D36444003ACAC5 /* SocketAddress.swift */; };
 		114F4A6219D36444003ACAC5 /* UnixBridge.c in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5B19D36444003ACAC5 /* UnixBridge.c */; };
 		114F4A6319D36444003ACAC5 /* UnixUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5C19D36444003ACAC5 /* UnixUtils.swift */; };
 		118B0B6219D479AD00D31133 /* SwellAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6119D479AD00D31133 /* SwellAll.swift */; };
@@ -57,6 +56,31 @@
 		118B0B7119D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B7019D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift */; };
 		11A71EB519DB6ECD00B124B3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71EB419DB6ECD00B124B3 /* Extensions.swift */; };
 		11A71EB719DCAE9C00B124B3 /* ReplyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71EB619DCAE9C00B124B3 /* ReplyMessage.swift */; };
+		11A71EB819DDFAD500B124B3 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44E19D31F0300DCD737 /* Client.swift */; };
+		11A71EB919DDFADF00B124B3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71EB419DB6ECD00B124B3 /* Extensions.swift */; };
+		11A71EBA19DDFADF00B124B3 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11181CEA19D5079300B0BA59 /* Functions.swift */; };
+		11A71EBB19DDFADF00B124B3 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC45E19D3396300DCD737 /* Logging.swift */; };
+		11A71EBC19DDFADF00B124B3 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44019D319DC00DCD737 /* Session.swift */; };
+		11A71EBD19DDFAF400B124B3 /* MQTTLongPollChunkedConnectionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B7019D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift */; };
+		11A71EBE19DDFAF400B124B3 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */; };
+		11A71EBF19DDFAF400B124B3 /* PollTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6319D479BC00D31133 /* PollTransportAdapter.swift */; };
+		11A71EC019DDFAF400B124B3 /* ConnectionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC45019D321A700DCD737 /* ConnectionOptions.swift */; };
+		11A71EC119DDFAF400B124B3 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44219D31A3800DCD737 /* Transport.swift */; };
+		11A71EC219DDFAFE00B124B3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44A19D31CA700DCD737 /* Message.swift */; };
+		11A71EC319DDFAFE00B124B3 /* ReplyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71EB619DCAE9C00B124B3 /* ReplyMessage.swift */; };
+		11A71EC419DDFAFE00B124B3 /* SessionCreateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44C19D31CE600DCD737 /* SessionCreateMessage.swift */; };
+		11A71EC519DDFAFE00B124B3 /* SessionCreateResponseMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112EEB4019D5D2F500114268 /* SessionCreateResponseMessage.swift */; };
+		11A71EC619DDFAFE00B124B3 /* ScopeFetchMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112EEB4419D5E1C900114268 /* ScopeFetchMessage.swift */; };
+		11A71EC719DDFAFE00B124B3 /* ScopeSyncMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112EEB4219D5E18300114268 /* ScopeSyncMessage.swift */; };
+		11A71EC819DDFB0B00B124B3 /* ActiveSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5619D36444003ACAC5 /* ActiveSocket.swift */; };
+		11A71EC919DDFB0B00B124B3 /* DNS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5719D36444003ACAC5 /* DNS.swift */; };
+		11A71ECA19DDFB0B00B124B3 /* PassiveSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5819D36444003ACAC5 /* PassiveSocket.swift */; };
+		11A71ECB19DDFB0B00B124B3 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5919D36444003ACAC5 /* Socket.swift */; };
+		11A71ECD19DDFB0B00B124B3 /* UnixUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114F4A5C19D36444003ACAC5 /* UnixUtils.swift */; };
+		11A71ECE19DDFB1000B124B3 /* MQTTKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6919D47AD900D31133 /* MQTTKit.m */; };
+		11A71ECF19DDFB1900B124B3 /* SwellAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6119D479AD00D31133 /* SwellAll.swift */; };
+		11A71ED119DDFC9500B124B3 /* SocketAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71ED019DDFC9500B124B3 /* SocketAddress.swift */; };
+		11A71ED219DDFC9500B124B3 /* SocketAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71ED019DDFC9500B124B3 /* SocketAddress.swift */; };
 		11EEC44119D319DC00DCD737 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44019D319DC00DCD737 /* Session.swift */; };
 		11EEC44319D31A3800DCD737 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44219D31A3800DCD737 /* Transport.swift */; };
 		11EEC44619D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */; };
@@ -76,7 +100,6 @@
 		7202D16619D63AED004E9A47 /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
 		7202D16719D63AED004E9A47 /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
 		7202D16819D63AF1004E9A47 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6D19D47B5A00D31133 /* Signal.swift */; };
-		7202D16B19D63BC6004E9A47 /* Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7202D16A19D63BC6004E9A47 /* Serializer.swift */; };
 		722231A319DC9DB900D99795 /* DependcyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722231A219DC9DB900D99795 /* DependcyTests.swift */; };
 		7233FE2F19D4C9AE004B680C /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
 		727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
@@ -122,7 +145,6 @@
 		114F4A5719D36444003ACAC5 /* DNS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DNS.swift; path = SwiftSockets/ARISockets/DNS.swift; sourceTree = "<group>"; };
 		114F4A5819D36444003ACAC5 /* PassiveSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PassiveSocket.swift; path = SwiftSockets/ARISockets/PassiveSocket.swift; sourceTree = "<group>"; };
 		114F4A5919D36444003ACAC5 /* Socket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Socket.swift; path = SwiftSockets/ARISockets/Socket.swift; sourceTree = "<group>"; };
-		114F4A5A19D36444003ACAC5 /* SocketAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketAddress.swift; path = SwiftSockets/ARISockets/SocketAddress.swift; sourceTree = "<group>"; };
 		114F4A5B19D36444003ACAC5 /* UnixBridge.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = UnixBridge.c; path = SwiftSockets/ARISockets/UnixBridge.c; sourceTree = "<group>"; };
 		114F4A5C19D36444003ACAC5 /* UnixUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UnixUtils.swift; path = SwiftSockets/ARISockets/UnixUtils.swift; sourceTree = "<group>"; };
 		118B0B6119D479AD00D31133 /* SwellAll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwellAll.swift; path = SwellBuild/SwellAll.swift; sourceTree = "<group>"; };
@@ -134,6 +156,7 @@
 		118B0B7019D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MQTTLongPollChunkedConnectionOptions.swift; sourceTree = "<group>"; };
 		11A71EB419DB6ECD00B124B3 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		11A71EB619DCAE9C00B124B3 /* ReplyMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyMessage.swift; sourceTree = "<group>"; };
+		11A71ED019DDFC9500B124B3 /* SocketAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketAddress.swift; path = SwiftSocketsBuild/SocketAddress.swift; sourceTree = "<group>"; };
 		11EEC44019D319DC00DCD737 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		11EEC44219D31A3800DCD737 /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
 		11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MQTTLongPollChunkedTransportAdapter.swift; sourceTree = "<group>"; };
@@ -145,7 +168,6 @@
 		11EEC45A19D32B2200DCD737 /* Jetstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Jetstream.h; sourceTree = "<group>"; };
 		11EEC45E19D3396300DCD737 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		7202D09E19D62E70004E9A47 /* MessageSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageSerialization.swift; sourceTree = "<group>"; };
-		7202D16A19D63BC6004E9A47 /* Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializer.swift; sourceTree = "<group>"; };
 		722231A219DC9DB900D99795 /* DependcyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependcyTests.swift; sourceTree = "<group>"; };
 		7233FE2E19D4C9AE004B680C /* Scope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scope.swift; sourceTree = "<group>"; };
 		727EAA4219D4CD2100B7990A /* SyncFragment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragment.swift; sourceTree = "<group>"; };
@@ -245,7 +267,7 @@
 				114F4A5719D36444003ACAC5 /* DNS.swift */,
 				114F4A5819D36444003ACAC5 /* PassiveSocket.swift */,
 				114F4A5919D36444003ACAC5 /* Socket.swift */,
-				114F4A5A19D36444003ACAC5 /* SocketAddress.swift */,
+				11A71ED019DDFC9500B124B3 /* SocketAddress.swift */,
 				114F4A5B19D36444003ACAC5 /* UnixBridge.c */,
 				114F4A5C19D36444003ACAC5 /* UnixUtils.swift */,
 			);
@@ -284,7 +306,6 @@
 				118B0B6F19D47D7900D31133 /* Adapters */,
 				11EEC45019D321A700DCD737 /* ConnectionOptions.swift */,
 				11EEC44219D31A3800DCD737 /* Transport.swift */,
-				7202D16A19D63BC6004E9A47 /* Serializer.swift */,
 			);
 			name = Transport;
 			sourceTree = "<group>";
@@ -519,7 +540,6 @@
 				114F4A4019D35D60003ACAC5 /* net_mosq.c in Sources */,
 				11EEC45119D321A700DCD737 /* ConnectionOptions.swift in Sources */,
 				7291632F19CB880200320F15 /* ModelObject.swift in Sources */,
-				7202D16B19D63BC6004E9A47 /* Serializer.swift in Sources */,
 				114F4A5D19D36444003ACAC5 /* ActiveSocket.swift in Sources */,
 				11EEC44D19D31CE600DCD737 /* SessionCreateMessage.swift in Sources */,
 				11EEC44119D319DC00DCD737 /* Session.swift in Sources */,
@@ -532,11 +552,11 @@
 				114F4A4A19D35D60003ACAC5 /* time_mosq.c in Sources */,
 				114F4A4719D35D60003ACAC5 /* send_mosq.c in Sources */,
 				11EEC44619D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */,
+				11A71ED119DDFC9500B124B3 /* SocketAddress.swift in Sources */,
 				118B0B6419D479BC00D31133 /* PollTransportAdapter.swift in Sources */,
 				727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */,
 				7233FE2F19D4C9AE004B680C /* Scope.swift in Sources */,
 				114F4A6019D36444003ACAC5 /* Socket.swift in Sources */,
-				114F4A6119D36444003ACAC5 /* SocketAddress.swift in Sources */,
 				114F4A4419D35D60003ACAC5 /* read_handle_client.c in Sources */,
 				11181CEB19D5079300B0BA59 /* Functions.swift in Sources */,
 				11EEC45F19D3396300DCD737 /* Logging.swift in Sources */,
@@ -566,16 +586,40 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11A71EBD19DDFAF400B124B3 /* MQTTLongPollChunkedConnectionOptions.swift in Sources */,
+				11A71ECE19DDFB1000B124B3 /* MQTTKit.m in Sources */,
 				7202D16319D63ACF004E9A47 /* TreeChangeTests.swift in Sources */,
+				11A71ECB19DDFB0B00B124B3 /* Socket.swift in Sources */,
 				7202D16619D63AED004E9A47 /* Scope.swift in Sources */,
 				7202D16119D63ACF004E9A47 /* ScopeTests.swift in Sources */,
+				11A71EC319DDFAFE00B124B3 /* ReplyMessage.swift in Sources */,
+				11A71EC519DDFAFE00B124B3 /* SessionCreateResponseMessage.swift in Sources */,
+				11A71ECF19DDFB1900B124B3 /* SwellAll.swift in Sources */,
+				11A71EBB19DDFADF00B124B3 /* Logging.swift in Sources */,
 				7202D16019D63ACF004E9A47 /* PropertyListenerTests.swift in Sources */,
+				11A71EC419DDFAFE00B124B3 /* SessionCreateMessage.swift in Sources */,
+				11A71EC919DDFB0B00B124B3 /* DNS.swift in Sources */,
+				11A71ED219DDFC9500B124B3 /* SocketAddress.swift in Sources */,
+				11A71EC619DDFAFE00B124B3 /* ScopeFetchMessage.swift in Sources */,
+				11A71EC219DDFAFE00B124B3 /* Message.swift in Sources */,
+				11A71EBC19DDFADF00B124B3 /* Session.swift in Sources */,
+				11A71EC119DDFAF400B124B3 /* Transport.swift in Sources */,
+				11A71EB819DDFAD500B124B3 /* Client.swift in Sources */,
+				11A71ECA19DDFB0B00B124B3 /* PassiveSocket.swift in Sources */,
+				11A71EBA19DDFADF00B124B3 /* Functions.swift in Sources */,
 				7202D16819D63AF1004E9A47 /* Signal.swift in Sources */,
 				7202D16419D63ACF004E9A47 /* TestModel.swift in Sources */,
+				11A71EB919DDFADF00B124B3 /* Extensions.swift in Sources */,
 				7202D16519D63AED004E9A47 /* ModelObject.swift in Sources */,
 				7202D16719D63AED004E9A47 /* SyncFragment.swift in Sources */,
 				7202D16219D63ACF004E9A47 /* SyncFragmentTests.swift in Sources */,
+				11A71EC819DDFB0B00B124B3 /* ActiveSocket.swift in Sources */,
+				11A71EBE19DDFAF400B124B3 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */,
+				11A71EC019DDFAF400B124B3 /* ConnectionOptions.swift in Sources */,
+				11A71EBF19DDFAF400B124B3 /* PollTransportAdapter.swift in Sources */,
 				722231A319DC9DB900D99795 /* DependcyTests.swift in Sources */,
+				11A71EC719DDFAFE00B124B3 /* ScopeSyncMessage.swift in Sources */,
+				11A71ECD19DDFB0B00B124B3 /* UnixUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -732,10 +776,14 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
 				INFOPLIST_FILE = JetstreamTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Jetstream/Jetstream.h";
 			};
 			name = Debug;
 		};
@@ -746,10 +794,14 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
 				INFOPLIST_FILE = JetstreamTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Jetstream/Jetstream.h";
 			};
 			name = Release;
 		};
