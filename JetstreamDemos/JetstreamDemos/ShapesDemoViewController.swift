@@ -74,8 +74,9 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
     }
     
     func removeLoader() {
-        if loader != nil {
-            loader?.removeFromSuperview()
+        if let view: UIView = loader {
+            view.hidden = true
+            view.removeFromSuperview()
             loader = nil
         }
     }

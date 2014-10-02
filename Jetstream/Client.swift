@@ -9,6 +9,7 @@
 import Foundation
 
 let clientVersion = "0.1.0"
+let defaultErrorDomain = "com.uber.jetstream"
 
 public enum ClientStatus {
     case Offline
@@ -42,6 +43,7 @@ public class Client {
     }
     
     let transport: Transport
+    var scopes = [UInt: Scope]()
     
     /// MARK: Public interface
     
@@ -62,7 +64,7 @@ public class Client {
     }
     
     public func close() {
-        // Close up any resources
+        // TODO: close up any resources
     }
     
     /// MARK: Private interface
@@ -109,6 +111,10 @@ public class Client {
                 logger.info("Starting session with token: \(token)")
                 session = Session(client: self, token: token)
             }
+        case let scopeSyncMessage as ScopeSyncMessage:
+            if let scope = scopes[scopeSyncMessage.scopeIndex] {
+                scope.applySyncFragments(scopeSyncMessage.syncFragments)
+            }
         default:
             logger.debug("Unrecognized message received")
         }
@@ -123,7 +129,57 @@ public class Client {
     }
     
     func fetchScope(scope: Scope, callback: (NSError?) -> Void) {
-        transport.sendMessage(ScopeFetchMessage(session: session!, name: scope.name))
+        transport.sendMessage(ScopeFetchMessage(session: session!, name: scope.name)) {
+            [unowned self] (response) in
+            
+            var maybeResult: Bool? = response.valueForKey("result")
+            var maybeScopeIndex: UInt? = response.valueForKey("scopeIndex")
+            
+            if maybeResult != nil && maybeScopeIndex != nil && maybeResult! == true {
+                self.scopeAttached(scope, atIndex: maybeScopeIndex!)
+                callback(nil)
+            } else {
+                var errorCode = 0
+
+                var maybeError: [String: AnyObject]? = response.valueForKey("error")
+                var maybeErrorMessage: String? = maybeError?.valueForKey("message")
+                var maybeErrorCode: Int? = maybeError?.valueForKey("code")
+                
+                if maybeErrorCode != nil {
+                    errorCode = maybeErrorCode!
+                }
+
+                var userInfo = [NSLocalizedDescriptionKey: "Fetch request failed"]
+                
+                if maybeErrorMessage != nil {
+                    userInfo[NSLocalizedFailureReasonErrorKey] = maybeErrorMessage!
+                }
+                
+                callback(NSError(
+                    domain: defaultErrorDomain,
+                    code: errorCode,
+                    userInfo: userInfo))
+            }
+        }
+    }
+    
+    private func scopeAttached(scope: Scope, atIndex: UInt) {
+        scopes[atIndex] = scope
+        scope.onChanges.listen(self) {
+            [unowned self] (syncFragments) in
+            self.scopeChanges(scope, atIndex: atIndex, syncFragments: syncFragments)
+        }
+    }
+    
+    private func scopeChanges(scope: Scope, atIndex: UInt, syncFragments: [SyncFragment]) {
+        if session == nil {
+            return
+        }
+        
+        transport.sendMessage(ScopeSyncMessage(
+            session: session!,
+            scopeIndex: atIndex,
+            syncFragments: syncFragments))
     }
 
 }

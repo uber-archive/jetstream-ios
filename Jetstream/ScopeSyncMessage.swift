@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ScopeSyncMessage: Message {
+class ScopeSyncMessage: IndexedMessage {
     
     class var messageType: String {
         get { return "ScopeSync" }
@@ -18,32 +18,55 @@ class ScopeSyncMessage: Message {
         get { return ScopeSyncMessage.messageType }
     }
     
-    var syncFragments: [SyncFragment]
+    let scopeIndex: UInt
+    let syncFragments: [SyncFragment]
     let fullState: Bool
+
+    convenience init(session: Session, scopeIndex: UInt, syncFragments: [SyncFragment]) {
+        self.init(index: session.getIndexForMessage(), scopeIndex: scopeIndex, syncFragments: syncFragments, fullState: false)
+    }
     
-    init(syncFragments: [SyncFragment], fullState: Bool) {
+    convenience init(session: Session, scopeIndex: UInt, syncFragments: [SyncFragment], fullState: Bool) {
+        self.init(index: session.getIndexForMessage(), scopeIndex: scopeIndex, syncFragments: syncFragments, fullState: fullState)
+    }
+    
+    init(index: UInt, scopeIndex: UInt, syncFragments: [SyncFragment], fullState: Bool) {
+        self.scopeIndex = scopeIndex
         self.syncFragments = syncFragments
         self.fullState = fullState
-        super.init()
+        super.init(index: index)
     }
     
     override func serialize() -> [String: AnyObject] {
         var dictionary = super.serialize()
         
-        dictionary["fragments"] = syncFragments.map({ (syncFragment) -> [String: AnyObject] in
+        dictionary["scopeIndex"] = scopeIndex
+        dictionary["fragments"] = syncFragments.map {
+            (syncFragment) -> [String: AnyObject] in
+            
             return syncFragment.serialize()
-        })
+        }
         dictionary["fullState"] = fullState
         
         return dictionary
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
+        var index: UInt?
+        var scopeIndex: UInt?
         var syncFragments: [SyncFragment]?
         var fullState = false
         
         for (key, value) in dictionary {
             switch key {
+            case "index":
+                if let definiteIndex = value as? UInt {
+                    index = definiteIndex
+                }
+            case "scopeIndex":
+                if let definiteScopeIndex = value as? UInt {
+                    scopeIndex = definiteScopeIndex
+                }
             case "fragments":
                 if let fragments = value as? [[String: AnyObject]] {
                     syncFragments = [SyncFragment]()
@@ -58,15 +81,18 @@ class ScopeSyncMessage: Message {
                     fullState = boolValue
                 }
             default:
-                // TODO: Log error
-                println("Unknown object")
+                break
             }
         }
         
-        if (syncFragments == nil) {
+        if index == nil || scopeIndex == nil || syncFragments == nil {
             return nil
         } else {
-            return ScopeSyncMessage(syncFragments: syncFragments!, fullState: fullState)
+            return ScopeSyncMessage(
+                index: index!,
+                scopeIndex: scopeIndex!,
+                syncFragments: syncFragments!,
+                fullState: fullState)
         }
     }
 }

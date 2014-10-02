@@ -61,6 +61,10 @@ public class Scope {
         syncFragment.applyChangesToScope(self)
     }
     
+    func applySyncFragments(syncFragments: [SyncFragment]) {
+        syncFragments.map { self.applySyncFragment($0) }
+    }
+    
     func syncFragmentWithType(type: SyncFragmentType, modelObject: ModelObject) -> SyncFragment? {
         if let fragment = syncFragmentLookup[modelObject.uuid] {
             if (type == SyncFragmentType.Remove && fragment.type == SyncFragmentType.Add) {
@@ -74,7 +78,7 @@ public class Scope {
             }
             // TODO: Support movechange
             
-            self.setChangeTimer()
+            setChangeTimer()
             return fragment
         }
         return addFragment(SyncFragment(type: type, modelObject: modelObject))

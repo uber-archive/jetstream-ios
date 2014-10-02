@@ -30,6 +30,8 @@ protocol TransportAdapter {
 
 class Transport {
     
+    typealias ReplyCallback = ([String: AnyObject]) -> Void
+    
     class func defaultTransportAdapter(options: ConnectionOptions) -> TransportAdapter {
         return PollTransportAdapter(options: options)
     }
@@ -46,20 +48,44 @@ class Transport {
     }
     
     let adapter: TransportAdapter
+    var waitingReply = [UInt: ReplyCallback]()
     
     init(adapter: TransportAdapter) {
         self.adapter = adapter
-        self.onStatusChanged = adapter.onStatusChanged
-        self.onMessage = adapter.onMessage
+        onStatusChanged = adapter.onStatusChanged
+        onMessage = adapter.onMessage
+        bindListeners()
+    }
+    
+    private func bindListeners() {
         onStatusChanged.listen(self) { [unowned self] (status) in
-            switch (status) {
-            case .Closed:
-                self.logger.info("Closed")
-            case .Connecting:
-                self.logger.info("Connecting using \(adapter.adapterName) to \(adapter.options.url)")
-            case .Connected:
-                self.logger.info("Connected")
+            self.statusChanged(status)
+        }
+        onMessage.listen(self) { [unowned self] (message) in
+            self.messageReceived(message)
+        }
+    }
+    
+    private func statusChanged(status: TransportStatus) {
+        switch status {
+        case .Closed:
+            self.logger.info("Closed")
+        case .Connecting:
+            self.logger.info("Connecting using \(self.adapter.adapterName) to \(self.adapter.options.url)")
+        case .Connected:
+            self.logger.info("Connected")
+        }
+    }
+    
+    private func messageReceived(message: Message) {
+        switch message {
+        case let replyMessage as ReplyMessage:
+            if let callback = waitingReply[replyMessage.replyTo] {
+                callback(replyMessage.response)
+                waitingReply.removeValueForKey(replyMessage.replyTo)
             }
+        default:
+            break
         }
     }
     
@@ -69,6 +95,11 @@ class Transport {
     
     func sendMessage(message: Message) {
         adapter.sendMessage(message)
+    }
+    
+    func sendMessage(message: IndexedMessage, withCallback: ReplyCallback) {
+        adapter.sendMessage(message)
+        waitingReply[message.index] = withCallback
     }
     
 }

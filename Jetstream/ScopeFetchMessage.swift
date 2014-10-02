@@ -41,4 +41,5 @@ class ScopeFetchMessage: IndexedMessage {
         dictionary["params"] = params
         return dictionary
     }
+    
 }

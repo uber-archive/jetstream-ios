@@ -56,6 +56,7 @@
 		118B0B6E19D47B5A00D31133 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6D19D47B5A00D31133 /* Signal.swift */; };
 		118B0B7119D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B7019D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift */; };
 		11A71EB519DB6ECD00B124B3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71EB419DB6ECD00B124B3 /* Extensions.swift */; };
+		11A71EB719DCAE9C00B124B3 /* ReplyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71EB619DCAE9C00B124B3 /* ReplyMessage.swift */; };
 		11EEC44119D319DC00DCD737 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44019D319DC00DCD737 /* Session.swift */; };
 		11EEC44319D31A3800DCD737 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44219D31A3800DCD737 /* Transport.swift */; };
 		11EEC44619D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */; };
@@ -132,6 +133,7 @@
 		118B0B6D19D47B5A00D31133 /* Signal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Signal.swift; path = Signals/Signals/Signal.swift; sourceTree = "<group>"; };
 		118B0B7019D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MQTTLongPollChunkedConnectionOptions.swift; sourceTree = "<group>"; };
 		11A71EB419DB6ECD00B124B3 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		11A71EB619DCAE9C00B124B3 /* ReplyMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyMessage.swift; sourceTree = "<group>"; };
 		11EEC44019D319DC00DCD737 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		11EEC44219D31A3800DCD737 /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
 		11EEC44519D31B7D00DCD737 /* MQTTLongPollChunkedTransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MQTTLongPollChunkedTransportAdapter.swift; sourceTree = "<group>"; };
@@ -291,6 +293,7 @@
 			isa = PBXGroup;
 			children = (
 				11EEC44A19D31CA700DCD737 /* Message.swift */,
+				11A71EB619DCAE9C00B124B3 /* ReplyMessage.swift */,
 				11EEC44C19D31CE600DCD737 /* SessionCreateMessage.swift */,
 				112EEB4019D5D2F500114268 /* SessionCreateResponseMessage.swift */,
 				112EEB4419D5E1C900114268 /* ScopeFetchMessage.swift */,
@@ -543,6 +546,7 @@
 				114F4A4619D35D60003ACAC5 /* send_client_mosq.c in Sources */,
 				118B0B7119D47EBF00D31133 /* MQTTLongPollChunkedConnectionOptions.swift in Sources */,
 				11A71EB519DB6ECD00B124B3 /* Extensions.swift in Sources */,
+				11A71EB719DCAE9C00B124B3 /* ReplyMessage.swift in Sources */,
 				118B0B6A19D47AD900D31133 /* MQTTKit.m in Sources */,
 				11EEC44F19D31F0300DCD737 /* Client.swift in Sources */,
 				114F4A4519D35D60003ACAC5 /* read_handle_shared.c in Sources */,
