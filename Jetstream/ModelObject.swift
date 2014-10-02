@@ -129,7 +129,7 @@ struct PropertyInfo {
                 if let newParent = parent {
                     newParent.parent.onPropertyChange.listen(self, callback: { (keyPath, oldValue, value) -> Void in
                         if (keyPath == newParent.keyPath) {
-                            if (value as? ModelObject) != self {
+                            if (value as? ModelObject) != self && (value as? [ModelObject]) == nil {
                                 self.parent = nil
                             }
                         }
@@ -246,13 +246,13 @@ struct PropertyInfo {
                     onModelAddedToCollection.fire(keyPath: keyPath, element: model as AnyObject, atIndex: index)
                 }
             }
-        } else {
-            onPropertyChange.fire(keyPath: keyPath, oldValue: oldValue, value: newValue)
-            if let modelObject = newValue as? ModelObject {
-                modelObject.parent = ParentRelationship(parent: self, keyPath: keyPath)
-                modelObject.scope = scope
-            }
+        } else if let modelObject = newValue as? ModelObject {
+            modelObject.parent = ParentRelationship(parent: self, keyPath: keyPath)
+            modelObject.scope = scope
         }
+        
+        onPropertyChange.fire(keyPath: keyPath, oldValue: oldValue, value: newValue)
+        
         if let dependencies = dependenciesForKey(keyPath) {
             for dependency in dependencies {
                 onPropertyChange.fire(keyPath: dependency, oldValue: nil, value: nil)
@@ -268,6 +268,8 @@ struct PropertyInfo {
         }
     }
     
+    // MARK: - Public API
+    
     /// Assigns a scope to the model object and makes it the new root for the scope.
     ///
     /// :param: The scope to add the model object to.
@@ -277,9 +279,17 @@ struct PropertyInfo {
         scope.addModelObject(self)
         parent = nil
     }
-    
-    // MARK: - Public API
 
+    /// Fires a listener whenever any property or collection on the object changes.
+    ///
+    /// :param: listener The listener to attach to the event.
+    /// :param: callback The closure that gets executed every time the object changes.
+    public func observeChange(listener: AnyObject, callback: () -> Void) {
+        let listener = onPropertyChange.listen(listener) { (keyPath, oldValue, value) -> Void in
+            callback()
+        }
+    }
+    
     /// Fires a listener whenever a specific property changes.
     ///
     /// :param: listener The listener to attach to the event.
@@ -297,7 +307,7 @@ struct PropertyInfo {
     /// Fires a listener whenever any of the specific properties change.
     ///
     /// :param: listener The listener to attach to the event.
-    /// :param: keyPaths An array of keyPaths to listen to
+    /// :param: keyPaths An array of keyPaths to listen to.
     /// :param: callback The closure that gets executed every time any of the  properties change.
     public func observeChange(listener: AnyObject, keyPaths: [String], callback: () -> Void) {
         let listener = onPropertyChange.listen(listener) { (keyPath, oldValue, value) -> Void in
@@ -385,9 +395,5 @@ struct PropertyInfo {
     /// Removes the ModelObject from its scope.
     public func detach() {
         parent = nil
-    }
-    
-    public func setupCompositeProperty(property: String, dependedProperties: [String]) {
-        
     }
 }

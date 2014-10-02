@@ -80,13 +80,12 @@ class PropertyListenerTests: XCTestCase {
             removedCount += 1
         }
         
-
         model.array.append(TestModel())
         model.array[0] = TestModel()
         model.array.removeLast()
         model.array = [TestModel()]
 
-        XCTAssertEqual(changedCount, 0 , "Dispatched zero times")
+        XCTAssertEqual(changedCount, 4 , "Dispatched zero times")
         XCTAssertEqual(addedCount, 3 , "Dispatched three times")
         XCTAssertEqual(removedCount, 2 , "Dispatched three times")
     }
