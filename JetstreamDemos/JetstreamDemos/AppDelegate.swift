@@ -8,6 +8,19 @@
 
 import UIKit
 
+class JetstreamViewController: UIViewController {
+    var host: String {
+        get {
+            var result: AnyObject? = NSBundle.mainBundle().infoDictionary["JetstreamServer"]
+            if let host = result as? String {
+                return host
+            } else {
+                return "localhost"
+            }
+        }
+    }
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

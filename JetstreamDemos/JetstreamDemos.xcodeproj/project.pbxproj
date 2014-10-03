@@ -225,6 +225,7 @@
 				11EEC40819D236B400DCD737 /* Frameworks */,
 				11EEC40919D236B400DCD737 /* Resources */,
 				1145E72119DF082C0030A82A /* Embed Frameworks */,
+				1145E72519DF29170030A82A /* Write host IP to Info.plist */,
 			);
 			buildRules = (
 			);
@@ -334,6 +335,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1145E72519DF29170030A82A /* Write host IP to Info.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Write host IP to Info.plist";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "build_plist=$BUILT_PRODUCTS_DIR/$INFOPLIST_PATH\nconInfo=\"Contents/Info.plist\"\ndsym_plist=$DWARF_DSYM_FOLDER_PATH/$DWARF_DSYM_FILE_NAME/$conInfo\neth0_ipv4=$(ipconfig getifaddr en0)\n\n\nfunction writePlist() {\n    /usr/libexec/PlistBuddy -c \"Set :JetstreamServer $eth0_ipv4\" $1\n}\n\nwritePlist $build_plist\nwritePlist $dsym_plist\necho \"Wrote Info.plist build settings\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		11EEC40719D236B400DCD737 /* Sources */ = {

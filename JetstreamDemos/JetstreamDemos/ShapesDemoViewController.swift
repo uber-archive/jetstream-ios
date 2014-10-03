@@ -10,11 +10,7 @@ import Foundation
 import UIKit
 import Jetstream
 
-class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
-    
-    struct Static {
-        static let host = "localhost"
-    }
+class ShapesDemoViewController: JetstreamViewController, NSURLConnectionDataDelegate {
     
     var scope = Scope(name: "ShapesDemo")
     var shapesDemo = ShapesDemo()
@@ -40,14 +36,15 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
     
     func connect() {
         client = Client(options: MQTTLongPollChunkedConnectionOptions(
-            receiveURL: "http://" + Static.host + ":3000/mqtt/lpc/connect",
-            sendURL: "http://" + Static.host + ":3000/mqtt/lpc/send",
+            receiveURL: "http://" + host + ":3000/mqtt/lpc/connect",
+            sendURL: "http://" + host + ":3000/mqtt/lpc/send",
             headers: headers,
             sendIdRequired: true))
         client?.connect()
         client?.onSession.listenOnce(self) { (session) in
             self.session = session
             let scope = self.scope
+            NSLog("Started session with token: %@", session.token)
             session.fetch(scope) { (error) in
                 if error != nil {
                     NSLog("Request scope error: %@", error!)
@@ -56,7 +53,6 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
                     self.removeLoader()
                 }
             }
-            NSLog("Got session with token: %@", session.token)
         }
     }
     
@@ -92,7 +88,7 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         activityIndicatorView.center = loader!.center
         activityIndicatorView.startAnimating()
         
-        MessagingToken.getToken(Static.host) { (error, headers) -> Void in
+        MessagingToken.getToken(host) { (error, headers) -> Void in
             if error != nil {
                 self.error(error!)
             } else {
