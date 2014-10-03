@@ -65,6 +65,7 @@ class ShapesDemoViewController: JetstreamViewController, NSURLConnectionDataDele
     
     func handleTap(recognizer: UITapGestureRecognizer) {
         let shape = Shape()
+        shape.color = shapeColors[Int(arc4random_uniform(UInt32(shapeColors.count)))]
         var point = recognizer.locationInView(self.view)
         shape.x = point.x - shape.width / 2
         shape.y = point.y - shape.height / 2
