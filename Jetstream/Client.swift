@@ -94,7 +94,9 @@ public class Client {
             }
         }
         transport.onMessage.listen(self) { [unowned self] (message: Message) in
-            self.receivedMessage(message)
+            asyncMain {
+                self.receivedMessage(message)
+            }
         }
     }
     

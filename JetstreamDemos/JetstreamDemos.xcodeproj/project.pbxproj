@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1145E71A19DEF27C0030A82A /* MessagingToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1145E71919DEF27C0030A82A /* MessagingToken.swift */; };
+		1145E71E19DF082C0030A82A /* Jetstream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11EEC43619D236C800DCD737 /* Jetstream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11EEC41119D236B400DCD737 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC41019D236B400DCD737 /* AppDelegate.swift */; };
 		11EEC41319D236B400DCD737 /* DemosListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC41219D236B400DCD737 /* DemosListViewController.swift */; };
 		11EEC41619D236B400DCD737 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11EEC41419D236B400DCD737 /* Main.storyboard */; };
@@ -24,6 +25,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1145E71F19DF082C0030A82A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11EEC43019D236C800DCD737 /* Jetstream.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 7291631419CB5FE500320F15;
+			remoteInfo = Jetstream;
+		};
 		11EEC42119D236B400DCD737 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 11EEC40319D236B400DCD737 /* Project object */;
@@ -53,6 +61,20 @@
 			remoteInfo = Jetstream;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1145E72119DF082C0030A82A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1145E71E19DF082C0030A82A /* Jetstream.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1145E71919DEF27C0030A82A /* MessagingToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagingToken.swift; sourceTree = "<group>"; };
@@ -202,11 +224,13 @@
 				11EEC40719D236B400DCD737 /* Sources */,
 				11EEC40819D236B400DCD737 /* Frameworks */,
 				11EEC40919D236B400DCD737 /* Resources */,
+				1145E72119DF082C0030A82A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				11EEC43A19D2376D00DCD737 /* PBXTargetDependency */,
+				1145E72019DF082C0030A82A /* PBXTargetDependency */,
 			);
 			name = JetstreamDemos;
 			productName = JetstreamDemos;
@@ -338,6 +362,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1145E72019DF082C0030A82A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Jetstream;
+			targetProxy = 1145E71F19DF082C0030A82A /* PBXContainerItemProxy */;
+		};
 		11EEC42219D236B400DCD737 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 11EEC40A19D236B400DCD737 /* JetstreamDemos */;
@@ -451,8 +480,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = JetstreamDemos/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -461,8 +491,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = JetstreamDemos/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

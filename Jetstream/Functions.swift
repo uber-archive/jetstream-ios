@@ -8,9 +8,13 @@
 
 import Foundation
 
-public func delay(delay: Double, closure: ()->()) {
+public func delay(delay: Double, callback: () -> ()) {
     dispatch_after(
         dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))),
         dispatch_get_main_queue(),
-        closure)
+        callback)
+}
+
+public func asyncMain(callback: () -> ()) {
+    dispatch_async(dispatch_get_main_queue(), callback)
 }

@@ -40,7 +40,7 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
         longPollListenPort = 8888
         longPollTransport = LongPollChunkedSocketServer(options: options, port: longPollListenPort)
         
-        var uuid = UIDevice.currentDevice().identifierForVendor.UUIDString
+        var uuid = NSUUID().UUIDString
         mqttClient = MQTTClient(clientId: "mqttios_\(uuid)", cleanSession: true)
         mqttClient.port = UInt16(longPollListenPort)
         // TODO: read ping from connection options
@@ -78,9 +78,7 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
             let str = NSString(data: json!, encoding: NSUTF8StringEncoding)
             println("Publishing something to MQTT")
             mqttClient.publishString(str, toTopic: "/sync", withQos: AtMostOnce, retain: false) {
-                [unowned self] (mid) in
-                
-                self.logger.debug("sent (mid=\(mid)): \(str)")
+                (mid) -> Void in
             }
         }
     }
@@ -379,10 +377,7 @@ class LongPollChunkedSocketServerClient: NSObject, NSURLSessionDelegate, NSURLSe
             logger.debug("RECV block (length=\(count))")
         } while (true)
 
-        // Delay 1msec to ensure fully buffered from any run loops
-        delay(0.001) { [unowned self] in
-            self.queueBufferedSend()
-        }
+        self.queueBufferedSend()
     }
     
     func queueBufferedSend() {
