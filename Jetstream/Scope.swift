@@ -50,19 +50,23 @@ public class Scope {
         modelHash[modelObject.uuid] = modelObject
         
         modelObject.onPropertyChange.listen(self, callback: { [unowned self] (keyPath, oldValue, value) -> Void in
-            let oldModelObject = oldValue as? ModelObject
-            let newModelObject = value as? ModelObject
+            if (!self.applyingRemote) {
+                let oldModelObject = oldValue as? ModelObject
+                let newModelObject = value as? ModelObject
             
-            if (oldModelObject == nil && newModelObject == nil) {
-                // Only create change fragments for changes that don't affect child Model Objects
-                if let fragment = self.syncFragmentWithType(.Change, modelObject: modelObject) {
-                    fragment.newValueForKeyFromModelObject(keyPath, value: value, modelObject: modelObject)
+                if (oldModelObject == nil && newModelObject == nil) {
+                    // Only create change fragments for changes that don't affect child Model Objects
+                    if let fragment = self.syncFragmentWithType(.Change, modelObject: modelObject) {
+                        fragment.newValueForKeyFromModelObject(keyPath, value: value, modelObject: modelObject)
+                    }
                 }
             }
         })
         
         if let definiteParent = modelObject.parent {
-            self.syncFragmentWithType(.Add, modelObject: modelObject)
+            if (!applyingRemote) {
+                self.syncFragmentWithType(.Add, modelObject: modelObject)
+            }
         }
     }
     
@@ -71,7 +75,9 @@ public class Scope {
         modelHash.removeValueForKey(modelObject.uuid)
         modelObject.onPropertyChange.removeListener(self)
         modelObject.onDetachedFromScope.removeListener(self)
-        self.syncFragmentWithType(.Remove, modelObject: modelObject)
+        if (!applyingRemote) {
+            self.syncFragmentWithType(.Remove, modelObject: modelObject)
+        }
     }
     
     func applySyncFragment(syncFragment: SyncFragment) {
@@ -110,11 +116,9 @@ public class Scope {
     }
     
     private func addFragment(fragment: SyncFragment) -> SyncFragment {
-        if !applyingRemote {
-            syncFragments.append(fragment)
-            syncFragmentLookup[fragment.objectUUID] = fragment
-            self.setChangeTimer()
-        }
+        syncFragments.append(fragment)
+        syncFragmentLookup[fragment.objectUUID] = fragment
+        self.setChangeTimer()
         return fragment
     }
     
