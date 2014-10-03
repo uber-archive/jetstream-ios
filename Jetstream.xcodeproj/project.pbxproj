@@ -100,7 +100,7 @@
 		7202D16619D63AED004E9A47 /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
 		7202D16719D63AED004E9A47 /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
 		7202D16819D63AF1004E9A47 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6D19D47B5A00D31133 /* Signal.swift */; };
-		722231A319DC9DB900D99795 /* DependcyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722231A219DC9DB900D99795 /* DependcyTests.swift */; };
+		722231A319DC9DB900D99795 /* DependencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722231A219DC9DB900D99795 /* DependencyTests.swift */; };
 		7233FE2F19D4C9AE004B680C /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
 		727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
@@ -178,7 +178,7 @@
 		11EEC45A19D32B2200DCD737 /* Jetstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Jetstream.h; sourceTree = "<group>"; };
 		11EEC45E19D3396300DCD737 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		7202D09E19D62E70004E9A47 /* MessageSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageSerialization.swift; sourceTree = "<group>"; };
-		722231A219DC9DB900D99795 /* DependcyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependcyTests.swift; sourceTree = "<group>"; };
+		722231A219DC9DB900D99795 /* DependencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyTests.swift; sourceTree = "<group>"; };
 		7233FE2E19D4C9AE004B680C /* Scope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scope.swift; sourceTree = "<group>"; };
 		727EAA4219D4CD2100B7990A /* SyncFragment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragment.swift; sourceTree = "<group>"; };
 		727EAA4B19D4DF8800B7990A /* ScopeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeTests.swift; sourceTree = "<group>"; };
@@ -394,7 +394,7 @@
 		7291632119CB5FE500320F15 /* JetstreamTests */ = {
 			isa = PBXGroup;
 			children = (
-				722231A219DC9DB900D99795 /* DependcyTests.swift */,
+				722231A219DC9DB900D99795 /* DependencyTests.swift */,
 				7202D09E19D62E70004E9A47 /* MessageSerialization.swift */,
 				7291632419CB5FE500320F15 /* PropertyListenerTests.swift */,
 				727EAA4B19D4DF8800B7990A /* ScopeTests.swift */,
@@ -628,7 +628,7 @@
 				11A71EBE19DDFAF400B124B3 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */,
 				11A71EC019DDFAF400B124B3 /* ConnectionOptions.swift in Sources */,
 				11A71EBF19DDFAF400B124B3 /* PollTransportAdapter.swift in Sources */,
-				722231A319DC9DB900D99795 /* DependcyTests.swift in Sources */,
+				722231A319DC9DB900D99795 /* DependencyTests.swift in Sources */,
 				11A71EC719DDFAFE00B124B3 /* ScopeSyncMessage.swift in Sources */,
 				11A71ECD19DDFB0B00B124B3 /* UnixUtils.swift in Sources */,
 			);

@@ -39,13 +39,14 @@ class ScopeSyncMessage: IndexedMessage {
     
     override func serialize() -> [String: AnyObject] {
         var dictionary = super.serialize()
-        
-        dictionary["scopeIndex"] = scopeIndex
-        dictionary["fragments"] = syncFragments.map {
+        let fragments = syncFragments.map {
             (syncFragment) -> [String: AnyObject] in
             
             return syncFragment.serialize()
         }
+        
+        dictionary["scopeIndex"] = scopeIndex
+        dictionary["fragments"] = fragments
         dictionary["fullState"] = fullState
         
         return dictionary

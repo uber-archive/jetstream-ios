@@ -28,7 +28,7 @@ public class Scope {
     var syncFragments = [SyncFragment]()
     var modelObjects = [ModelObject]()
     var modelHash = [NSUUID: ModelObject]()
-    var timer: NSTimer?
+    var changesQueued = false
     var changeInterval: NSTimeInterval
     
     public init(name: String, changeInterval: NSTimeInterval = 0.01) {
@@ -47,7 +47,7 @@ public class Scope {
             if (oldModelObject == nil && newModelObject == nil) {
                 // Only create change fragments for changes that don't affect child Model Objects
                 if let fragment = self.syncFragmentWithType(.Change, modelObject: modelObject) {
-                    fragment.newValueForKey(keyPath, value: value)
+                    fragment.newValueForKeyFromModelObject(keyPath, value: value, modelObject: modelObject)
                 }
             }
         })
@@ -115,13 +115,16 @@ public class Scope {
     }
     
     private func setChangeTimer() {
-        if self.timer == nil {
-            self.timer = NSTimer.scheduledTimerWithTimeInterval(changeInterval, target: self, selector: Selector("sendChanges"), userInfo: nil, repeats: false)
+        if !changesQueued {
+            changesQueued = true
+            delay(changeInterval) { [unowned self] in
+                self.sendChanges()
+            }
         }
     }
 
     dynamic private func sendChanges() {
-        timer = nil
+        changesQueued = false
         var fragments = getAndClearSyncFragments()
         if fragments.count > 0 {
             onChanges.fire(fragments)
@@ -134,7 +137,15 @@ public class Scope {
         let fragments = syncFragments
         syncFragments.removeAll(keepCapacity: false)
         syncFragmentLookup.removeAll(keepCapacity: false)
-        return fragments
+        return fragments.filter { (fragment) -> Bool in
+            // Filter out any empty change fragments
+            if fragment.type == .Change &&
+                (fragment.properties == nil ||
+                fragment.properties?.count == 0) {
+                return false
+            }
+            return true
+        }
     }
     
     public func getObjectById(uuid: NSUUID) -> ModelObject? {

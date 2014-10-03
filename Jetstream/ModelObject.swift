@@ -21,7 +21,8 @@ private var myContext = 0
 
 struct PropertyInfo {
     let key: String
-    let isArray: Bool
+    let isCollection: Bool
+    let isModelObject: Bool
 }
 
 @objc public class ModelObject: NSObject {
@@ -33,11 +34,17 @@ struct PropertyInfo {
     public let onAttachToScope = Signal<(scope: Scope, parent: ModelObject, keyPath: String)>()
     public let onMovedBetweenScopes = Signal<(parent: ModelObject, keyPath: String)>()
     
-    private struct Static {
+    struct Static {
+        static var allTypes = [String: AnyClass]()
         static var compositeDependencies = [String: [String: [String]]]()
     }
 
     override public class func initialize() {
+        let name = NSStringFromClass(self)
+        let components = name.componentsSeparatedByString(".")
+        let lastComponent = components[components.count-1]
+        Static.allTypes[lastComponent] = self
+        
         var keyToDependencies = [String: [String]]()
         for (prop, dependencies) in getCompositeDependencies() {
             for dependency in dependencies {
@@ -48,7 +55,7 @@ struct PropertyInfo {
                 }
             }
         }
-        Static.compositeDependencies[NSStringFromClass(self)] = keyToDependencies
+        Static.compositeDependencies[name] = keyToDependencies
     }
     
     public class func getCompositeDependencies() -> [String: [String]] {
@@ -206,11 +213,16 @@ struct PropertyInfo {
         for i in 0...mirror.count - 1 {
             var (name, type) = mirror[i]
             if name != "super" {
-                var isArray = false
+                var isCollection = false
+                var isModelObject = false
                 if let asArray = self.valueForKey(name) as? [ModelObject] {
-                    isArray = true
+                    isCollection = true
+                    isModelObject = true
                 }
-                properties[name] = PropertyInfo(key: name, isArray:isArray)
+                if let asModelObject = self.valueForKey(name) as? ModelObject {
+                    isModelObject = true
+                }
+                properties[name] = PropertyInfo(key: name, isCollection: isCollection, isModelObject: isModelObject)
                 self.addObserver(self, forKeyPath: name, options: .New | .Old, context: &myContext)
             }
         }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1145E71A19DEF27C0030A82A /* MessagingToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1145E71919DEF27C0030A82A /* MessagingToken.swift */; };
 		11EEC41119D236B400DCD737 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC41019D236B400DCD737 /* AppDelegate.swift */; };
 		11EEC41319D236B400DCD737 /* DemosListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC41219D236B400DCD737 /* DemosListViewController.swift */; };
 		11EEC41619D236B400DCD737 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11EEC41419D236B400DCD737 /* Main.storyboard */; };
@@ -54,6 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1145E71919DEF27C0030A82A /* MessagingToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagingToken.swift; sourceTree = "<group>"; };
 		11EEC40B19D236B400DCD737 /* JetstreamDemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JetstreamDemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11EEC40F19D236B400DCD737 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		11EEC41019D236B400DCD737 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -93,6 +95,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1145E71819DEF2030030A82A /* Uber */ = {
+			isa = PBXGroup;
+			children = (
+				1145E71919DEF27C0030A82A /* MessagingToken.swift */,
+			);
+			name = Uber;
+			sourceTree = "<group>";
+		};
 		11EEC40219D236B400DCD737 = {
 			isa = PBXGroup;
 			children = (
@@ -116,13 +126,14 @@
 		11EEC40D19D236B400DCD737 /* JetstreamDemos */ = {
 			isa = PBXGroup;
 			children = (
+				1145E71819DEF2030030A82A /* Uber */,
+				7202D09319D5E599004E9A47 /* ShapesDemo */,
 				11EEC41019D236B400DCD737 /* AppDelegate.swift */,
 				11EEC43C19D267F800DCD737 /* DemosListCollectionViewCell.swift */,
 				11EEC41219D236B400DCD737 /* DemosListViewController.swift */,
 				11EEC41719D236B400DCD737 /* Images.xcassets */,
 				11EEC41919D236B400DCD737 /* LaunchScreen.xib */,
 				11EEC41419D236B400DCD737 /* Main.storyboard */,
-				7202D09319D5E599004E9A47 /* ShapesDemo */,
 				11EEC40E19D236B400DCD737 /* Supporting Files */,
 			);
 			path = JetstreamDemos;
@@ -311,6 +322,7 @@
 				11EEC41319D236B400DCD737 /* DemosListViewController.swift in Sources */,
 				11EEC43F19D3166F00DCD737 /* ShapesDemoViewController.swift in Sources */,
 				11EEC41119D236B400DCD737 /* AppDelegate.swift in Sources */,
+				1145E71A19DEF27C0030A82A /* MessagingToken.swift in Sources */,
 				11EEC43D19D267F800DCD737 /* DemosListCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
