@@ -44,7 +44,6 @@ public class Client {
     
     let transport: Transport
     var scopes = [UInt: Scope]()
-    var applyingRemote = false
     
     /// MARK: Public interface
     
@@ -99,14 +98,6 @@ public class Client {
         }
     }
     
-    func startApplyingRemote() {
-        applyingRemote = true
-    }
-    
-    func endApplyingRemote() {
-        applyingRemote = false
-    }
-    
     private func receivedMessage(message: Message) {
         switch message {
         case let sessionCreateResponse as SessionCreateResponseMessage:
@@ -124,7 +115,7 @@ public class Client {
             if let scope = scopes[scopeSyncMessage.scopeIndex] {
                 if let rootModel = scope.rootModel {
                     if scopeSyncMessage.syncFragments.count > 0 {
-                        startApplyingRemote()
+                        scope.startApplyingRemote()
                         if scopeSyncMessage.fullState {
                             var syncFragments = scopeSyncMessage.syncFragments
                             let stateMessage = syncFragments.removeAtIndex(0)
@@ -133,12 +124,15 @@ public class Client {
                         } else {
                             scope.applySyncFragments(scopeSyncMessage.syncFragments)
                         }
-                        endApplyingRemote()
+                        scope.endApplyingRemote()
                     } else {
                         logger.error("Received sync message without fragments")
                     }
                 }
             }
+        case let replyMessage as ReplyMessage:
+            // No-op
+            break
         default:
             logger.debug("Unrecognized message received")
         }
@@ -156,11 +150,11 @@ public class Client {
         transport.sendMessage(ScopeFetchMessage(session: session!, name: scope.name)) {
             [unowned self] (response) in
             
-            var maybeResult: Bool? = response.valueForKey("result")
-            var maybeScopeIndex: UInt? = response.valueForKey("scopeIndex")
+            var result: Bool? = response.valueForKey("result")
+            var scopeIndex: UInt? = response.valueForKey("scopeIndex")
             
-            if maybeResult != nil && maybeScopeIndex != nil && maybeResult! == true {
-                self.scopeAttached(scope, atIndex: maybeScopeIndex!)
+            if result != nil && scopeIndex != nil && result! == true {
+                self.scopeAttached(scope, atIndex: scopeIndex!)
                 callback(nil)
             } else {
                 var definiteErrorCode = 0
@@ -196,7 +190,7 @@ public class Client {
     }
     
     private func scopeChanges(scope: Scope, atIndex: UInt, syncFragments: [SyncFragment]) {
-        if session == nil || applyingRemote {
+        if session == nil {
             return
         }
         

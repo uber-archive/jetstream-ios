@@ -28,12 +28,21 @@ public class Scope {
     var syncFragments = [SyncFragment]()
     var modelObjects = [ModelObject]()
     var modelHash = [NSUUID: ModelObject]()
+    var applyingRemote = false
     var changesQueued = false
     var changeInterval: NSTimeInterval
     
     public init(name: String, changeInterval: NSTimeInterval = 0.01) {
         self.name = name
         self.changeInterval = changeInterval
+    }
+    
+    func startApplyingRemote() {
+        applyingRemote = true
+    }
+    
+    func endApplyingRemote() {
+        applyingRemote = false
     }
     
     func addModelObject(modelObject: ModelObject) {
@@ -101,9 +110,11 @@ public class Scope {
     }
     
     private func addFragment(fragment: SyncFragment) -> SyncFragment {
-        syncFragments.append(fragment)
-        syncFragmentLookup[fragment.objectUUID] = fragment
-        self.setChangeTimer()
+        if !applyingRemote {
+            syncFragments.append(fragment)
+            syncFragmentLookup[fragment.objectUUID] = fragment
+            self.setChangeTimer()
+        }
         return fragment
     }
     

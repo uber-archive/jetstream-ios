@@ -31,6 +31,7 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
     let longPollListenPort: Int
     let longPollTransport: LongPollChunkedSocketServer
     let mqttClient: MQTTClient
+    var sessionToken: String?
     
     init(options: MQTTLongPollChunkedConnectionOptions) {
         self.options = options as ConnectionOptions
@@ -58,6 +59,7 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
             if code.value == ConnectionAccepted.value {
                 self.status = .Connected
                 self.mqttSetupSubscriptions()
+                self.registerSessionTokenAttribute()
             } else {
                 self.status = .Connecting
             }
@@ -74,8 +76,8 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
         
         if json != nil {
             let str = NSString(data: json!, encoding: NSUTF8StringEncoding)
-            
-            mqttClient.publishString(str, toTopic: "/sync", withQos: AtLeastOnce, retain: false) {
+            println("Publishing something to MQTT")
+            mqttClient.publishString(str, toTopic: "/sync", withQos: AtMostOnce, retain: false) {
                 [unowned self] (mid) in
                 
                 self.logger.debug("sent (mid=\(mid)): \(str)")
@@ -118,17 +120,26 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
             if message != nil {
                 switch message {
                 case let sessionCreateResponse as SessionCreateResponseMessage:
-                    var str = "{\"syncSessionToken\": \"\(sessionCreateResponse.sessionToken)\"}"
-                    mqttClient.publishString(str, toTopic: "/attribute", withQos: AtLeastOnce, retain: false) {
-                        [unowned self] (mid) in
-                        self.logger.debug("sent (mid=\(mid)): \(str)")
-                    }
+                    self.sessionToken = sessionCreateResponse.sessionToken
+                    self.registerSessionTokenAttribute()
                 default:
                     break
                 }
                 
                 onMessage.fire(message!)
             }
+        }
+    }
+    
+    private func registerSessionTokenAttribute() {
+        if sessionToken == nil {
+            return
+        }
+        
+        var str = "{\"syncSessionToken\": \"\(sessionToken!)\"}"
+        mqttClient.publishString(str, toTopic: "/attribute", withQos: AtLeastOnce, retain: false) {
+            [unowned self] (mid) in
+            self.logger.debug("sent (mid=\(mid)): \(str)")
         }
     }
     
