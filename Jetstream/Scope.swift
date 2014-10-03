@@ -49,15 +49,17 @@ public class Scope {
         modelObjects.append(modelObject)
         modelHash[modelObject.uuid] = modelObject
         
-        modelObject.onPropertyChange.listen(self, callback: { [unowned self] (keyPath, oldValue, value) -> Void in
-            if (!self.applyingRemote) {
-                let oldModelObject = oldValue as? ModelObject
-                let newModelObject = value as? ModelObject
-            
-                if (oldModelObject == nil && newModelObject == nil) {
-                    // Only create change fragments for changes that don't affect child Model Objects
-                    if let fragment = self.syncFragmentWithType(.Change, modelObject: modelObject) {
-                        fragment.newValueForKeyFromModelObject(keyPath, value: value, modelObject: modelObject)
+        modelObject.onPropertyChange.listen(self, callback: { [weak self] (keyPath, oldValue, value) -> () in
+            if let this = self {
+                if (!this.applyingRemote) {
+                    let oldModelObject = oldValue as? ModelObject
+                    let newModelObject = value as? ModelObject
+                    
+                    if (oldModelObject == nil && newModelObject == nil) {
+                        // Only create change fragments for changes that don't affect child Model Objects
+                        if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
+                            fragment.newValueForKeyFromModelObject(keyPath, value: value, modelObject: modelObject)
+                        }
                     }
                 }
             }
@@ -132,8 +134,10 @@ public class Scope {
     private func setChangeTimer() {
         if !changesQueued {
             changesQueued = true
-            delay(changeInterval) { [unowned self] in
-                self.sendChanges()
+            delay(changeInterval) { [weak self] in
+                if let this = self {
+                    this.sendChanges()
+                }
             }
         }
     }

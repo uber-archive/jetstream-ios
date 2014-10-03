@@ -34,7 +34,6 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         shapesDemo.setScopeAndMakeRootModel(scope)
         shapesDemo.observeCollectionAdd(self, keyPath: "shapes") { (element: Shape) in
             let shapeView = ShapeView(shape: element)
-            println("Adding \(element.uuid.UUIDString)")
             self.view.addSubview(shapeView)
         }
     }
@@ -46,10 +45,10 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
             headers: headers,
             sendIdRequired: true))
         client?.connect()
-        client?.onSession.listenOnce(self) { [unowned self] (session) in
+        client?.onSession.listenOnce(self) { (session) in
             self.session = session
             let scope = self.scope
-            session.fetch(scope) { [unowned self] (error) in
+            session.fetch(scope) { (error) in
                 if error != nil {
                     NSLog("Request scope error: %@", error!)
                 } else {
@@ -117,15 +116,9 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
             view.hidden = true
             view.removeFromSuperview()
             loader = nil
-            
-            // Weird side affect
-            delay(0.01) {
-                self.view.alpha = 0.9
-                self.view.alpha = 1.0
-            }
         }
     }
-    
+
     func error(message: String) {
         removeLoader()
         

@@ -70,33 +70,47 @@ public class Client {
     /// MARK: Private interface
     
     private func bindListeners() {
-        onStatusChanged.listen(self) { [unowned self] (status) in
-            switch status {
-            case .Online:
-                self.logger.info("Online")
-                if self.session == nil {
-                    self.createSession()
-                } else {
-                    self.resumeSession()
-                }
-            case .Offline:
-                self.logger.info("Offline")
+        onStatusChanged.listen(self) { [weak self] (status) in
+            if let this = self {
+                this.statusChanged(status)
             }
         }
-        transport.onStatusChanged.listen(self) { [unowned self] (status: TransportStatus) in
-            switch status {
-            case .Closed:
-                self.status = .Offline
-            case .Connecting:
-                self.status = .Offline
-            case .Connected:
-                self.status = .Online
+        transport.onStatusChanged.listen(self) { [weak self] (status) in
+            if let this = self {
+                this.transportStatusChanged(status)
             }
         }
-        transport.onMessage.listen(self) { [unowned self] (message: Message) in
+        transport.onMessage.listen(self) { [weak self] (message: Message) in
             asyncMain {
-                self.receivedMessage(message)
+                if let this = self {
+                    this.receivedMessage(message)
+                }
             }
+        }
+    }
+    
+    private func statusChanged(clientStatus: ClientStatus) {
+        switch clientStatus {
+        case .Online:
+            logger.info("Online")
+            if session == nil {
+                createSession()
+            } else {
+                resumeSession()
+            }
+        case .Offline:
+            logger.info("Offline")
+        }
+    }
+    
+    private func transportStatusChanged(transportStatus: TransportStatus) {
+        switch transportStatus {
+        case .Closed:
+            status = .Offline
+        case .Connecting:
+            status = .Offline
+        case .Connected:
+            status = .Online
         }
     }
     
@@ -148,47 +162,55 @@ public class Client {
         // TODO: implement
     }
     
-    func fetchScope(scope: Scope, callback: (NSError?) -> Void) {
+    func fetchScope(scope: Scope, callback: (NSError?) -> ()) {
         transport.sendMessage(ScopeFetchMessage(session: session!, name: scope.name)) {
-            [unowned self] (response) in
-            
-            var result: Bool? = response.valueForKey("result")
-            var scopeIndex: UInt? = response.valueForKey("scopeIndex")
-            
-            if result != nil && scopeIndex != nil && result! == true {
-                self.scopeAttached(scope, atIndex: scopeIndex!)
-                callback(nil)
-            } else {
-                var definiteErrorCode = 0
-
-                var error: [String: AnyObject]? = response.valueForKey("error")
-                var errorMessage: String? = error?.valueForKey("message")
-                var errorCode: Int? = error?.valueForKey("code")
-                
-                if errorCode != nil {
-                    definiteErrorCode = errorCode!
-                }
-
-                var userInfo = [NSLocalizedDescriptionKey: "Fetch request failed"]
-                
-                if errorMessage != nil {
-                    userInfo[NSLocalizedFailureReasonErrorKey] = errorMessage!
-                }
-                
-                callback(NSError(
-                    domain: defaultErrorDomain,
-                    code: definiteErrorCode,
-                    userInfo: userInfo))
+            [weak self] (response) in
+            if let this = self {
+                this.scopeFetchCompleted(scope, response: response, callback: callback)
             }
         }
     }
     
-    private func scopeAttached(scope: Scope, atIndex: UInt) {
-        scopes[atIndex] = scope
-        scope.onChanges.listen(self) {
-            [unowned self] (syncFragments) in
-            self.scopeChanges(scope, atIndex: atIndex, syncFragments: syncFragments)
+    func scopeFetchCompleted(scope: Scope, response: [String: AnyObject], callback: (NSError?) -> ()) {
+        var result: Bool? = response.valueForKey("result")
+        var scopeIndex: UInt? = response.valueForKey("scopeIndex")
+        
+        if result != nil && scopeIndex != nil && result! == true {
+            scopes[scopeIndex!] = scope
+            scope.onChanges.listen(self) {
+                [weak self] (syncFragments) in
+                if let this = self {
+                    this.scopeChanges(scope, atIndex: scopeIndex!, syncFragments: syncFragments)
+                }
+            }
+            
+            callback(nil)
+        } else {
+            var definiteErrorCode = 0
+            
+            var error: [String: AnyObject]? = response.valueForKey("error")
+            var errorMessage: String? = error?.valueForKey("message")
+            var errorCode: Int? = error?.valueForKey("code")
+            
+            if errorCode != nil {
+                definiteErrorCode = errorCode!
+            }
+            
+            var userInfo = [NSLocalizedDescriptionKey: "Fetch request failed"]
+            
+            if errorMessage != nil {
+                userInfo[NSLocalizedFailureReasonErrorKey] = errorMessage!
+            }
+            
+            callback(NSError(
+                domain: defaultErrorDomain,
+                code: definiteErrorCode,
+                userInfo: userInfo))
         }
+    }
+    
+    private func scopeAttached(scope: Scope, atIndex: UInt) {
+
     }
     
     private func scopeChanges(scope: Scope, atIndex: UInt, syncFragments: [SyncFragment]) {

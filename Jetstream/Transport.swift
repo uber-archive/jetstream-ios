@@ -58,11 +58,15 @@ class Transport {
     }
     
     private func bindListeners() {
-        onStatusChanged.listen(self) { [unowned self] (status) in
-            self.statusChanged(status)
+        onStatusChanged.listen(self) { [weak self] (status) in
+            if let this = self {
+                this.statusChanged(status)
+            }
         }
-        onMessage.listen(self) { [unowned self] (message) in
-            self.messageReceived(message)
+        onMessage.listen(self) { [weak self] (message) in
+            if let this = self {
+                this.messageReceived(message)
+            }
         }
     }
     

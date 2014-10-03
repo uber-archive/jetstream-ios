@@ -16,12 +16,16 @@ public class ShapeView: UIView, UIGestureRecognizerDelegate {
             shape.removeObservers(self)
         }
         didSet {
-            shape.observeChange(self, keyPaths: ["x", "y", "width", "height"], callback: { [unowned self] in
-                self.updateView()
-            })
-            shape.observeDetach(self, callback: { [unowned self] in
-                self.removeFromSuperview()
-            })
+            shape.observeChange(self, keyPaths: ["x", "y", "width", "height"]) { [weak self] in
+                if let this = self {
+                    this.updateView()
+                }
+            }
+            shape.observeDetach(self) { [weak self] in
+                if let this = self {
+                    this.removeFromSuperview()
+                }
+            }
             updateView()
         }
     }

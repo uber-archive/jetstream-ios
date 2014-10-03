@@ -45,24 +45,34 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
         mqttClient.port = UInt16(longPollListenPort)
         // TODO: read ping from connection options
         mqttClient.keepAlive = 5
-        mqttClient.messageHandler = { [unowned self] (message) in
-            self.mqttMessageReceived(message)
+        mqttClient.messageHandler = { [weak self] (message) in
+            if let this = self {
+                this.mqttMessageReceived(message)
+            }
         }
-        mqttClient.disconnectionHandler = { [unowned self] (code) in
-            self.status = .Connecting
+        mqttClient.disconnectionHandler = { [weak self] (code) in
+            if let this = self {
+                this.status = .Connecting
+            }
         }
     }
     
     func connect() {
         status = .Connecting
-        mqttClient.connectToHost("localhost") { [unowned self] (code) in
-            if code.value == ConnectionAccepted.value {
-                self.status = .Connected
-                self.mqttSetupSubscriptions()
-                self.registerSessionTokenAttribute()
-            } else {
-                self.status = .Connecting
+        mqttClient.connectToHost("localhost") { [weak self] (code) in
+            if let this = self {
+                this.connectCompleted(code)
             }
+        }
+    }
+    
+    func connectCompleted(code: MQTTConnectionReturnCode) {
+        if code.value == ConnectionAccepted.value {
+            status = .Connected
+            mqttSetupSubscriptions()
+            registerSessionTokenAttribute()
+        } else {
+            status = .Connecting
         }
     }
     
@@ -76,9 +86,11 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
         
         if json != nil {
             let str = NSString(data: json!, encoding: NSUTF8StringEncoding)
-            println("Publishing something to MQTT")
             mqttClient.publishString(str, toTopic: "/sync", withQos: AtMostOnce, retain: false) {
-                (mid) -> Void in
+                [weak self] (mid) -> Void in
+                if let this = self {
+                    this.logger.debug("sent (mid=\(mid)): \(str)")
+                }
             }
         }
     }
@@ -136,8 +148,10 @@ class MQTTLongPollChunkedTransportAdapter: TransportAdapter {
         
         var str = "{\"syncSessionToken\": \"\(sessionToken!)\"}"
         mqttClient.publishString(str, toTopic: "/attribute", withQos: AtLeastOnce, retain: false) {
-            [unowned self] (mid) in
-            self.logger.debug("sent (mid=\(mid)): \(str)")
+            [weak self] (mid) in
+            if let this = self {
+                this.logger.debug("sent (mid=\(mid)): \(str)")
+            }
         }
     }
     
@@ -162,9 +176,11 @@ class LongPollChunkedSocketServer {
         socket.listen(
             dispatch_get_global_queue(0, 0),
             backlog: 5,
-            accept: { [unowned self] (sock: ActiveSocket<sockaddr_in>) in
+            accept: { [weak self] (sock: ActiveSocket<sockaddr_in>) in
             
-            self.accept(sock)
+            if let this = self {
+                this.accept(sock)
+            }
         })
     }
     
@@ -180,10 +196,18 @@ class LongPollChunkedSocketServer {
             self.openClients[sock.fd!] = client
         }
         
-        sock.onClose { [unowned self] (fd: Int32) in
-            dispatch_async(self.lockQueue) { [unowned self] in
-                self.logger.debug("CLOSE (fd=\(fd))")
-                _ = self.openClients.removeValueForKey(fd)
+        sock.onClose { [weak self] (fd: Int32) in
+            if let this = self {
+                this.sockClosed(fd)
+            }
+        }
+    }
+    
+    private func sockClosed(fd: Int32) {
+        dispatch_async(lockQueue) { [weak self] in
+            if let this = self {
+                this.logger.debug("CLOSE (fd=\(fd))")
+                _ = this.openClients.removeValueForKey(fd)
             }
         }
     }
@@ -241,8 +265,10 @@ class LongPollChunkedSocketServerClient: NSObject, NSURLSessionDelegate, NSURLSe
         
         streamOutgoingPrepare()
         streamOutgoingData()
-        socket.onRead { [unowned self] (_, expected) in
-            self.handleIncomingData(expected)
+        socket.onRead { [weak self] (_, expected) in
+            if let this = self {
+                this.handleIncomingData(expected)
+            }
         }
     }
     
@@ -368,21 +394,25 @@ class LongPollChunkedSocketServerClient: NSObject, NSURLSessionDelegate, NSURLSe
                 return cleanup()
             }
             
-            dispatch_async(self.lockQueue) { [unowned self] in
-                for i in 0 ..< count {
-                    self.buffer.append(block[i])
+            dispatch_async(lockQueue) { [weak self] in
+                if let this = self {
+                    for i in 0 ..< count {
+                        this.buffer.append(block[i])
+                    }
                 }
             }
             
             logger.debug("RECV block (length=\(count))")
         } while (true)
 
-        self.queueBufferedSend()
+        queueBufferedSend()
     }
     
     func queueBufferedSend() {
-        queue.addOperationWithBlock() { [unowned self] in
-            self.sendBufferedData()
+        queue.addOperationWithBlock() { [weak self] in
+            if let this = self {
+                this.sendBufferedData()
+            }
         }
     }
     
@@ -438,34 +468,42 @@ class LongPollChunkedSocketServerClient: NSObject, NSURLSessionDelegate, NSURLSe
         
         logger.debug("POST (request=\(request)")
         NSURLConnection.sendAsynchronousRequest(request, queue: postQueue) {
-            [unowned self] (response, data, error) in
-            if self.dead {
-                return self.cleanup()
+            [weak self] (response, data, error) in
+            if let this = self {
+                this.sentBufferedData(request, response: response, data: data, error: error)
             }
-            
-            // Something in the connection died, make MQTT 
-            // reconnect and resend as if a new connection started
-            if error != nil {
-                return self.cleanup()
-            }
-            
-            if let httpResponse = response as? NSHTTPURLResponse {
-                if httpResponse.statusCode != 200 {
-                    return self.cleanup()
-                } else {
-                    self.logger.debug("SENTDATA (data.length=\(request.HTTPBody?.length)")
-                }
+        }
+    }
+    
+    private func sentBufferedData(request: NSURLRequest, response: NSURLResponse, data: NSData, error: NSError?) {
+        if dead {
+            return cleanup()
+        }
+        
+        // Something in the connection died, make MQTT
+        // reconnect and resend as if a new connection started
+        if error != nil {
+            return cleanup()
+        }
+        
+        if let httpResponse = response as? NSHTTPURLResponse {
+            if httpResponse.statusCode != 200 {
+                return cleanup()
             } else {
-                return self.cleanup()
+                logger.debug("SENTDATA (data.length=\(request.HTTPBody?.length)")
             }
-            
-            dispatch_async(self.lockQueue) { [unowned self] in
-                self.sending = false
+        } else {
+            return cleanup()
+        }
+        
+        dispatch_async(lockQueue) { [weak self] in
+            if let this = self {
+                this.sending = false
                 
                 // If things got buffered and we denied sending as
                 // we were performing this send, start another send
-                if self.buffer.count > 0 {
-                    self.queueBufferedSend()
+                if this.buffer.count > 0 {
+                    this.queueBufferedSend()
                 }
             }
         }
