@@ -8,7 +8,7 @@
 
 import UIKit
 
-class JetstreamViewController: UIViewController {
+extension UIViewController {
     var host: String {
         get {
             var result: AnyObject? = NSBundle.mainBundle().infoDictionary["JetstreamServer"]

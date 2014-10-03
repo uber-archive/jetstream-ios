@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Jetstream
 
-class ShapesDemoViewController: JetstreamViewController, NSURLConnectionDataDelegate {
+class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
     
     var scope = Scope(name: "ShapesDemo")
     var shapesDemo = ShapesDemo()
