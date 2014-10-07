@@ -127,19 +127,21 @@ public class Client {
                 logger.info("Starting session with token: \(token)")
                 session = Session(client: self, token: token)
             }
+        case let scopeStateMessage as ScopeStateMessage:
+            if let scope = scopes[scopeStateMessage.scopeIndex] {
+                if let rootModel = scope.rootModel {
+                    scope.startApplyingRemote()
+                    scope.applySyncFragment(scopeStateMessage.rootFragment)
+                    scope.applySyncFragments(scopeStateMessage.syncFragments)
+                    scope.endApplyingRemote()
+                }
+            }
         case let scopeSyncMessage as ScopeSyncMessage:
             if let scope = scopes[scopeSyncMessage.scopeIndex] {
                 if let rootModel = scope.rootModel {
                     if scopeSyncMessage.syncFragments.count > 0 {
                         scope.startApplyingRemote()
-                        if scopeSyncMessage.fullState {
-                            var syncFragments = scopeSyncMessage.syncFragments
-                            let stateMessage = syncFragments.removeAtIndex(0)
-                            stateMessage.applyAddToRootModelInScope(scope)
-                            scope.applySyncFragments(syncFragments)
-                        } else {
-                            scope.applySyncFragments(scopeSyncMessage.syncFragments)
-                        }
+                        scope.applySyncFragments(scopeSyncMessage.syncFragments)
                         scope.endApplyingRemote()
                     } else {
                         logger.error("Received sync message without fragments")

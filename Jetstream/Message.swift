@@ -12,7 +12,7 @@ class Message {
     
     // Override to provide message type
     var type: String {
-        get { return "Message" }
+        return "Message"
     }
     
     func serialize() -> [String: AnyObject] {
@@ -29,6 +29,8 @@ class Message {
                 return SessionCreateResponseMessage.unserialize(dictionary)
             case ReplyMessage.messageType:
                 return ReplyMessage.unserialize(dictionary)
+            case ScopeStateMessage.messageType:
+                return ScopeStateMessage.unserialize(dictionary)
             case ScopeSyncMessage.messageType:
                 return ScopeSyncMessage.unserialize(dictionary)
             default:

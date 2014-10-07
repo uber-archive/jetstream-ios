@@ -11,15 +11,21 @@ import Foundation
 class ReplyMessage: IndexedMessage {
     
     class var messageType: String {
-        get { return "Reply" }
+        return "Reply"
     }
     
     override var type: String {
-        get { return ReplyMessage.messageType }
+        return ReplyMessage.messageType
     }
     
     let replyTo: UInt
     let response: [String: AnyObject]
+    
+    init(index: UInt, replyTo: UInt, response: [String: AnyObject]) {
+        self.replyTo = replyTo
+        self.response = response
+        super.init(index: index)
+    }
     
     convenience init(session: Session, replyTo: UInt) {
         self.init(index: session.getIndexForMessage(), replyTo: replyTo, response: [String: AnyObject]())
@@ -27,12 +33,6 @@ class ReplyMessage: IndexedMessage {
     
     convenience init(session: Session, replyTo: UInt, response: [String: AnyObject]) {
         self.init(index: session.getIndexForMessage(), replyTo: replyTo, response: response)
-    }
-    
-    init(index: UInt, replyTo: UInt, response: [String: AnyObject]) {
-        self.replyTo = replyTo
-        self.response = response
-        super.init(index: index)
     }
     
     override func serialize() -> [String: AnyObject] {
@@ -55,5 +55,4 @@ class ReplyMessage: IndexedMessage {
             return ReplyMessage(index: maybeIndex!, replyTo: maybeReplyTo!, response: maybeResponse!)
         }
     }
-    
 }

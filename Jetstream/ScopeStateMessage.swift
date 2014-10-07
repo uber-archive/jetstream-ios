@@ -8,56 +8,91 @@
 
 import Foundation
 
-class ScopeStateMessage: Message {
+class ScopeStateMessage: IndexedMessage {
     
     class var messageType: String {
-        get { return "ScopeState" }
+        return "ScopeState"
     }
     
-    override var type: String {
-        get { return ScopeSyncMessage.messageType }
-    }
+    let scopeIndex: UInt
+    let rootFragment: SyncFragment
+    let syncFragments: [SyncFragment]
     
-    var syncFragments: [SyncFragment]
-    
-    init(syncFragments: [SyncFragment]) {
+    init(index: UInt, scopeIndex: UInt, rootFragment: SyncFragment, syncFragments: [SyncFragment]) {
+        self.scopeIndex = scopeIndex
+        self.rootFragment = rootFragment
         self.syncFragments = syncFragments
-        super.init()
+        super.init(index: index)
+    }
+    
+    convenience init(session: Session, scopeIndex: UInt, rootFragment: SyncFragment, syncFragments: [SyncFragment]) {
+        self.init(index: session.getIndexForMessage(), scopeIndex: scopeIndex, rootFragment: rootFragment, syncFragments: syncFragments)
     }
     
     override func serialize() -> [String: AnyObject] {
         var dictionary = super.serialize()
-        
-        dictionary["fragments"] = syncFragments.map({ (syncFragment) -> [String: AnyObject] in
+        let fragments = syncFragments.map {
+            (syncFragment) -> [String: AnyObject] in
+            
             return syncFragment.serialize()
-        })
+        }
+        
+        dictionary["scopeIndex"] = scopeIndex
+        dictionary["fragments"] = fragments
         
         return dictionary
     }
     
+    
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var syncFragments: [SyncFragment]?
+        var index: UInt?
+        var scopeIndex: UInt?
+        var rootFragment: SyncFragment!
+        var syncFragments = [SyncFragment]()
+        
         
         for (key, value) in dictionary {
             switch key {
+            case "index":
+                if let definiteIndex = value as? UInt {
+                    index = definiteIndex
+                }
+            case "scopeIndex":
+                if let definiteScopeIndex = value as? UInt {
+                    scopeIndex = definiteScopeIndex
+                }
             case "fragments":
                 if let fragments = value as? [[String: AnyObject]] {
                     syncFragments = [SyncFragment]()
                     for fragment in fragments {
                         if let syncFragment = SyncFragment.unserialize(fragment) {
-                            syncFragments!.append(syncFragment)
+                            syncFragments.append(syncFragment)
+                        }
+                    }
+                }
+            case "rootFragment":
+                if let fragment = value as? [String: AnyObject] {
+                    if let syncFragment = SyncFragment.unserialize(fragment) {
+                        if (syncFragment.type == SyncFragmentType.Root) {
+                            rootFragment = syncFragment
+                        } else {
+                            return nil
                         }
                     }
                 }
             default:
-                println("Unknown object")
+                break
             }
         }
         
-        if (syncFragments == nil) {
+        if index == nil || scopeIndex == nil || rootFragment == nil {
             return nil
         } else {
-            return ScopeStateMessage(syncFragments: syncFragments!)
+            return ScopeStateMessage(
+                index: index!,
+                scopeIndex: scopeIndex!,
+                rootFragment: rootFragment,
+                syncFragments: syncFragments)
         }
     }
 }

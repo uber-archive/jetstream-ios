@@ -152,6 +152,10 @@ public class Scope {
     
     // MARK: - Public API
     
+    /// Retrieves all sync fragments that have been generated since this function was last called. Calling
+    /// this method will clear out all sync fragments.
+    ///
+    /// :returns: An Array of sync fragments that have been observed in the scope.
     public func getAndClearSyncFragments() -> [SyncFragment] {
         let fragments = syncFragments
         syncFragments.removeAll(keepCapacity: false)
@@ -167,10 +171,18 @@ public class Scope {
         }
     }
     
+    /// Retrieve an object by it's uuid.
+    ///
+    /// :param: The uuid of the object to get.
+    /// :returns: The model object with the given uuid.
     public func getObjectById(uuid: NSUUID) -> ModelObject? {
         return modelHash[uuid]
     }
     
+    /// Retrieve an object by it's uuid.
+    ///
+    /// :param: The string representing the uuid of the object to get.
+    /// :returns: The model object with the given uuid.
     public func getObjectById(uuidString: String) -> ModelObject? {
         return getObjectById(NSUUID(UUIDString: uuidString))
     }

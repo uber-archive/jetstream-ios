@@ -11,27 +11,27 @@ import Foundation
 class SessionCreateMessage: Message {
     
     class var messageType: String {
-        get { return "SessionCreate" }
+        return "SessionCreate"
     }
     
     override var type: String {
-        get { return SessionCreateMessage.messageType }
+        return SessionCreateMessage.messageType
     }
     
     let params: [String: String]
     let version: String
-
+    
+    init(params: [String: String], version: String) {
+        self.params = params
+        self.version = version
+    }
+    
     convenience override init() {
         self.init(params: [String: String]())
     }
     
     convenience init(params: [String: String]) {
         self.init(params: params, version: clientVersion)
-    }
-    
-    init(params: [String: String], version: String) {
-        self.params = params
-        self.version = version
     }
     
     override func serialize() -> [String: AnyObject] {

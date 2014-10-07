@@ -11,11 +11,11 @@ import Foundation
 class SessionCreateResponseMessage: Message {
     
     class var messageType: String {
-        get { return "SessionCreateResponse" }
+        return "SessionCreateResponse"
     }
     
     override var type: String {
-        get { return SessionCreateResponseMessage.messageType }
+        return SessionCreateResponseMessage.messageType
     }
 
     let success: Bool
@@ -42,5 +42,4 @@ class SessionCreateResponseMessage: Message {
                 response: maybeResponse)
         }
     }
-    
 }

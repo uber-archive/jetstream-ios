@@ -11,30 +11,24 @@ import Foundation
 class ScopeSyncMessage: IndexedMessage {
     
     class var messageType: String {
-        get { return "ScopeSync" }
+        return "ScopeSync"
     }
     
     override var type: String {
-        get { return ScopeSyncMessage.messageType }
+        return ScopeSyncMessage.messageType
     }
     
     let scopeIndex: UInt
     let syncFragments: [SyncFragment]
-    let fullState: Bool
-
-    convenience init(session: Session, scopeIndex: UInt, syncFragments: [SyncFragment]) {
-        self.init(index: session.getIndexForMessage(), scopeIndex: scopeIndex, syncFragments: syncFragments, fullState: false)
-    }
     
-    convenience init(session: Session, scopeIndex: UInt, syncFragments: [SyncFragment], fullState: Bool) {
-        self.init(index: session.getIndexForMessage(), scopeIndex: scopeIndex, syncFragments: syncFragments, fullState: fullState)
-    }
-    
-    init(index: UInt, scopeIndex: UInt, syncFragments: [SyncFragment], fullState: Bool) {
+    init(index: UInt, scopeIndex: UInt, syncFragments: [SyncFragment]) {
         self.scopeIndex = scopeIndex
         self.syncFragments = syncFragments
-        self.fullState = fullState
         super.init(index: index)
+    }
+    
+    convenience init(session: Session, scopeIndex: UInt, syncFragments: [SyncFragment]) {
+        self.init(index: session.getIndexForMessage(), scopeIndex: scopeIndex, syncFragments: syncFragments)
     }
     
     override func serialize() -> [String: AnyObject] {
@@ -47,7 +41,6 @@ class ScopeSyncMessage: IndexedMessage {
         
         dictionary["scopeIndex"] = scopeIndex
         dictionary["fragments"] = fragments
-        dictionary["fullState"] = fullState
         
         return dictionary
     }
@@ -77,10 +70,6 @@ class ScopeSyncMessage: IndexedMessage {
                         }
                     }
                 }
-            case "fullState":
-                if let boolValue = value as? Bool {
-                    fullState = boolValue
-                }
             default:
                 break
             }
@@ -92,8 +81,7 @@ class ScopeSyncMessage: IndexedMessage {
             return ScopeSyncMessage(
                 index: index!,
                 scopeIndex: scopeIndex!,
-                syncFragments: syncFragments!,
-                fullState: fullState)
+                syncFragments: syncFragments!)
         }
     }
 }

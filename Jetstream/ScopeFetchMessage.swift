@@ -11,15 +11,21 @@ import Foundation
 class ScopeFetchMessage: IndexedMessage {
     
     class var messageType: String {
-        get { return "ScopeFetch" }
+        return "ScopeFetch"
     }
     
     override var type: String {
-        get { return ScopeFetchMessage.messageType }
+        return ScopeFetchMessage.messageType
     }
     
     let name: String
     let params: [String: AnyObject]
+    
+    init(index: UInt, name: String, params: [String: AnyObject]) {
+        self.name = name
+        self.params = params
+        super.init(index: index)
+    }
     
     convenience init(session: Session, name: String) {
         self.init(index: session.getIndexForMessage(), name: name, params: [String: AnyObject]())
@@ -29,17 +35,10 @@ class ScopeFetchMessage: IndexedMessage {
         self.init(index: session.getIndexForMessage(), name: name, params: params)
     }
     
-    init(index: UInt, name: String, params: [String: AnyObject]) {
-        self.name = name
-        self.params = params
-        super.init(index: index)
-    }
-    
     override func serialize() -> [String: AnyObject] {
         var dictionary = super.serialize()
         dictionary["name"] = name
         dictionary["params"] = params
         return dictionary
     }
-    
 }

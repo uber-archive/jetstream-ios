@@ -10,6 +10,7 @@ import Foundation
 import Jetstream
 
 public enum SyncFragmentType: String {
+    case Root = "root"
     case Change = "change"
     case Add = "add"
     case Remove = "remove"
@@ -105,7 +106,10 @@ public class SyncFragment: Equatable {
         if type == nil || objectUUID == nil {
             return nil
         }
-        if type == .Add && clsName == nil {
+        if type == .Root && clsName == nil {
+            return nil
+        }
+        if type == .Add && (clsName == nil || parentUUID == nil || keyPath == nil) {
             return nil
         }
         if type == .MoveChange && (parentUUID == nil || keyPath == nil) {
@@ -145,6 +149,7 @@ public class SyncFragment: Equatable {
         }
     }
     
+    
     func newValueForKeyFromModelObject(key: String, value:AnyObject?, modelObject: ModelObject) {
         let property = modelObject.properties[key]
         if property == nil || property!.isCollection || property!.isModelObject {
@@ -176,6 +181,11 @@ public class SyncFragment: Equatable {
         }
         
         switch type {
+        case .Root:
+            if let definiteRootModel = scope.rootModel {
+                applyPropertiesToModelObject(definiteRootModel)
+                scope.updateUUIDForModel(definiteRootModel, uuid: self.objectUUID)
+            }
         case .Change:
             if let modelObject = scope.getObjectById(objectUUID) {
                 applyPropertiesToModelObject(modelObject)
@@ -223,14 +233,5 @@ public class SyncFragment: Equatable {
                 }
             }
         }
-    }
-    
-    func applyAddToRootModelInScope(scope: Scope) {
-        if (scope.rootModel == nil || type != .Add) {
-            return
-        }
-        
-        applyPropertiesToModelObject(scope.rootModel!)
-        scope.updateUUIDForModel(scope.rootModel!, uuid: self.objectUUID)
     }
 }

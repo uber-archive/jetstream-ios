@@ -102,8 +102,11 @@
 		7202D16819D63AF1004E9A47 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6D19D47B5A00D31133 /* Signal.swift */; };
 		722231A319DC9DB900D99795 /* DependencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722231A219DC9DB900D99795 /* DependencyTests.swift */; };
 		7233FE2F19D4C9AE004B680C /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
+		725C6AC619E3680E006DBC1D /* ScopeStateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725C6AC519E3680E006DBC1D /* ScopeStateMessage.swift */; };
+		725C6AC719E36BDB006DBC1D /* ScopeStateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725C6AC519E3680E006DBC1D /* ScopeStateMessage.swift */; };
 		727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
+		72E21C3219E4607900CE6BEA /* StateMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7202D09E19D62E70004E9A47 /* StateMessageTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -177,9 +180,10 @@
 		11EEC45819D32AEC00DCD737 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		11EEC45A19D32B2200DCD737 /* Jetstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Jetstream.h; sourceTree = "<group>"; };
 		11EEC45E19D3396300DCD737 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
-		7202D09E19D62E70004E9A47 /* MessageSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageSerialization.swift; sourceTree = "<group>"; };
+		7202D09E19D62E70004E9A47 /* StateMessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMessageTests.swift; sourceTree = "<group>"; };
 		722231A219DC9DB900D99795 /* DependencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyTests.swift; sourceTree = "<group>"; };
 		7233FE2E19D4C9AE004B680C /* Scope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scope.swift; sourceTree = "<group>"; };
+		725C6AC519E3680E006DBC1D /* ScopeStateMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeStateMessage.swift; sourceTree = "<group>"; };
 		727EAA4219D4CD2100B7990A /* SyncFragment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragment.swift; sourceTree = "<group>"; };
 		727EAA4B19D4DF8800B7990A /* ScopeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeTests.swift; sourceTree = "<group>"; };
 		727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragmentTests.swift; sourceTree = "<group>"; };
@@ -325,10 +329,11 @@
 			children = (
 				11EEC44A19D31CA700DCD737 /* Message.swift */,
 				11A71EB619DCAE9C00B124B3 /* ReplyMessage.swift */,
+				112EEB4419D5E1C900114268 /* ScopeFetchMessage.swift */,
+				725C6AC519E3680E006DBC1D /* ScopeStateMessage.swift */,
+				112EEB4219D5E18300114268 /* ScopeSyncMessage.swift */,
 				11EEC44C19D31CE600DCD737 /* SessionCreateMessage.swift */,
 				112EEB4019D5D2F500114268 /* SessionCreateResponseMessage.swift */,
-				112EEB4419D5E1C900114268 /* ScopeFetchMessage.swift */,
-				112EEB4219D5E18300114268 /* ScopeSyncMessage.swift */,
 			);
 			name = Messages;
 			sourceTree = "<group>";
@@ -395,7 +400,7 @@
 			isa = PBXGroup;
 			children = (
 				722231A219DC9DB900D99795 /* DependencyTests.swift */,
-				7202D09E19D62E70004E9A47 /* MessageSerialization.swift */,
+				7202D09E19D62E70004E9A47 /* StateMessageTests.swift */,
 				7291632419CB5FE500320F15 /* PropertyListenerTests.swift */,
 				727EAA4B19D4DF8800B7990A /* ScopeTests.swift */,
 				727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */,
@@ -584,6 +589,7 @@
 				114F4A5F19D36444003ACAC5 /* PassiveSocket.swift in Sources */,
 				114F4A6219D36444003ACAC5 /* UnixBridge.c in Sources */,
 				114F4A4C19D35D60003ACAC5 /* tls_mosq.c in Sources */,
+				725C6AC619E3680E006DBC1D /* ScopeStateMessage.swift in Sources */,
 				114F4A3619D35D60003ACAC5 /* logging_mosq.c in Sources */,
 				114F4A4219D35D60003ACAC5 /* read_handle.c in Sources */,
 				114F4A4E19D35D60003ACAC5 /* util_mosq.c in Sources */,
@@ -600,6 +606,7 @@
 				11A71EBD19DDFAF400B124B3 /* MQTTLongPollChunkedConnectionOptions.swift in Sources */,
 				11A71ECE19DDFB1000B124B3 /* MQTTKit.m in Sources */,
 				7202D16319D63ACF004E9A47 /* TreeChangeTests.swift in Sources */,
+				725C6AC719E36BDB006DBC1D /* ScopeStateMessage.swift in Sources */,
 				11A71ECB19DDFB0B00B124B3 /* Socket.swift in Sources */,
 				7202D16619D63AED004E9A47 /* Scope.swift in Sources */,
 				7202D16119D63ACF004E9A47 /* ScopeTests.swift in Sources */,
@@ -627,6 +634,7 @@
 				11A71EC819DDFB0B00B124B3 /* ActiveSocket.swift in Sources */,
 				11A71EBE19DDFAF400B124B3 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */,
 				11A71EC019DDFAF400B124B3 /* ConnectionOptions.swift in Sources */,
+				72E21C3219E4607900CE6BEA /* StateMessageTests.swift in Sources */,
 				11A71EBF19DDFAF400B124B3 /* PollTransportAdapter.swift in Sources */,
 				722231A319DC9DB900D99795 /* DependencyTests.swift in Sources */,
 				11A71EC719DDFAFE00B124B3 /* ScopeSyncMessage.swift in Sources */,

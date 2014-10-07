@@ -17,7 +17,7 @@ public func ==(lhs: ParentRelationship, rhs: ParentRelationship) -> Bool {
     return lhs.parent == rhs.parent && lhs.keyPath == rhs.keyPath
 }
 
-private var myContext = 0
+private var voidContext = 0
 
 struct PropertyInfo {
     let key: String
@@ -41,6 +41,8 @@ struct PropertyInfo {
 
     override public class func initialize() {
         let name = NSStringFromClass(self)
+        
+        // Warning: Just assuming that Swift will forever have a prefix followed by a dot and the classname
         let components = name.componentsSeparatedByString(".")
         let lastComponent = components[components.count-1]
         Static.allTypes[lastComponent] = self
@@ -62,10 +64,10 @@ struct PropertyInfo {
         return [String :[String]]()
     }
     
-    public internal(set) var uuid: NSUUID;
+    public internal(set) var uuid: NSUUID
     var properties = Dictionary<String, PropertyInfo>()
     
-    private var internalIsScopeRoot = false;
+    private var internalIsScopeRoot = false
     public var isScopeRoot: Bool {
         get {
             return internalIsScopeRoot
@@ -209,23 +211,38 @@ struct PropertyInfo {
     }
 
     func setupPropertyListeners() {
-        let mirror = reflect(self)
-        for i in 0...mirror.count - 1 {
-            var (name, type) = mirror[i]
-            if name != "super" {
+        var propertyCount: UInt32 = 0
+        let propertyList = class_copyPropertyList(self.dynamicType, &propertyCount)
+        
+        for i in 0..<Int(propertyCount) {
+            var propertyCName = property_getName(propertyList[i])
+            if propertyCName != nil {
                 var isCollection = false
                 var isModelObject = false
-                if let asArray = self.valueForKey(name) as? [ModelObject] {
+
+                let propertyName = NSString.stringWithCString(propertyCName, encoding: NSString.defaultCStringEncoding()) as String
+                
+                let propertyAttributes = property_getAttributes(propertyList[i])
+                let attributes = NSString.stringWithCString(propertyAttributes, encoding: NSString.defaultCStringEncoding())
+                let components = attributes.componentsSeparatedByString(",")
+                
+                if components.count > 0 {
+                    let type = components[0] as NSString
+                    if type.containsString("T@\"") {
+                        // Assuming that every custom type extends from ModelObject
+                        isModelObject = true
+                    }
+                }
+                
+                if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
                     isCollection = true
                     isModelObject = true
                 }
-                if let asModelObject = self.valueForKey(name) as? ModelObject {
-                    isModelObject = true
-                }
-                properties[name] = PropertyInfo(key: name, isCollection: isCollection, isModelObject: isModelObject)
-                self.addObserver(self, forKeyPath: name, options: .New | .Old, context: &myContext)
+                properties[propertyName] = PropertyInfo(key: propertyName, isCollection: isCollection, isModelObject: isModelObject)
+                self.addObserver(self, forKeyPath: propertyName, options: .New | .Old, context: &voidContext)
             }
         }
+        free(propertyList)
     }
     
     func dependenciesForKey(key: String) -> [String]? {
@@ -273,7 +290,7 @@ struct PropertyInfo {
     }
 
     override public func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
-        if context == &myContext {
+        if context == &voidContext {
             keyPathChanged(keyPath, oldValue: change[NSKeyValueChangeOldKey], newValue: change[NSKeyValueChangeNewKey])
         } else {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
@@ -287,8 +304,8 @@ struct PropertyInfo {
     /// :param: The scope to add the model object to.
     public func setScopeAndMakeRootModel(scope: Scope) {
         internalIsScopeRoot = true
-        self.scope = scope
         scope.addModelObject(self)
+        self.scope = scope
         parent = nil
     }
 

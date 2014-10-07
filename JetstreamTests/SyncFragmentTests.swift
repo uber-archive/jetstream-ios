@@ -89,6 +89,25 @@ class SyncFragmentTests: XCTestCase {
         XCTAssert(parent.childModel == nil , "Parent's property set to nil")
     }
     
+    func testRoot() {
+        var uuid = NSUUID()
+        
+        var json: [String: AnyObject] = [
+            "type": "root",
+            "uuid": uuid.UUIDString,
+            "properties": ["string": "set correctly"],
+            "cls": "TestModel"
+        ]
+        var fragment = SyncFragment.unserialize(json)
+        XCTAssertEqual(fragment!.objectUUID, uuid , "UUID unserialized")
+        XCTAssertEqual(fragment!.clsName!, "TestModel" , "Class name unserialized")
+        
+        fragment?.applyChangesToScope(scope)
+        XCTAssert(parent.uuid == uuid , "UUID updated")
+        XCTAssertEqual(parent.string!, "set correctly" , "Properties set correctly")
+        XCTAssertEqual(scope.modelObjects.count, 2 , "Scope knows of added model")
+    }
+    
     func testAdd() {
         var uuid = NSUUID()
 
@@ -110,6 +129,33 @@ class SyncFragmentTests: XCTestCase {
         var testModel = child.childModel!
         
         XCTAssertEqual(child.childModel!, testModel, "Child added")
+        XCTAssertEqual(testModel.parent!.parent, child , "Child has correct parent")
+        XCTAssert(testModel.scope === scope , "Scope set correctly")
+        XCTAssertEqual(testModel.string!, "set correctly" , "Properties set correctly")
+        XCTAssertEqual(scope.modelObjects.count, 3 , "Scope knows of added model")
+    }
+    
+    func testAddToArray() {
+        var uuid = NSUUID()
+        
+        var json: [String: AnyObject] = [
+            "type": "add",
+            "uuid": uuid.UUIDString,
+            "parent": child.uuid.UUIDString,
+            "keyPath": "array",
+            "properties": ["string": "set correctly"],
+            "cls": "TestModel"
+        ]
+        var fragment = SyncFragment.unserialize(json)
+        XCTAssertEqual(fragment!.objectUUID, uuid , "UUID unserialized")
+        XCTAssertEqual(fragment!.parentUUID!, child.uuid , "Parent UUID unserialized")
+        XCTAssertEqual(fragment!.keyPath!, "array" , "Keypath unserialized")
+        XCTAssertEqual(fragment!.clsName!, "TestModel" , "Class name unserialized")
+        
+        fragment?.applyChangesToScope(scope)
+        var testModel = child.array[0]
+        
+        XCTAssertEqual(child.array[0], testModel, "Child added")
         XCTAssertEqual(testModel.parent!.parent, child , "Child has correct parent")
         XCTAssert(testModel.scope === scope , "Scope set correctly")
         XCTAssertEqual(testModel.string!, "set correctly" , "Properties set correctly")
