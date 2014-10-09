@@ -220,15 +220,11 @@ public class SyncFragment: Equatable {
                             if let propertyInfo: PropertyInfo = parentObject.properties[definiteKeyPath] {
                                 if propertyInfo.valueType == .ModelObject {
                                     parentObject.setValue(modelObject, forKey: definiteKeyPath)
-                                    
                                 } else if propertyInfo.valueType == .Array {
                                     if var array = parentObject.valueForKey(definiteKeyPath) as? [AnyObject] {
                                         let length = array.count
                                         array.append(definiteModelObject)
-                                        let indexes = NSIndexSet(index: length)
-                                        parentObject.willChange(.Insertion, valuesAtIndexes: indexes, forKey: definiteKeyPath)
                                         parentObject.setValue(array, forKey: definiteKeyPath)
-                                        parentObject.didChange(.Insertion, valuesAtIndexes: indexes, forKey: definiteKeyPath)
                                     }
                                 }
                             }
