@@ -149,10 +149,9 @@ public class SyncFragment: Equatable {
         }
     }
     
-    
     func newValueForKeyFromModelObject(key: String, value:AnyObject?, modelObject: ModelObject) {
         let property = modelObject.properties[key]
-        if property == nil || property!.isCollection || property!.isModelObject {
+        if property == nil || property!.valueType == ModelValueType.Array || property!.valueType == ModelValueType.ModelObject {
             return
         }
         
@@ -164,7 +163,7 @@ public class SyncFragment: Equatable {
     
     func applyPropertiesFromModelObject(modelObject: ModelObject) {
         for (name, property) in modelObject.properties {
-            if (!property.isCollection && !property.isModelObject) {
+            if (property.valueType != .Array && property.valueType != .ModelObject) {
                 if let value: AnyObject = modelObject.valueForKey(property.key) {
                     if (properties == nil) {
                         properties = [String: AnyObject]()
@@ -173,6 +172,19 @@ public class SyncFragment: Equatable {
                 }
             }
         }
+    }
+    
+    func createObjectForScopeIfNecessary(scope: Scope) -> ModelObject? {
+        if (type == .Add) {
+            if let existingModelObject = scope.getObjectById(objectUUID) {
+                return nil
+            } else if clsName != nil {
+                if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
+                    return cls(uuid: objectUUID)
+                }
+            }
+        }
+        return nil
     }
     
     func applyChangesToScope(scope: Scope) {
@@ -193,23 +205,30 @@ public class SyncFragment: Equatable {
         case .Add:
             if let definiteParentUUID = parentUUID {
                 if let parentObject = scope.getObjectById(definiteParentUUID) {
-                    if clsName != nil {
+                    var modelObject: ModelObject?
+                    if let existingModelObject = scope.getObjectById(objectUUID) {
+                        modelObject = existingModelObject
+                    } else if clsName != nil {
                         if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
-                            let modelObject: ModelObject = cls(uuid: objectUUID)
-                            applyPropertiesToModelObject(modelObject)
-                            if let definiteKeyPath = keyPath {
-                                if let propertyInfo: PropertyInfo = parentObject.properties[definiteKeyPath] {
-                                    if propertyInfo.isModelObject && !propertyInfo.isCollection {
-                                        parentObject.setValue(modelObject, forKey: definiteKeyPath)
-                                    } else if propertyInfo.isModelObject && propertyInfo.isCollection {
-                                        if var array = parentObject.valueForKey(definiteKeyPath) as? [AnyObject] {
-                                            let length = array.count
-                                            array.append(modelObject)
-                                            let indexes = NSIndexSet(index: length)
-                                            parentObject.willChange(.Insertion, valuesAtIndexes: indexes, forKey: definiteKeyPath)
-                                            parentObject.setValue(array, forKey: definiteKeyPath)
-                                            parentObject.didChange(.Insertion, valuesAtIndexes: indexes, forKey: definiteKeyPath)
-                                        }
+                            modelObject = cls(uuid: objectUUID)
+                        }
+                    }
+                    
+                    if let definiteModelObject = modelObject {
+                        applyPropertiesToModelObject(definiteModelObject)
+                        if let definiteKeyPath = keyPath {
+                            if let propertyInfo: PropertyInfo = parentObject.properties[definiteKeyPath] {
+                                if propertyInfo.valueType == .ModelObject {
+                                    parentObject.setValue(modelObject, forKey: definiteKeyPath)
+                                    
+                                } else if propertyInfo.valueType == .Array {
+                                    if var array = parentObject.valueForKey(definiteKeyPath) as? [AnyObject] {
+                                        let length = array.count
+                                        array.append(definiteModelObject)
+                                        let indexes = NSIndexSet(index: length)
+                                        parentObject.willChange(.Insertion, valuesAtIndexes: indexes, forKey: definiteKeyPath)
+                                        parentObject.setValue(array, forKey: definiteKeyPath)
+                                        parentObject.didChange(.Insertion, valuesAtIndexes: indexes, forKey: definiteKeyPath)
                                     }
                                 }
                             }

@@ -38,6 +38,7 @@ class ScopeStateMessage: IndexedMessage {
         }
         
         dictionary["scopeIndex"] = scopeIndex
+        dictionary["rootFragment"] = rootFragment.serialize()
         dictionary["fragments"] = fragments
         
         return dictionary

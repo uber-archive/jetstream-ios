@@ -69,7 +69,7 @@ public class Client {
     
     /// MARK: Private interface
     
-    private func bindListeners() {
+    func bindListeners() {
         onStatusChanged.listen(self) { [weak self] (status) in
             if let this = self {
                 this.statusChanged(status)
@@ -89,21 +89,21 @@ public class Client {
         }
     }
     
-    private func statusChanged(clientStatus: ClientStatus) {
+    func statusChanged(clientStatus: ClientStatus) {
         switch clientStatus {
         case .Online:
             logger.info("Online")
             if session == nil {
-                createSession()
+                sessionCreate()
             } else {
-                resumeSession()
+                sessionResume()
             }
         case .Offline:
             logger.info("Offline")
         }
     }
     
-    private func transportStatusChanged(transportStatus: TransportStatus) {
+    func transportStatusChanged(transportStatus: TransportStatus) {
         switch transportStatus {
         case .Closed:
             status = .Offline
@@ -114,7 +114,7 @@ public class Client {
         }
     }
     
-    private func receivedMessage(message: Message) {
+    func receivedMessage(message: Message) {
         switch message {
         case let sessionCreateResponse as SessionCreateResponseMessage:
             if session != nil {
@@ -131,8 +131,7 @@ public class Client {
             if let scope = scopes[scopeStateMessage.scopeIndex] {
                 if let rootModel = scope.rootModel {
                     scope.startApplyingRemote()
-                    scope.applySyncFragment(scopeStateMessage.rootFragment)
-                    scope.applySyncFragments(scopeStateMessage.syncFragments)
+                    scope.applyRootFragment(scopeStateMessage.rootFragment, additionalFragments: scopeStateMessage.syncFragments)
                     scope.endApplyingRemote()
                 }
             }
@@ -156,15 +155,15 @@ public class Client {
         }
     }
     
-    private func createSession() {
+    private func sessionCreate() {
         transport.sendMessage(SessionCreateMessage())
     }
     
-    private func resumeSession() {
+    func sessionResume() {
         // TODO: implement
     }
     
-    func fetchScope(scope: Scope, callback: (NSError?) -> ()) {
+    func scopeFetch(scope: Scope, callback: (NSError?) -> ()) {
         transport.sendMessage(ScopeFetchMessage(session: session!, name: scope.name)) {
             [weak self] (response) in
             if let this = self {
@@ -178,14 +177,7 @@ public class Client {
         var scopeIndex: UInt? = response.valueForKey("scopeIndex")
         
         if result != nil && scopeIndex != nil && result! == true {
-            scopes[scopeIndex!] = scope
-            scope.onChanges.listen(self) {
-                [weak self] (syncFragments) in
-                if let this = self {
-                    this.scopeChanges(scope, atIndex: scopeIndex!, syncFragments: syncFragments)
-                }
-            }
-            
+            attachScope(scope, scopeIndex: scopeIndex!)
             callback(nil)
         } else {
             var definiteErrorCode = 0
@@ -211,11 +203,17 @@ public class Client {
         }
     }
     
-    private func scopeAttached(scope: Scope, atIndex: UInt) {
-
+    func attachScope(scope: Scope, scopeIndex: UInt = 1) {
+        scopes[scopeIndex] = scope
+        scope.onChanges.listen(self) {
+            [weak self] (syncFragments) in
+            if let this = self {
+                this.scopeChanges(scope, atIndex: scopeIndex, syncFragments: syncFragments)
+            }
+        }
     }
     
-    private func scopeChanges(scope: Scope, atIndex: UInt, syncFragments: [SyncFragment]) {
+    func scopeChanges(scope: Scope, atIndex: UInt, syncFragments: [SyncFragment]) {
         if session == nil {
             return
         }

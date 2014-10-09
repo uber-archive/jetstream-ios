@@ -32,6 +32,8 @@ public class Scope {
     var changesQueued = false
     var changeInterval: NSTimeInterval
     
+    private var tempModelHash = [NSUUID: ModelObject]()
+    
     public init(name: String, changeInterval: NSTimeInterval = 0.01) {
         self.name = name
         self.changeInterval = changeInterval
@@ -82,12 +84,31 @@ public class Scope {
         }
     }
     
+    func applyRootFragment(rootFragment: SyncFragment, additionalFragments:[SyncFragment]) {
+        rootFragment.applyChangesToScope(self)
+        
+        let uuids = additionalFragments.map { $0.objectUUID }
+        let removals = modelHash.keys.filter { !contains(uuids, $0) && $0 != rootFragment.objectUUID }
+        for removeUUID in removals {
+            if let model = modelHash[removeUUID] {
+                model.detach()
+            }
+        }
+        applySyncFragments(additionalFragments)
+    }
+    
     func applySyncFragment(syncFragment: SyncFragment) {
         syncFragment.applyChangesToScope(self)
     }
     
     func applySyncFragments(syncFragments: [SyncFragment]) {
-        syncFragments.map { self.applySyncFragment($0) }
+        for fragment in syncFragments {
+            if let modelObject = fragment.createObjectForScopeIfNecessary(self) {
+                tempModelHash[modelObject.uuid] = modelObject
+            }
+        }
+        syncFragments.map { $0.applyChangesToScope(self) }
+        tempModelHash.removeAll(keepCapacity: false)
     }
     
     func syncFragmentWithType(type: SyncFragmentType, modelObject: ModelObject) -> SyncFragment? {
@@ -176,7 +197,10 @@ public class Scope {
     /// :param: The uuid of the object to get.
     /// :returns: The model object with the given uuid.
     public func getObjectById(uuid: NSUUID) -> ModelObject? {
-        return modelHash[uuid]
+        if let modelObject = modelHash[uuid] {
+            return modelObject
+        }
+        return tempModelHash[uuid]
     }
     
     /// Retrieve an object by it's uuid.

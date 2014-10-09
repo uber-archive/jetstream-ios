@@ -23,7 +23,7 @@ public class Session {
     /// MARK: Public interface
     
     public func fetch(scope: Scope, callback: (NSError?) -> Void) {
-        client.fetchScope(scope, callback: callback)
+        client.scopeFetch(scope, callback: callback)
     }
     
     /// MARK: Internal interface

@@ -91,22 +91,24 @@
 		11EEC45B19D32B2200DCD737 /* Jetstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 11EEC45A19D32B2200DCD737 /* Jetstream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		11EEC45F19D3396300DCD737 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC45E19D3396300DCD737 /* Logging.swift */; };
 		7202D0CB19D63476004E9A47 /* Jetstream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7291631519CB5FE500320F15 /* Jetstream.framework */; settings = {ATTRIBUTES = (Required, ); }; };
-		7202D16019D63ACF004E9A47 /* PropertyListenerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632419CB5FE500320F15 /* PropertyListenerTests.swift */; };
-		7202D16119D63ACF004E9A47 /* ScopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4B19D4DF8800B7990A /* ScopeTests.swift */; };
-		7202D16219D63ACF004E9A47 /* SyncFragmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */; };
-		7202D16319D63ACF004E9A47 /* TreeChangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */; };
 		7202D16419D63ACF004E9A47 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291633019CB8B2C00320F15 /* TestModel.swift */; };
 		7202D16519D63AED004E9A47 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
 		7202D16619D63AED004E9A47 /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
 		7202D16719D63AED004E9A47 /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
 		7202D16819D63AF1004E9A47 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B0B6D19D47B5A00D31133 /* Signal.swift */; };
-		722231A319DC9DB900D99795 /* DependencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722231A219DC9DB900D99795 /* DependencyTests.swift */; };
+		7212916E19E5B3E400332376 /* StateMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7202D09E19D62E70004E9A47 /* StateMessageTests.swift */; };
+		7212916F19E60A2600332376 /* DependencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722231A219DC9DB900D99795 /* DependencyTests.swift */; };
+		7212917019E60A2600332376 /* PropertyListenerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632419CB5FE500320F15 /* PropertyListenerTests.swift */; };
+		7212917119E60A2600332376 /* ScopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4B19D4DF8800B7990A /* ScopeTests.swift */; };
+		7212917219E60A2600332376 /* SyncFragmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */; };
+		7212917319E60A2600332376 /* TreeChangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */; };
 		7233FE2F19D4C9AE004B680C /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7233FE2E19D4C9AE004B680C /* Scope.swift */; };
 		725C6AC619E3680E006DBC1D /* ScopeStateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725C6AC519E3680E006DBC1D /* ScopeStateMessage.swift */; };
 		725C6AC719E36BDB006DBC1D /* ScopeStateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725C6AC519E3680E006DBC1D /* ScopeStateMessage.swift */; };
 		727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
-		72E21C3219E4607900CE6BEA /* StateMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7202D09E19D62E70004E9A47 /* StateMessageTests.swift */; };
+		72DBB64919E496D600F6AB96 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DBB64819E496D600F6AB96 /* ModelValue.swift */; };
+		72DBB64A19E4975900F6AB96 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DBB64819E496D600F6AB96 /* ModelValue.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -180,21 +182,22 @@
 		11EEC45819D32AEC00DCD737 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		11EEC45A19D32B2200DCD737 /* Jetstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Jetstream.h; sourceTree = "<group>"; };
 		11EEC45E19D3396300DCD737 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
-		7202D09E19D62E70004E9A47 /* StateMessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMessageTests.swift; sourceTree = "<group>"; };
-		722231A219DC9DB900D99795 /* DependencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyTests.swift; sourceTree = "<group>"; };
+		7202D09E19D62E70004E9A47 /* StateMessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMessageTests.swift; sourceTree = "<group>"; wrapsLines = 1; };
+		722231A219DC9DB900D99795 /* DependencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyTests.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		7233FE2E19D4C9AE004B680C /* Scope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scope.swift; sourceTree = "<group>"; };
 		725C6AC519E3680E006DBC1D /* ScopeStateMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeStateMessage.swift; sourceTree = "<group>"; };
 		727EAA4219D4CD2100B7990A /* SyncFragment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragment.swift; sourceTree = "<group>"; };
-		727EAA4B19D4DF8800B7990A /* ScopeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeTests.swift; sourceTree = "<group>"; };
-		727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragmentTests.swift; sourceTree = "<group>"; };
+		727EAA4B19D4DF8800B7990A /* ScopeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeTests.swift; sourceTree = "<group>"; wrapsLines = 1; };
+		727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragmentTests.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		7291631519CB5FE500320F15 /* Jetstream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Jetstream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7291631919CB5FE500320F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7291632019CB5FE500320F15 /* JetstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JetstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7291632319CB5FE500320F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7291632419CB5FE500320F15 /* PropertyListenerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyListenerTests.swift; sourceTree = "<group>"; };
+		7291632419CB5FE500320F15 /* PropertyListenerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyListenerTests.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		7291632E19CB880200320F15 /* ModelObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelObject.swift; sourceTree = "<group>"; };
 		7291633019CB8B2C00320F15 /* TestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
-		72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeChangeTests.swift; sourceTree = "<group>"; };
+		72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeChangeTests.swift; sourceTree = "<group>"; wrapsLines = 1; };
+		72DBB64819E496D600F6AB96 /* ModelValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelValue.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -380,6 +383,7 @@
 				11181CEA19D5079300B0BA59 /* Functions.swift */,
 				11EEC45E19D3396300DCD737 /* Logging.swift */,
 				7291632E19CB880200320F15 /* ModelObject.swift */,
+				72DBB64819E496D600F6AB96 /* ModelValue.swift */,
 				7233FE2E19D4C9AE004B680C /* Scope.swift */,
 				11EEC44019D319DC00DCD737 /* Session.swift */,
 				727EAA4219D4CD2100B7990A /* SyncFragment.swift */,
@@ -552,6 +556,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				114F4A3C19D35D60003ACAC5 /* mosquitto.c in Sources */,
+				72DBB64919E496D600F6AB96 /* ModelValue.swift in Sources */,
 				118B0B6E19D47B5A00D31133 /* Signal.swift in Sources */,
 				114F4A4019D35D60003ACAC5 /* net_mosq.c in Sources */,
 				11EEC45119D321A700DCD737 /* ConnectionOptions.swift in Sources */,
@@ -604,18 +609,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				11A71EBD19DDFAF400B124B3 /* MQTTLongPollChunkedConnectionOptions.swift in Sources */,
+				7212917119E60A2600332376 /* ScopeTests.swift in Sources */,
 				11A71ECE19DDFB1000B124B3 /* MQTTKit.m in Sources */,
-				7202D16319D63ACF004E9A47 /* TreeChangeTests.swift in Sources */,
+				7212916F19E60A2600332376 /* DependencyTests.swift in Sources */,
+				7212917319E60A2600332376 /* TreeChangeTests.swift in Sources */,
 				725C6AC719E36BDB006DBC1D /* ScopeStateMessage.swift in Sources */,
 				11A71ECB19DDFB0B00B124B3 /* Socket.swift in Sources */,
+				7212917219E60A2600332376 /* SyncFragmentTests.swift in Sources */,
 				7202D16619D63AED004E9A47 /* Scope.swift in Sources */,
-				7202D16119D63ACF004E9A47 /* ScopeTests.swift in Sources */,
 				11A71EC319DDFAFE00B124B3 /* ReplyMessage.swift in Sources */,
 				11A71EC519DDFAFE00B124B3 /* SessionCreateResponseMessage.swift in Sources */,
+				7212917019E60A2600332376 /* PropertyListenerTests.swift in Sources */,
 				11A71ECF19DDFB1900B124B3 /* SwellAll.swift in Sources */,
 				11A71EBB19DDFADF00B124B3 /* Logging.swift in Sources */,
-				7202D16019D63ACF004E9A47 /* PropertyListenerTests.swift in Sources */,
 				11A71EC419DDFAFE00B124B3 /* SessionCreateMessage.swift in Sources */,
+				72DBB64A19E4975900F6AB96 /* ModelValue.swift in Sources */,
+				7212916E19E5B3E400332376 /* StateMessageTests.swift in Sources */,
 				11A71EC919DDFB0B00B124B3 /* DNS.swift in Sources */,
 				11A71ED219DDFC9500B124B3 /* SocketAddress.swift in Sources */,
 				11A71EC619DDFAFE00B124B3 /* ScopeFetchMessage.swift in Sources */,
@@ -630,13 +639,10 @@
 				11A71EB919DDFADF00B124B3 /* Extensions.swift in Sources */,
 				7202D16519D63AED004E9A47 /* ModelObject.swift in Sources */,
 				7202D16719D63AED004E9A47 /* SyncFragment.swift in Sources */,
-				7202D16219D63ACF004E9A47 /* SyncFragmentTests.swift in Sources */,
 				11A71EC819DDFB0B00B124B3 /* ActiveSocket.swift in Sources */,
 				11A71EBE19DDFAF400B124B3 /* MQTTLongPollChunkedTransportAdapter.swift in Sources */,
 				11A71EC019DDFAF400B124B3 /* ConnectionOptions.swift in Sources */,
-				72E21C3219E4607900CE6BEA /* StateMessageTests.swift in Sources */,
 				11A71EBF19DDFAF400B124B3 /* PollTransportAdapter.swift in Sources */,
-				722231A319DC9DB900D99795 /* DependencyTests.swift in Sources */,
 				11A71EC719DDFAFE00B124B3 /* ScopeSyncMessage.swift in Sources */,
 				11A71ECD19DDFB0B00B124B3 /* UnixUtils.swift in Sources */,
 			);

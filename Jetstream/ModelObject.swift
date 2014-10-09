@@ -21,8 +21,7 @@ private var voidContext = 0
 
 struct PropertyInfo {
     let key: String
-    let isCollection: Bool
-    let isModelObject: Bool
+    let valueType: ModelValueType
 }
 
 @objc public class ModelObject: NSObject {
@@ -148,9 +147,7 @@ struct PropertyInfo {
                     }
                 }
                 if let definiteOldParent = oldValue {
-                    if definiteOldParent.parent.valueForKey(definiteOldParent.keyPath) === self {
-                        definiteOldParent.parent.setValue(nil, forKey: definiteOldParent.keyPath)
-                    }
+                    definiteOldParent.parent.removeChildAtKeyPath(definiteOldParent.keyPath, child: self)
                 }
                 if let definiteParent = parent {
                     scope = definiteParent.parent.scope
@@ -159,7 +156,7 @@ struct PropertyInfo {
         }
     }
     
-    private var childModelObjects: [ModelObject] {
+    var childModelObjects: [ModelObject] {
         get {
             var objects = Array<ModelObject>()
             for property in properties.values {
@@ -217,28 +214,28 @@ struct PropertyInfo {
         for i in 0..<Int(propertyCount) {
             var propertyCName = property_getName(propertyList[i])
             if propertyCName != nil {
-                var isCollection = false
-                var isModelObject = false
+                var valueType: ModelValueType = .Int
 
                 let propertyName = NSString.stringWithCString(propertyCName, encoding: NSString.defaultCStringEncoding()) as String
-                
                 let propertyAttributes = property_getAttributes(propertyList[i])
                 let attributes = NSString.stringWithCString(propertyAttributes, encoding: NSString.defaultCStringEncoding())
                 let components = attributes.componentsSeparatedByString(",")
-                
+   
                 if components.count > 0 {
-                    let type = components[0] as NSString
-                    if type.containsString("T@\"") {
+                    var type = components[0] as NSString
+                    type = type.substringFromIndex(1)
+
+                    if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
+                        valueType = .Array
+                    } else if type.containsString("@\"") {
                         // Assuming that every custom type extends from ModelObject
-                        isModelObject = true
+                        valueType = .ModelObject
+                    } else if let definiteValueType = ModelValueType.fromRaw(type) {
+                        valueType = definiteValueType
                     }
                 }
                 
-                if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
-                    isCollection = true
-                    isModelObject = true
-                }
-                properties[propertyName] = PropertyInfo(key: propertyName, isCollection: isCollection, isModelObject: isModelObject)
+                properties[propertyName] = PropertyInfo(key: propertyName, valueType: valueType)
                 self.addObserver(self, forKeyPath: propertyName, options: .New | .Old, context: &voidContext)
             }
         }
@@ -250,6 +247,23 @@ struct PropertyInfo {
             return definiteKeyToDependencies[key]
         }
         return nil
+    }
+    
+    func removeChildAtKeyPath(key: String, child: ModelObject) {
+        if let definitePropertyInfo = properties[key] {
+            if (definitePropertyInfo.valueType == ModelValueType.Array) {
+                if var array = valueForKey(key) as? [ModelObject] {
+                    if let index = find(array, child) {
+                        array.removeAtIndex(index)
+                        self.setValue(array, forKey: key)
+                    }
+                }
+            } else {
+                if valueForKey(key) === child {
+                    self.setValue(nil, forKey: key)
+                }
+            }
+        }
     }
     
     func keyPathChanged(keyPath: String, oldValue: AnyObject?, newValue: AnyObject?) {
@@ -291,7 +305,26 @@ struct PropertyInfo {
 
     override public func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
         if context == &voidContext {
-            keyPathChanged(keyPath, oldValue: change[NSKeyValueChangeOldKey], newValue: change[NSKeyValueChangeNewKey])
+            var oldValue: AnyObject? = change[NSKeyValueChangeOldKey]
+            var newValue: AnyObject? = change[NSKeyValueChangeNewKey]
+            var notify: Bool = true
+            if oldValue == nil && newValue == nil {
+                notify = false
+            } else if oldValue != nil && newValue != nil {
+                var valueType = properties[keyPath]!.valueType
+                
+                var oldModelValue = convertAnyObjectToModelValue(oldValue!, valueType)
+                var newModelValue = convertAnyObjectToModelValue(newValue!, valueType)
+
+                if (oldModelValue != nil && newModelValue != nil) {
+                    if oldModelValue!.equalTo(newModelValue!) {
+                        notify = false
+                    }
+                }
+            }
+            if (notify) {
+                keyPathChanged(keyPath, oldValue: oldValue, newValue: newValue)
+            }
         } else {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
         }

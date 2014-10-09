@@ -10,7 +10,6 @@ import UIKit
 import XCTest
 import Jetstream
 
-
 class SyncFragmentTests: XCTestCase {
     
     var parent = TestModel()
@@ -63,7 +62,6 @@ class SyncFragmentTests: XCTestCase {
         ]
         fragment = SyncFragment.unserialize(json)
         XCTAssertNil(fragment , "Add fragment with missing cls property shouldn't be created")
-        
         
         json = [
             "type": "add",

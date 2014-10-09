@@ -252,4 +252,17 @@ class TreeChangeTests: XCTestCase {
         XCTAssertEqual(detachCount[1], 1 , "Correct amount of detaches observed for child")
         XCTAssertEqual(moveCount[1], 0 , "Correct amount of moves observed for child")
     }
+    
+    func testArrayRemovals() {
+        parent.isScopeRoot = true
+        parent.array.append(child)
+        XCTAssert(parent.array.count == 1, "Child accessible via array")
+        XCTAssertEqual(child.parent!.parent, parent, "Correct parentRelationship attached")
+        XCTAssert(child.scope === parent.scope, "Correct scope attached")
+        
+        parent.array[0].detach()
+        XCTAssert(parent.array.count == 0, "Child accessible via array")
+        XCTAssert(child.parent == nil,  "parentRelationship removed")
+        XCTAssert(child.scope == nil,  "scope removed")
+    }
 }
