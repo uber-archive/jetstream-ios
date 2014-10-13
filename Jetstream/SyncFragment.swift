@@ -14,10 +14,11 @@ public enum SyncFragmentType: String {
     case Change = "change"
     case Add = "add"
     case Remove = "remove"
-    case MoveChange = "movechange"
 }
 
+private let OnlyTransmitNonDefaultValues = false
 private var classPrefix: String?
+
 
 public func ==(lhs: SyncFragment, rhs: SyncFragment) -> Bool {
     return lhs === rhs
@@ -28,16 +29,12 @@ public class SyncFragment: Equatable {
     let type: SyncFragmentType
     let objectUUID: NSUUID
     let clsName: String?
-    let keyPath: String?
-    let parentUUID: NSUUID?
     var properties: [String: AnyObject]?
     
-    init(type: SyncFragmentType, objectUUID: NSUUID, clsName: String?, keyPath: String?, parentUUID: NSUUID?, properties: [String: AnyObject]?) {
+    init(type: SyncFragmentType, objectUUID: NSUUID, clsName: String?, properties: [String: AnyObject]?) {
         self.type = type
         self.objectUUID = objectUUID
         self.clsName = clsName
-        self.keyPath = keyPath
-        self.parentUUID = parentUUID
         self.properties = properties
     }
     
@@ -47,12 +44,6 @@ public class SyncFragment: Equatable {
         dictionary["uuid"] = objectUUID.UUIDString
         if clsName != nil {
             dictionary["cls"] = clsName!
-        }
-        if keyPath != nil {
-            dictionary["keyPath"] = keyPath!
-        }
-        if parentUUID != nil {
-            dictionary["parent"] = parentUUID?.UUIDString
         }
         if properties != nil {
             dictionary["properties"] = properties!
@@ -64,8 +55,6 @@ public class SyncFragment: Equatable {
         var type: SyncFragmentType?
         var objectUUID: NSUUID?
         var clsName: String?
-        var parentUUID: NSUUID?
-        var keyPath: String?
         var properties: [String: AnyObject]?
 
         for (key, value) in dictionary {
@@ -84,14 +73,6 @@ public class SyncFragment: Equatable {
                 if let valueAsString = value as? String {
                     clsName = valueAsString
                 }
-            case "keyPath":
-                if let valueAsString = value as? String {
-                    keyPath = valueAsString
-                }
-            case "parent":
-                if let valueAsString = value as? String {
-                    parentUUID = NSUUID(UUIDString: valueAsString)
-                }
             case "properties":
                 if let propertyDictionary = value as? Dictionary<String, AnyObject> {
                     properties = propertyDictionary
@@ -106,13 +87,7 @@ public class SyncFragment: Equatable {
         if type == nil || objectUUID == nil {
             return nil
         }
-        if type == .Root && clsName == nil {
-            return nil
-        }
-        if type == .Add && (clsName == nil || parentUUID == nil || keyPath == nil) {
-            return nil
-        }
-        if type == .MoveChange && (parentUUID == nil || keyPath == nil) {
+        if (type == .Root || type == .Add) && clsName == nil {
             return nil
         }
 
@@ -120,8 +95,6 @@ public class SyncFragment: Equatable {
             type: type!,
             objectUUID: objectUUID!,
             clsName: clsName,
-            keyPath: keyPath,
-            parentUUID: parentUUID,
             properties: properties)
     }
     
@@ -133,28 +106,63 @@ public class SyncFragment: Equatable {
             var fullyQualifiedClassName = NSStringFromClass(modelObject.dynamicType)
             var qualifiers = fullyQualifiedClassName.componentsSeparatedByString(".")
             self.clsName = qualifiers[qualifiers.count-1]
-            self.parentUUID = modelObject.parent?.parent.uuid
-            self.keyPath = modelObject.parent?.keyPath
             applyPropertiesFromModelObject(modelObject)
-        } else if (type == .MoveChange) {
-            self.keyPath = modelObject.parent?.keyPath
         }
     }
 
-    func applyPropertiesToModelObject(modelObject: ModelObject) {
-        if let definiteProperties = properties {
+    func applyPropertiesToModelObject(modelObject: ModelObject, scope: Scope, applyDefaults: Bool = false) {
+        if var definiteProperties = properties {
+            if (applyDefaults) {
+                for (name, propertyInfo) in modelObject.properties {
+                    if !contains(definiteProperties.keys, name) {
+                        if (propertyInfo.defaultValue == nil) {
+                            definiteProperties[name] = NSNull()
+                        } else {
+                            definiteProperties[name] = propertyInfo.defaultValue
+                        }
+                    }
+                }
+            }
             for (key, value) in definiteProperties {
-                modelObject.setValue(value, forKey: key)
+                if let propertyInfo = modelObject.properties[key] {
+                    switch propertyInfo.valueType {
+                    case .ModelObject:
+                        var applied = false
+                        if let uuidString = value as? String {
+                            let uuid = NSUUID(UUIDString: uuidString)
+                            if let referencedModelObject = scope.getObjectById(uuid) {
+                                modelObject.setValue(referencedModelObject, forKey: key)
+                                applied = true
+                            }
+                        }
+                        if !applied {
+                            modelObject.setValue(nil, forKey: key)
+                        }
+                    case .Array:
+                        var models = [ModelObject]()
+                        if let uuids = value as? [String] {
+                            for uuidString in uuids {
+                                let uuid = NSUUID(UUIDString: uuidString)
+                                if let referencedModelObject = scope.getObjectById(uuid) {
+                                    models.append(referencedModelObject)
+                                }
+                            }
+                        }
+                        modelObject.setValue(models, forKey: key)
+                    default:
+                        modelObject.setValue(value, forKey: key)
+                    }
+                }
             }
         }
     }
     
     func newValueForKeyFromModelObject(key: String, value:AnyObject?, modelObject: ModelObject) {
-        let property = modelObject.properties[key]
-        if property == nil || property!.valueType == ModelValueType.Array || property!.valueType == ModelValueType.ModelObject {
-            return
+        var appliedValue: AnyObject? = value
+        if (value == nil) {
+            appliedValue = NSNull()
         }
-        
+        let property = modelObject.properties[key]
         if (properties == nil) {
             properties = [String: AnyObject]()
         }
@@ -168,7 +176,23 @@ public class SyncFragment: Equatable {
                     if (properties == nil) {
                         properties = [String: AnyObject]()
                     }
-                    properties![name] = value
+                    var apply: Bool = true
+                    
+                    if OnlyTransmitNonDefaultValues {
+                        if let definiteDefaultValue: AnyObject = property.defaultValue {
+                            let modelValue = convertAnyObjectToModelValue(value, property.valueType)
+                            let defaultModelValue = convertAnyObjectToModelValue(definiteDefaultValue, property.valueType)
+                            
+                            if (modelValue != nil && defaultModelValue != nil) {
+                                if modelValue!.equalTo(defaultModelValue!) {
+                                    apply = false
+                                }
+                            }
+                        }
+                    }
+                    if apply {
+                        properties![name] = value
+                    }
                 }
             }
         }
@@ -187,7 +211,7 @@ public class SyncFragment: Equatable {
         return nil
     }
     
-    func applyChangesToScope(scope: Scope) {
+    func applyChangesToScope(scope: Scope, applyDefaults: Bool = false) {
         if (scope.rootModel == nil) {
             return
         }
@@ -195,57 +219,30 @@ public class SyncFragment: Equatable {
         switch type {
         case .Root:
             if let definiteRootModel = scope.rootModel {
-                applyPropertiesToModelObject(definiteRootModel)
+                applyPropertiesToModelObject(definiteRootModel, scope: scope, applyDefaults: applyDefaults)
                 scope.updateUUIDForModel(definiteRootModel, uuid: self.objectUUID)
             }
         case .Change:
             if let modelObject = scope.getObjectById(objectUUID) {
-                applyPropertiesToModelObject(modelObject)
+                applyPropertiesToModelObject(modelObject, scope: scope, applyDefaults: applyDefaults)
             }
         case .Add:
-            if let definiteParentUUID = parentUUID {
-                if let parentObject = scope.getObjectById(definiteParentUUID) {
-                    var modelObject: ModelObject?
-                    if let existingModelObject = scope.getObjectById(objectUUID) {
-                        modelObject = existingModelObject
-                    } else if clsName != nil {
-                        if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
-                            modelObject = cls(uuid: objectUUID)
-                        }
-                    }
-                    
-                    if let definiteModelObject = modelObject {
-                        applyPropertiesToModelObject(definiteModelObject)
-                        if let definiteKeyPath = keyPath {
-                            if let propertyInfo: PropertyInfo = parentObject.properties[definiteKeyPath] {
-                                if propertyInfo.valueType == .ModelObject {
-                                    parentObject.setValue(modelObject, forKey: definiteKeyPath)
-                                } else if propertyInfo.valueType == .Array {
-                                    if var array = parentObject.valueForKey(definiteKeyPath) as? [AnyObject] {
-                                        let length = array.count
-                                        array.append(definiteModelObject)
-                                        parentObject.setValue(array, forKey: definiteKeyPath)
-                                    }
-                                }
-                            }
-                        }
-                    }
+            var modelObject: ModelObject?
+            if let existingModelObject = scope.getObjectById(objectUUID) {
+                modelObject = existingModelObject
+            } else if clsName != nil {
+                if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
+                    modelObject = cls(uuid: objectUUID)
                 }
             }
+            
+            if let definiteModelObject = modelObject {
+                applyPropertiesToModelObject(definiteModelObject, scope: scope, applyDefaults: applyDefaults)
+            }
+            
         case .Remove:
             if let modelObject = scope.getObjectById(objectUUID) {
-                modelObject.parent = nil
-            }
-        case .MoveChange:
-            if let modelObject = scope.getObjectById(objectUUID) {
-                applyPropertiesToModelObject(modelObject)
-                if let definiteParentUUID = parentUUID {
-                    if let parentObject = scope.getObjectById(definiteParentUUID) {
-                        if let definiteKeyPath = keyPath {
-                            parentObject.setValue(modelObject, forKey: definiteKeyPath)
-                        }
-                    }
-                }
+                modelObject.detach()
             }
         }
     }

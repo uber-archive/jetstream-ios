@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Signals
 
 enum TransportStatus {
     case Closed

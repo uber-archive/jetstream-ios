@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Signals
 
 let clientVersion = "0.1.0"
 let defaultErrorDomain = "com.uber.jetstream"

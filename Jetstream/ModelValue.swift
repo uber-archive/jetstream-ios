@@ -23,7 +23,7 @@ enum ModelValueType: String {
     case UInt = "Q"
     case Float = "f"
     case Double = "d"
-    case Bool = "b"
+    case Bool = "B"
     case Str = "@"
     case Array = "@a"
     case ModelObject = "@m"
@@ -97,7 +97,20 @@ extension Bool: ModelValue {
 }
 
 extension Array: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return false }
+    func equalTo(value: ModelValue) -> Bool {
+        if let newContent = value as? [AnyObject] {
+            if self.count != newContent.count {
+                return false
+            }
+            for i in 0..<self.count {
+                if self[i] as ModelObject !== newContent[i] {
+                    return false
+                }
+            }
+            return true
+        }
+        return false
+    }
 }
 
 extension ModelObject: ModelValue {

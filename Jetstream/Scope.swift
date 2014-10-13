@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Signals
 
 public class Scope {
 
@@ -54,20 +55,19 @@ public class Scope {
         modelObject.onPropertyChange.listen(self, callback: { [weak self] (keyPath, oldValue, value) -> () in
             if let this = self {
                 if (!this.applyingRemote) {
-                    let oldModelObject = oldValue as? ModelObject
-                    let newModelObject = value as? ModelObject
-                    
-                    if (oldModelObject == nil && newModelObject == nil) {
-                        // Only create change fragments for changes that don't affect child Model Objects
-                        if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
-                            fragment.newValueForKeyFromModelObject(keyPath, value: value, modelObject: modelObject)
-                        }
+                    var appliedValue: AnyObject? = value
+                    if let valueAsModelObject = value as? ModelObject {
+                        appliedValue = valueAsModelObject.uuid.UUIDString
                     }
+                    if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
+                        fragment.newValueForKeyFromModelObject(keyPath, value: appliedValue, modelObject: modelObject)
+                    }
+                    
                 }
             }
         })
         
-        if let definiteParent = modelObject.parent {
+        if modelObject.parents.count > 0 {
             if (!applyingRemote) {
                 self.syncFragmentWithType(.Add, modelObject: modelObject)
             }
@@ -85,8 +85,6 @@ public class Scope {
     }
     
     func applyRootFragment(rootFragment: SyncFragment, additionalFragments:[SyncFragment]) {
-        rootFragment.applyChangesToScope(self)
-        
         let uuids = additionalFragments.map { $0.objectUUID }
         let removals = modelHash.keys.filter { !contains(uuids, $0) && $0 != rootFragment.objectUUID }
         for removeUUID in removals {
@@ -94,20 +92,18 @@ public class Scope {
                 model.detach()
             }
         }
-        applySyncFragments(additionalFragments)
+        var fragments = additionalFragments
+        fragments.append(rootFragment)
+        applySyncFragments(fragments, applyDefaults: true)
     }
     
-    func applySyncFragment(syncFragment: SyncFragment) {
-        syncFragment.applyChangesToScope(self)
-    }
-    
-    func applySyncFragments(syncFragments: [SyncFragment]) {
+    func applySyncFragments(syncFragments: [SyncFragment], applyDefaults: Bool = false) {
         for fragment in syncFragments {
             if let modelObject = fragment.createObjectForScopeIfNecessary(self) {
                 tempModelHash[modelObject.uuid] = modelObject
             }
         }
-        syncFragments.map { $0.applyChangesToScope(self) }
+        syncFragments.map { $0.applyChangesToScope(self, applyDefaults: applyDefaults) }
         tempModelHash.removeAll(keepCapacity: false)
     }
     
@@ -122,8 +118,6 @@ public class Scope {
                 removeFragment(fragment)
                 return addFragment(SyncFragment(type: type, modelObject: modelObject))
             }
-            // TODO: Support movechange
-            
             setChangeTimer()
             return fragment
         }

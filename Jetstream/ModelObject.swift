@@ -7,10 +7,17 @@
 //
 
 import Foundation
+import Signals
 
 public struct ParentRelationship: Equatable {
     var parent: ModelObject
     var keyPath: String
+    var listener: SignalListener<(key: String, oldValue: AnyObject?, value: AnyObject?)>?
+    
+    init(parent: ModelObject, keyPath: String) {
+        self.parent = parent
+        self.keyPath = keyPath
+    }
 }
 
 public func ==(lhs: ParentRelationship, rhs: ParentRelationship) -> Bool {
@@ -22,16 +29,18 @@ private var voidContext = 0
 struct PropertyInfo {
     let key: String
     let valueType: ModelValueType
+    let defaultValue: AnyObject?
 }
 
 @objc public class ModelObject: NSObject {
     
-    public let onPropertyChange = Signal<(keyPath: String, oldValue: AnyObject?, value: AnyObject?)>()
-    public let onModelAddedToCollection = Signal<(keyPath: String, element: AnyObject, atIndex:Int)>()
-    public let onModelRemovedFromCollection = Signal<(keyPath: String, element: AnyObject, atIndex:Int)>()
+    public let onPropertyChange = Signal<(key: String, oldValue: AnyObject?, value: AnyObject?)>()
+    public let onModelAddedToCollection = Signal<(key: String, element: AnyObject, atIndex:Int)>()
+    public let onModelRemovedFromCollection = Signal<(key: String, element: AnyObject, atIndex:Int)>()
     public let onDetachedFromScope = Signal<(Scope)>()
-    public let onAttachToScope = Signal<(scope: Scope, parent: ModelObject, keyPath: String)>()
-    public let onMovedBetweenScopes = Signal<(parent: ModelObject, keyPath: String)>()
+    public let onAttachToScope = Signal<(Scope)>()
+    public let onAddedParent = Signal<(parent: ModelObject, key: String)>()
+    public let onRemovedParent = Signal<(parent: ModelObject, key: String)>()
     
     struct Static {
         static var allTypes = [String: AnyClass]()
@@ -74,10 +83,6 @@ struct PropertyInfo {
         set {
             if (isScopeRoot != newValue) {
                 internalIsScopeRoot = newValue
-                if (newValue == false && scope != nil) {
-                    scope!.removeModelObject(self)
-                    onDetachedFromScope.fire(scope!)
-                }
                 if (newValue) {
                     setScopeAndMakeRootModel(Scope(name: object_getClass(self).description()))
                 } else {
@@ -101,16 +106,14 @@ struct PropertyInfo {
                     oldScope!.removeModelObject(self)
                 }
                 
-                if let definiteParent = parent {
-                    if let definiteOldScope = oldScope {
-                        onDetachedFromScope.fire(definiteOldScope)
-                    }
-                    if let definiteScope = scope {
-                        definiteScope.addModelObject(self)
-                        onAttachToScope.fire(scope: definiteScope, parent: definiteParent.parent, keyPath: definiteParent.keyPath)
-                    }
+                if let definiteOldScope = oldScope {
+                    onDetachedFromScope.fire(definiteOldScope)
                 }
-                
+                if let definiteScope = scope {
+                    definiteScope.addModelObject(self)
+                    onAttachToScope.fire(definiteScope)
+                }
+
                 for child in childModelObjects {
                     if (child != self) {
                         child.scope = scope
@@ -120,41 +123,7 @@ struct PropertyInfo {
         }
     }
 
-    public var parent: ParentRelationship? {
-        willSet(newValue) {
-            if parent != newValue {
-                if let definiteParent = parent {
-                    definiteParent.parent.onPropertyChange.removeListener(self)
-                }
-                if newValue == nil && !isScopeRoot {
-                    scope = nil
-                }
-            }
-        }
-        
-        didSet(oldValue) {
-            if parent != oldValue {
-                if let newParent = parent {
-                    newParent.parent.onPropertyChange.listen(self, callback: { (keyPath, oldValue, value) -> Void in
-                        if (keyPath == newParent.keyPath) {
-                            if (value as? ModelObject) != self && (value as? [ModelObject]) == nil {
-                                self.parent = nil
-                            }
-                        }
-                    })
-                    if oldValue != nil && oldValue!.parent.scope != nil {
-                        onMovedBetweenScopes.fire(parent: newParent.parent, keyPath: newParent.keyPath)
-                    }
-                }
-                if let definiteOldParent = oldValue {
-                    definiteOldParent.parent.removeChildAtKeyPath(definiteOldParent.keyPath, child: self)
-                }
-                if let definiteParent = parent {
-                    scope = definiteParent.parent.scope
-                }
-            }
-        }
-    }
+    var parents = [ParentRelationship]()
     
     var childModelObjects: [ModelObject] {
         get {
@@ -208,23 +177,23 @@ struct PropertyInfo {
     }
 
     func setupPropertyListeners() {
+        // TODO: Do this only once and store as static
         var propertyCount: UInt32 = 0
         let propertyList = class_copyPropertyList(self.dynamicType, &propertyCount)
         
         for i in 0..<Int(propertyCount) {
             var propertyCName = property_getName(propertyList[i])
             if propertyCName != nil {
-                var valueType: ModelValueType = .Int
-
                 let propertyName = NSString.stringWithCString(propertyCName, encoding: NSString.defaultCStringEncoding()) as String
                 let propertyAttributes = property_getAttributes(propertyList[i])
                 let attributes = NSString.stringWithCString(propertyAttributes, encoding: NSString.defaultCStringEncoding())
                 let components = attributes.componentsSeparatedByString(",")
    
-                if components.count > 0 {
-                    var type = components[0] as NSString
-                    type = type.substringFromIndex(1)
+                if components.count > 2 {
+                    var type: NSString = (components[0] as NSString).substringFromIndex(1)
+                    var accessible = (components[2] as String) != "R"
 
+                    var valueType: ModelValueType?
                     if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
                         valueType = .Array
                     } else if type.containsString("@\"") {
@@ -233,10 +202,16 @@ struct PropertyInfo {
                     } else if let definiteValueType = ModelValueType.fromRaw(type) {
                         valueType = definiteValueType
                     }
+                    
+                    if let definiteValueType = valueType {
+                        if accessible {
+                            self.addObserver(self, forKeyPath: propertyName, options: .New | .Old, context: &voidContext)
+                            let defaultValue: AnyObject? = valueForKey(propertyName)
+                            properties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue)
+                        }
+                    }
+                    
                 }
-                
-                properties[propertyName] = PropertyInfo(key: propertyName, valueType: valueType)
-                self.addObserver(self, forKeyPath: propertyName, options: .New | .Old, context: &voidContext)
             }
         }
         free(propertyList)
@@ -249,6 +224,55 @@ struct PropertyInfo {
         return nil
     }
     
+    func addParentRelationship(parentRelationship: ParentRelationship) {
+        if find(parents, parentRelationship) == nil {
+            assert(scope == nil || scope === parentRelationship.parent.scope, "Attaching a model object to two scopes is currently not supported")
+            
+            var relationship = parentRelationship
+           
+            relationship.listener = relationship.parent.onPropertyChange.listen(self) { [weak self] (key, oldValue, value) -> Void in
+                if let strongSelf = self {
+                    if (key == relationship.keyPath) {
+                        if let definitePropertyInfo = strongSelf.properties[key] {
+                            if definitePropertyInfo.valueType == ModelValueType.ModelObject {
+                                if value !== strongSelf {
+                                    strongSelf.removeParentRelationship(relationship)
+                                }
+                            } else if definitePropertyInfo.valueType == ModelValueType.Array {
+                                if let arrayContents = value as? [ModelObject] {
+                                    if !contains(arrayContents, strongSelf) {
+                                        strongSelf.removeParentRelationship(relationship)
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            parents.append(relationship)
+            
+            onAddedParent.fire((parent: parentRelationship.parent, key: parentRelationship.keyPath))
+
+            if (parents.count == 1) {
+                scope = parentRelationship.parent.scope
+            }
+        }
+    }    
+    
+    func removeParentRelationship(parentRelationship: ParentRelationship) {
+        if let index = find(parents, parentRelationship) {
+            parents.removeAtIndex(index)
+            if let definiteListener = parentRelationship.listener {
+                definiteListener.cancel()
+            }
+            parentRelationship.parent.removeChildAtKeyPath(parentRelationship.keyPath, child: self)
+            if (parents.count == 0) {
+                scope = nil
+            }
+        }
+    }
+
     func removeChildAtKeyPath(key: String, child: ModelObject) {
         if let definitePropertyInfo = properties[key] {
             if (definitePropertyInfo.valueType == ModelValueType.Array) {
@@ -277,28 +301,26 @@ struct PropertyInfo {
             for index in 0 ..< oldArray!.count {
                 if !contains(newArray!, oldArray![index]) {
                     let model = oldArray![index]
-                    model.parent = nil
-                    onModelRemovedFromCollection.fire(keyPath: keyPath, element: model as AnyObject, atIndex: index)
+                    model.removeParentRelationship(ParentRelationship(parent: self, keyPath: keyPath))
+                    onModelRemovedFromCollection.fire(key: keyPath, element: model as AnyObject, atIndex: index)
                 }
             }
             for index in 0 ..< newArray!.count {
                 if !contains(oldArray!, newArray![index]) {
                     let model = newArray![index]
-                    model.parent = ParentRelationship(parent: self, keyPath: keyPath)
-                    model.scope = scope
-                    onModelAddedToCollection.fire(keyPath: keyPath, element: model as AnyObject, atIndex: index)
+                    model.addParentRelationship(ParentRelationship(parent: self, keyPath: keyPath))
+                    onModelAddedToCollection.fire(key: keyPath, element: model as AnyObject, atIndex: index)
                 }
             }
         } else if let modelObject = newValue as? ModelObject {
-            modelObject.parent = ParentRelationship(parent: self, keyPath: keyPath)
-            modelObject.scope = scope
+            modelObject.addParentRelationship(ParentRelationship(parent: self, keyPath: keyPath))
         }
         
-        onPropertyChange.fire(keyPath: keyPath, oldValue: oldValue, value: newValue)
+        onPropertyChange.fire(key: keyPath, oldValue: oldValue, value: newValue)
         
         if let dependencies = dependenciesForKey(keyPath) {
             for dependency in dependencies {
-                onPropertyChange.fire(keyPath: dependency, oldValue: nil, value: nil)
+                onPropertyChange.fire(key: dependency, oldValue: nil, value: nil)
             }
         }
     }
@@ -312,11 +334,11 @@ struct PropertyInfo {
                 notify = false
             } else if oldValue != nil && newValue != nil {
                 var valueType = properties[keyPath]!.valueType
-                
                 var oldModelValue = convertAnyObjectToModelValue(oldValue!, valueType)
                 var newModelValue = convertAnyObjectToModelValue(newValue!, valueType)
-
-                if (oldModelValue != nil && newModelValue != nil) {
+                if (oldModelValue == nil && newModelValue == nil) {
+                    notify = false
+                } else if (oldModelValue != nil && newModelValue != nil) {
                     if oldModelValue!.equalTo(newModelValue!) {
                         notify = false
                     }
@@ -336,10 +358,9 @@ struct PropertyInfo {
     ///
     /// :param: The scope to add the model object to.
     public func setScopeAndMakeRootModel(scope: Scope) {
+        detach()
         internalIsScopeRoot = true
-        scope.addModelObject(self)
         self.scope = scope
-        parent = nil
     }
 
     /// Fires a listener whenever any property or collection on the object changes.
@@ -417,19 +438,33 @@ struct PropertyInfo {
     /// Fires a listener whenever the ModelObject is attached to a scope.
     ///
     /// :param: listener The listener to attach to the event.
-    /// :param: callback The closure that gets executed every time the ModelObject is added to a scope.
-    public func observeAttach(listener: AnyObject, callback: () -> Void) {
-        let listener = onAttachToScope.listen(listener)  { (scopeRoot, parent, keyPath) -> Void in
-            callback()
+    /// :param: callback The closure that gets executed every time the ModelObject is added to a scope. The scope argument
+    /// contains the scope to which the model object was attached to.
+    public func observeAttach(listener: AnyObject, callback: (scope: Scope) -> Void) {
+        let listener = onAttachToScope.listen(listener)  { (scope) -> Void in
+            callback(scope: scope)
         }
     }
     
     /// Fires a listener whenever the ModelObject is attached to a scope.
+    ///
     /// :param: listener The listener to attach to the event.
-    /// :param: callback The closure that gets executed every time the ModelObject is added to a scope.
-    public func observeDetach(listener: AnyObject, callback: () -> Void) {
-        let listener = onDetachedFromScope.listen(listener)  { (scopeRoot) -> Void in
-            callback()
+    /// :param: callback The closure that gets executed every time the ModelObject is added to a scope. The scope argument
+    /// contains the scope from which the model object was removed from.
+    public func observeDetach(listener: AnyObject, callback: (scope: Scope) -> Void) {
+        let listener = onDetachedFromScope.listen(listener)  { (scope) -> Void in
+            callback(scope: scope)
+        }
+    }
+    
+    /// Fires a listener whenever the ModelObject is moved between scopes.
+    ///
+    /// :param: listener The listener to attach to the event.
+    /// :param: callback The closure that gets executed every time the ModelObject is moved between scopes. The scope argument
+    /// contains the new scope of the model object.
+    public func observeAddedToParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) {
+        let listener = onAddedParent.listen(listener) { (parent, key) -> Void in
+            callback(parent: parent, key:key)
         }
     }
     
@@ -437,9 +472,9 @@ struct PropertyInfo {
     ///
     /// :param: listener The listener to attach to the event.
     /// :param: callback The closure that gets executed every time the ModelObject is moved between scopes.
-    public func observeMove(listener: AnyObject, callback: () -> Void) {
-        let listener = onMovedBetweenScopes.listen(listener)  { (scopeRoot) -> Void in
-            callback()
+    public func observeRemovedFromParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) {
+        let listener = onRemovedParent.listen(listener) { (parent, key) -> Void in
+            callback(parent: parent, key: key)
         }
     }
     
@@ -451,11 +486,14 @@ struct PropertyInfo {
         onModelRemovedFromCollection.removeListener(listener)
         onDetachedFromScope.removeListener(listener)
         onAttachToScope.removeListener(listener)
-        onMovedBetweenScopes.removeListener(listener)
+        onAddedParent.removeListener(listener)
+        onRemovedParent.removeListener(listener)
     }
     
     /// Removes the ModelObject from its scope.
     public func detach() {
-        parent = nil
+        for parentRelationship in parents {
+            removeParentRelationship(parentRelationship)
+        }
     }
 }

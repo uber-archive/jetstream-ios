@@ -21,7 +21,7 @@ public class ShapeView: UIView, UIGestureRecognizerDelegate {
                     this.updateView()
                 }
             }
-            shape.observeDetach(self) { [weak self] in
+            shape.observeDetach(self) { [weak self] (scope) in
                 if let this = self {
                     this.removeFromSuperview()
                 }

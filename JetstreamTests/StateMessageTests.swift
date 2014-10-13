@@ -23,6 +23,8 @@ class StateMessageTests: XCTestCase {
         root = TestModel()
         scope = Scope(name: "Testing")
         root.setScopeAndMakeRootModel(scope)
+        XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope to start with")
+        
         client = Client(options: ConnectionOptions(url: "localhost"))
         client.attachScope(scope)
         
@@ -35,20 +37,22 @@ class StateMessageTests: XCTestCase {
             "rootFragment": [
                 "type": "root",
                 "uuid": uuid.UUIDString,
-                "properties": ["string": "set correctly"],
+                "properties": [
+                    "string": "set correctly",
+                    "childModel": childUUID.UUIDString
+                ],
                 "cls": "TestModel"
             ],
             "fragments": [
                 [
                     "type": "add",
                     "uuid": childUUID.UUIDString,
-                    "parent": uuid.UUIDString,
-                    "keyPath": "childModel",
                     "properties": ["string": "ok"],
                     "cls": "TestModel"
                 ]
             ]
         ]
+        
         
         firstMessage = Message.unserialize(json) as ScopeStateMessage
         client.receivedMessage(firstMessage)
@@ -101,7 +105,6 @@ class StateMessageTests: XCTestCase {
     }
     
     func testReapplyingMoving() {
-        
         var json = [
             "type": "ScopeState",
             "index": 1,
@@ -109,15 +112,16 @@ class StateMessageTests: XCTestCase {
             "rootFragment": [
                 "type": "root",
                 "uuid": uuid.UUIDString,
-                "properties": ["string": "set correctly"],
+                "properties": [
+                    "string": "set correctly",
+                    "childModel2": root.childModel!.uuid.UUIDString
+                ],
                 "cls": "TestModel"
             ],
             "fragments": [
                 [
                     "type": "add",
                     "uuid": root.childModel!.uuid.UUIDString,
-                    "parent": uuid.UUIDString,
-                    "keyPath": "childModel2",
                     "properties": ["string": "ok"],
                     "cls": "TestModel"
                 ]
@@ -126,14 +130,8 @@ class StateMessageTests: XCTestCase {
         
         XCTAssert(root.childModel != nil, "Child model moved")
         
-        var observeCount = 0
-        root.childModel?.observeMove(self, callback: { () -> Void in
-            observeCount += 1
-        })
-        
         client.receivedMessage(Message.unserialize(json)!)
         
-        XCTAssertEqual(observeCount, 1, "Observed move")
         XCTAssert(root.childModel == nil, "Child model moved")
         XCTAssert(root.childModel2 != nil, "Child model moved")
         XCTAssertEqual(scope.modelObjects.count, 2, "Correct number of objects in scope")
@@ -150,24 +148,26 @@ class StateMessageTests: XCTestCase {
             "rootFragment": [
                 "type": "root",
                 "uuid": uuid.UUIDString,
-                "properties": ["string": "set correctly"],
+                "properties": [
+                    "string": "set correctly",
+                    "childModel2": childUUID.UUIDString
+                ],
                 "cls": "TestModel"
             ],
             "fragments": [
                 [
                     "type": "add",
                     "uuid": childUUID2.UUIDString,
-                    "parent": childUUID.UUIDString,
-                    "keyPath": "childModel",
                     "properties": ["string": "ok2"],
                     "cls": "TestModel"
                 ],
                 [
                     "type": "add",
                     "uuid": childUUID.UUIDString,
-                    "parent": uuid.UUIDString,
-                    "keyPath": "childModel2",
-                    "properties": ["string": "ok1"],
+                    "properties": [
+                        "string": "ok1",
+                        "childModel": childUUID2.UUIDString
+                    ],
                     "cls": "TestModel"
                 ]
             ]

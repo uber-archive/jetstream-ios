@@ -78,9 +78,10 @@ class ScopeTests: XCTestCase {
         parent.childModel = child
         child.childModel = child2
         fragments = scope.getAndClearSyncFragments()
-        XCTAssertEqual(fragments.count, 2 , "Correct amount of fragments")
+        XCTAssertEqual(fragments.count, 3 , "Correct amount of fragments")
         XCTAssertEqual(fragments[0].type, SyncFragmentType.Add , "Correct fragment type")
-        XCTAssertEqual(fragments[1].type, SyncFragmentType.Add , "Correct fragment type")
+        XCTAssertEqual(fragments[1].type, SyncFragmentType.Change , "Correct fragment type")
+        XCTAssertEqual(fragments[2].type, SyncFragmentType.Add , "Correct fragment type")
         
         fragments = scope.getAndClearSyncFragments()
         XCTAssertEqual(fragments.count, 0 , "Fragments cleared out after getting")
@@ -92,9 +93,13 @@ class ScopeTests: XCTestCase {
         
         parent.childModel = nil
         fragments = scope.getAndClearSyncFragments()
-        XCTAssertEqual(fragments.count, 2 , "Child removals captured")
-        XCTAssertEqual(fragments[0].type, SyncFragmentType.Remove , "Correct fragment type")
+        XCTAssertEqual(fragments.count, 3 , "Child removals captured")
+        XCTAssertEqual(fragments[0].type, SyncFragmentType.Change , "Correct fragment type")
+        XCTAssertEqual(fragments[0].properties!["childModel"] as NSNull, NSNull() , "Child model removed")
         XCTAssertEqual(fragments[1].type, SyncFragmentType.Remove , "Correct fragment type")
+        XCTAssertEqual(fragments[1].objectUUID, child.uuid , "Correct uuid from remove fragment")
+        XCTAssertEqual(fragments[2].type, SyncFragmentType.Remove , "Correct fragment type")
+        XCTAssertEqual(fragments[2].objectUUID, child2.uuid , "Correct uuid from remove fragment")
         
         child.string = "Testing more"
         fragments = scope.getAndClearSyncFragments()
@@ -125,27 +130,33 @@ class ScopeTests: XCTestCase {
             var fragment = fragments[0]
             XCTAssertEqual(fragment.type, SyncFragmentType.Add, "Fragment is correct")
             XCTAssertEqual(fragment.objectUUID, self.child.uuid, "Fragment is correct")
-            XCTAssertEqual(fragment.parentUUID!, self.parent.uuid, "Fragment is correct")
-            XCTAssertEqual(fragment.keyPath!, "childModel", "Fragment is correct")
+            XCTAssert(fragment.properties!.count > 2, "Sending up all default values")
+            XCTAssertEqual(fragment.properties!["string"]! as String, "testing", "Fragment is correct")
+            XCTAssertEqual(fragment.properties!["childModel2"]! as String, self.child2.uuid.UUIDString, "Fragment is correct")
             
             fragment = fragments[1]
-            XCTAssertEqual(fragment.type, SyncFragmentType.Add, "Fragment is correct")
-            XCTAssertEqual(fragment.objectUUID, self.child2.uuid, "Fragment is correct")
-            XCTAssertEqual(fragment.parentUUID!, self.child.uuid, "Fragment is correct")
-            XCTAssertEqual(fragment.keyPath!, "childModel2", "Fragment is correct")
-            
-            fragment = fragments[2]
             XCTAssertEqual(fragment.type, SyncFragmentType.Change, "Fragment is correct")
             XCTAssertEqual(fragment.objectUUID, self.parent.uuid, "Fragment is correct")
-            XCTAssertEqual(fragment.properties!.count, 1, "Fragment is correct")
+            XCTAssertEqual(fragment.properties!.count, 2, "Fragment is correct")
+            XCTAssertEqual(fragment.properties!["string"]! as String, "testing parent", "Fragment is correct")
+            XCTAssertEqual(fragment.properties!["childModel"]! as String, self.child.uuid.UUIDString, "Fragment is correct")
+            
+            fragment = fragments[2]
+            XCTAssertEqual(fragment.type, SyncFragmentType.Add, "Fragment is correct")
+            XCTAssertEqual(fragment.objectUUID, self.child2.uuid, "Fragment is correct")
+            XCTAssert(fragment.properties!.count > 2, "Sending up all default values")
+            XCTAssertEqual(fragment.properties!["string"]! as String, "testing2", "Fragment is correct")
+            XCTAssertEqual(fragment.properties!["int"]! as Int, 10, "Fragment is correct")
 
             expectation.fulfill()
         })
         
         parent.childModel = child
         child.childModel2 = child2
-        parent.string = "testing more"
-        child.string = "testing more"
+        parent.string = "testing parent"
+        child.string = "testing"
+        child2.string = "testing2"
+        child2.int = 10
 
         waitForExpectationsWithTimeout(1, handler: nil)
     }
@@ -157,6 +168,8 @@ class ScopeTests: XCTestCase {
         parent.childModel = child
         parent.childModel = nil
         fragments = scope.getAndClearSyncFragments()
-        XCTAssertEqual(fragments.count, 0 , "Correct amount of fragments")
+        XCTAssertEqual(fragments.count, 1 , "Correct amount of fragments")
+        XCTAssertEqual(fragments[0].type, SyncFragmentType.Change , "Correct type of fragment")
+        XCTAssertEqual(fragments[0].properties!["childModel"]! as NSNull, NSNull() , "Correct type of fragment")
     }
 }

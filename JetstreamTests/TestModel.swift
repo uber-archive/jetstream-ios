@@ -8,6 +8,11 @@
 
 import Foundation
 
+enum TestType: Int {
+    case Zero = 0
+    case One
+}
+
 @objc public class TestModel: ModelObject {
     dynamic var string: String?
     dynamic var int: Int = 0
@@ -25,12 +30,15 @@ import Foundation
     dynamic var bool: Bool = false
     
     dynamic var array: [TestModel] = []
+    dynamic var array2: [TestModel] = []
     dynamic var anotherArray: [AnotherTestModel] = []
-    dynamic var nsArray = NSMutableArray()
     dynamic var childModel: TestModel?
     dynamic var childModel2: TestModel?
     
-    dynamic var compositeProperty: String {
+    private var nonDynamicInt: Int = 0
+    private var nonDynamicString = ""
+    
+    var compositeProperty: String {
         get {
             return "\(float) \(anotherArray.count)"
         }
