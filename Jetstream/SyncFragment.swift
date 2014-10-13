@@ -25,7 +25,6 @@ public func ==(lhs: SyncFragment, rhs: SyncFragment) -> Bool {
 }
 
 public class SyncFragment: Equatable {
-
     let type: SyncFragmentType
     let objectUUID: NSUUID
     let clsName: String?

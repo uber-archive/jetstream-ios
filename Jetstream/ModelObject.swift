@@ -33,7 +33,6 @@ struct PropertyInfo {
 }
 
 @objc public class ModelObject: NSObject {
-    
     public let onPropertyChange = Signal<(key: String, oldValue: AnyObject?, value: AnyObject?)>()
     public let onModelAddedToCollection = Signal<(key: String, element: AnyObject, atIndex:Int)>()
     public let onModelRemovedFromCollection = Signal<(key: String, element: AnyObject, atIndex:Int)>()

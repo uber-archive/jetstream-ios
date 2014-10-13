@@ -9,7 +9,6 @@
 import Foundation
 
 public class Session {
-    
     let client: Client
     public var token: String
     
@@ -21,17 +20,14 @@ public class Session {
     }
     
     /// MARK: Public interface
-    
     public func fetch(scope: Scope, callback: (NSError?) -> Void) {
         client.scopeFetch(scope, callback: callback)
     }
     
     /// MARK: Internal interface
-    
     func getIndexForMessage() -> UInt {
         let index = nextIndex
         nextIndex += 1
         return index
     }
-    
 }

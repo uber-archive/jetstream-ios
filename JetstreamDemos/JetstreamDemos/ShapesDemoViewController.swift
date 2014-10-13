@@ -11,17 +11,14 @@ import UIKit
 import Jetstream
 
 class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
-    
     var scope = Scope(name: "ShapesDemo")
     var shapesDemo = ShapesDemo()
-    
-    var headers = [String: String]()
+
     var client: Client?
     var session: Session?
-    var appearing = false
-    var loader: UIView?
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         title = "Shapes Demo"
 
         let tapRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleTap:"))
@@ -32,35 +29,6 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
             let shapeView = ShapeView(shape: element)
             self.view.addSubview(shapeView)
         }
-    }
-    
-    func connect() {
-        client = Client(options: MQTTLongPollChunkedConnectionOptions(
-            receiveURL: "http://" + host + ":3000/mqtt/lpc/connect",
-            sendURL: "http://" + host + ":3000/mqtt/lpc/send",
-            headers: headers,
-            sendIdRequired: true))
-        client?.connect()
-        client?.onSession.listenOnce(self) { (session) in
-            self.session = session
-            let scope = self.scope
-            NSLog("Started session with token: %@", session.token)
-            session.fetch(scope) { (error) in
-                if error != nil {
-                    NSLog("Request scope error: %@", error!)
-                } else {
-                    NSLog("Retrieved scope")
-                    self.removeLoader()
-                }
-            }
-        }
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        client?.onSession.removeListener(self)
-        client?.close()
-        client = nil
     }
     
     func handleTap(recognizer: UITapGestureRecognizer) {
@@ -74,30 +42,18 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        appearing = true
+        showLoader()
         
-        if loader != nil {
-            removeLoader()
-        }
-        var size = UIScreen.mainScreen().bounds.size
-        loader = UIView(frame: CGRectMake(0, 0, size.width, size.height))
-        loader?.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
-        navigationController?.view.addSubview(loader!)
-        
-        let activityIndicatorView = UIActivityIndicatorView()
-        loader?.addSubview(activityIndicatorView)
-        activityIndicatorView.center = loader!.center
-        activityIndicatorView.startAnimating()
-        
-        MessagingToken.getToken(host) { (error, headers) -> Void in
-            if error != nil {
-                self.error(error!)
-            } else {
-                if headers != nil {
-                    self.headers = headers!
-                }
-                if self.appearing {
-                    self.connect()
+        client = Client(options: WebsocketConnectionOptions(url: "ws://" + host + ":3000"))
+        client?.connect()
+        client?.onSession.listenOnce(self) { (session) in
+            self.session = session
+            let scope = self.scope
+            session.fetch(scope) { (error) in
+                if error != nil {
+                    self.alertError("Error fetching scope", message: "\(error)")
+                } else {
+                    self.hideLoader()
                 }
             }
         }
@@ -105,26 +61,13 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        appearing = false
+        hideLoader()
     }
     
-    func removeLoader() {
-        if let view: UIView = loader {
-            view.hidden = true
-            view.removeFromSuperview()
-            loader = nil
-        }
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        client?.onSession.removeListener(self)
+        client?.close()
+        client = nil
     }
-
-    func error(message: String) {
-        removeLoader()
-        
-        let alert = UIAlertView(
-            title: "Error",
-            message: message,
-            delegate: nil,
-            cancelButtonTitle: "Ok")
-        alert.show()
-    }
-    
 }

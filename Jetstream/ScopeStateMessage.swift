@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ScopeStateMessage: IndexedMessage {
+class ScopeStateMessage: Message {
     
     class var messageType: String {
         return "ScopeState"

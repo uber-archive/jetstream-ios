@@ -10,7 +10,6 @@ import Foundation
 import Signals
 
 public class Scope {
-
     /// A signal that fires when changes have been made to the model. Provides a array of changes
     /// since the signal last fired.
     public let onChanges = Signal<([SyncFragment])>()
@@ -58,6 +57,9 @@ public class Scope {
                     var appliedValue: AnyObject? = value
                     if let valueAsModelObject = value as? ModelObject {
                         appliedValue = valueAsModelObject.uuid.UUIDString
+                    }
+                    if let valueAsModelObjectArray = value as? [ModelObject] {
+                        appliedValue = valueAsModelObjectArray.map { $0.uuid.UUIDString }
                     }
                     if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
                         fragment.newValueForKeyFromModelObject(keyPath, value: appliedValue, modelObject: modelObject)

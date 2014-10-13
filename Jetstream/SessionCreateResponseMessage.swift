@@ -9,7 +9,6 @@
 import Foundation
 
 class SessionCreateResponseMessage: Message {
-    
     class var messageType: String {
         return "SessionCreateResponse"
     }
@@ -22,24 +21,27 @@ class SessionCreateResponseMessage: Message {
     let sessionToken: String
     let response: AnyObject?
     
-    init(success: Bool, sessionToken: String, response: AnyObject?) {
+    init(index: UInt, success: Bool, sessionToken: String, response: AnyObject?) {
         self.success = success
         self.sessionToken = sessionToken
         self.response = response
+        super.init(index: index)
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var maybeSuccess: Bool? = dictionary.valueForKey("success")
-        var maybeSessionToken: String? = dictionary.valueForKey("sessionToken")
-        var maybeResponse: AnyObject? = dictionary["response"]
+        var index: UInt? = dictionary.valueForKey("index")
+        var success: Bool? = dictionary.valueForKey("success")
+        var sessionToken: String? = dictionary.valueForKey("sessionToken")
+        var response: AnyObject? = dictionary["response"]
         
-        if maybeSuccess == nil || maybeSessionToken == nil {
+        if index == nil || success == nil || sessionToken == nil {
             return nil
         } else {
             return SessionCreateResponseMessage(
-                success: maybeSuccess!,
-                sessionToken: maybeSessionToken!,
-                response: maybeResponse)
+                index: index!,
+                success: success!,
+                sessionToken: sessionToken!,
+                response: response)
         }
     }
 }

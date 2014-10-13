@@ -9,7 +9,6 @@
 import Foundation
 
 class SessionCreateMessage: Message {
-    
     class var messageType: String {
         return "SessionCreate"
     }
@@ -24,9 +23,10 @@ class SessionCreateMessage: Message {
     init(params: [String: String], version: String) {
         self.params = params
         self.version = version
+        super.init(index: 0)
     }
     
-    convenience override init() {
+    convenience init() {
         self.init(params: [String: String]())
     }
     
@@ -42,13 +42,13 @@ class SessionCreateMessage: Message {
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var maybeParams: [String: String]? = dictionary.valueForKey("params")
-        var maybeVersion: String? = dictionary.valueForKey("version")
+        var params: [String: String]? = dictionary.valueForKey("params")
+        var version: String? = dictionary.valueForKey("version")
         
-        if maybeParams != nil && maybeVersion != nil {
-            return SessionCreateMessage(params: maybeParams!, version: maybeVersion!)
-        } else if maybeParams != nil {
-            return SessionCreateMessage(params: maybeParams!)
+        if params != nil && version != nil {
+            return SessionCreateMessage(params: params!, version: version!)
+        } else if params != nil {
+            return SessionCreateMessage(params: params!)
         } else {
             return SessionCreateMessage()
         }

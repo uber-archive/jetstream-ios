@@ -8,8 +8,7 @@
 
 import Foundation
 
-class ScopeFetchMessage: IndexedMessage {
-    
+class ScopeFetchMessage: Message {
     class var messageType: String {
         return "ScopeFetch"
     }

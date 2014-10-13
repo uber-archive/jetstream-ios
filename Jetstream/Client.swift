@@ -18,16 +18,13 @@ public enum ClientStatus {
 }
 
 public class Client {
-    
-    let logger = Logging.loggerFor("Client")
-    
     /// MARK: Events
-    
     public let onStatusChanged = Signal<(ClientStatus)>()
     public let onSession = Signal<(Session)>()
     public let onSessionDenied = Signal<(Void)>()
 
     /// MARK: Properties
+    let logger = Logging.loggerFor("Client")
     
     public private(set) var status: ClientStatus = .Offline {
         didSet {
@@ -54,8 +51,8 @@ public class Client {
         bindListeners()
     }
     
-    public init(options: MQTTLongPollChunkedConnectionOptions) {
-        var adapter = MQTTLongPollChunkedTransportAdapter(options: options)
+    public init(options: WebsocketConnectionOptions) {
+        var adapter = WebsocketTransportAdapter(options: options)
         transport = Transport(adapter: adapter)
         bindListeners()
     }
@@ -65,11 +62,15 @@ public class Client {
     }
     
     public func close() {
-        // TODO: close up any resources
+        transport.disconnect()
+        for (index, scope) in scopes {
+            scope.onChanges.removeListener(self)
+        }
+        scopes.removeAll(keepCapacity: false)
+        session = nil
     }
     
-    /// MARK: Private interface
-    
+    /// MARK: Internal interface
     func bindListeners() {
         onStatusChanged.listen(self) { [weak self] (status) in
             if let this = self {
@@ -156,12 +157,12 @@ public class Client {
         }
     }
     
-    private func sessionCreate() {
+    func sessionCreate() {
         transport.sendMessage(SessionCreateMessage())
     }
     
     func sessionResume() {
-        // TODO: implement
+        // TODO: send a ping message to resume the session
     }
     
     func scopeFetch(scope: Scope, callback: (NSError?) -> ()) {
@@ -178,7 +179,7 @@ public class Client {
         var scopeIndex: UInt? = response.valueForKey("scopeIndex")
         
         if result != nil && scopeIndex != nil && result! == true {
-            attachScope(scope, scopeIndex: scopeIndex!)
+            scopeAttach(scope, scopeIndex: scopeIndex!)
             callback(nil)
         } else {
             var definiteErrorCode = 0
@@ -204,7 +205,7 @@ public class Client {
         }
     }
     
-    func attachScope(scope: Scope, scopeIndex: UInt = 1) {
+    func scopeAttach(scope: Scope, scopeIndex: UInt = 1) {
         scopes[scopeIndex] = scope
         scope.onChanges.listen(self) {
             [weak self] (syncFragments) in
@@ -224,5 +225,4 @@ public class Client {
             scopeIndex: atIndex,
             syncFragments: syncFragments))
     }
-
 }

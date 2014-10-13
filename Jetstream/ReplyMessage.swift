@@ -8,8 +8,7 @@
 
 import Foundation
 
-class ReplyMessage: IndexedMessage {
-    
+class ReplyMessage: Message {
     class var messageType: String {
         return "Reply"
     }
@@ -43,16 +42,16 @@ class ReplyMessage: IndexedMessage {
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var maybeIndex: UInt? = dictionary.valueForKey("index")
-        var maybeReplyTo: UInt? = dictionary.valueForKey("replyTo")
-        var maybeResponse: [String: AnyObject]? = dictionary.valueForKey("response")
+        var index: UInt? = dictionary.valueForKey("index")
+        var replyTo: UInt? = dictionary.valueForKey("replyTo")
+        var response: [String: AnyObject]? = dictionary.valueForKey("response")
         
-        if maybeIndex == nil || maybeReplyTo == nil {
+        if index == nil || replyTo == nil {
             return nil
-        } else if maybeResponse == nil {
-            return ReplyMessage(index: maybeIndex!, replyTo: maybeReplyTo!, response: [String: AnyObject]())
+        } else if response == nil {
+            return ReplyMessage(index: index!, replyTo: replyTo!, response: [String: AnyObject]())
         } else {
-            return ReplyMessage(index: maybeIndex!, replyTo: maybeReplyTo!, response: maybeResponse!)
+            return ReplyMessage(index: index!, replyTo: replyTo!, response: response!)
         }
     }
 }

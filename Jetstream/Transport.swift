@@ -16,7 +16,6 @@ enum TransportStatus {
 }
 
 protocol TransportAdapter {
-    
     var onStatusChanged: Signal<(TransportStatus)> { get }
     var onMessage: Signal<(Message)> { get }
     
@@ -25,16 +24,15 @@ protocol TransportAdapter {
     var options: ConnectionOptions { get }
     
     func connect()
+    func disconnect()
     func sendMessage(message: Message)
-    
 }
 
 class Transport {
-    
     typealias ReplyCallback = ([String: AnyObject]) -> Void
     
     class func defaultTransportAdapter(options: ConnectionOptions) -> TransportAdapter {
-        return PollTransportAdapter(options: options)
+        return WebsocketTransportAdapter(options: options)
     }
     
     let logger = Logging.loggerFor("Transport")
@@ -58,7 +56,7 @@ class Transport {
         bindListeners()
     }
     
-    private func bindListeners() {
+    func bindListeners() {
         onStatusChanged.listen(self) { [weak self] (status) in
             if let this = self {
                 this.statusChanged(status)
@@ -71,18 +69,18 @@ class Transport {
         }
     }
     
-    private func statusChanged(status: TransportStatus) {
+    func statusChanged(status: TransportStatus) {
         switch status {
         case .Closed:
-            self.logger.info("Closed")
+            logger.info("Closed")
         case .Connecting:
-            self.logger.info("Connecting using \(self.adapter.adapterName) to \(self.adapter.options.url)")
+            logger.info("Connecting using \(self.adapter.adapterName) to \(self.adapter.options.url)")
         case .Connected:
-            self.logger.info("Connected")
+            logger.info("Connected")
         }
     }
     
-    private func messageReceived(message: Message) {
+    func messageReceived(message: Message) {
         switch message {
         case let replyMessage as ReplyMessage:
             if let callback = waitingReply[replyMessage.replyTo] {
@@ -98,11 +96,15 @@ class Transport {
         adapter.connect()
     }
     
+    func disconnect() {
+        adapter.disconnect()
+    }
+    
     func sendMessage(message: Message) {
         adapter.sendMessage(message)
     }
     
-    func sendMessage(message: IndexedMessage, withCallback: ReplyCallback) {
+    func sendMessage(message: Message, withCallback: ReplyCallback) {
         adapter.sendMessage(message)
         waitingReply[message.index] = withCallback
     }

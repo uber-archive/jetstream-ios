@@ -8,8 +8,7 @@
 
 import Foundation
 
-class ScopeSyncMessage: IndexedMessage {
-    
+class ScopeSyncMessage: Message {
     class var messageType: String {
         return "ScopeSync"
     }

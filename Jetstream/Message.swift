@@ -9,20 +9,29 @@
 import Foundation
 
 class Message {
-    
     // Override to provide message type
     var type: String {
         return "Message"
     }
     
+    let index: UInt
+    
+    init(index: UInt) {
+        self.index = index
+    }
+    
+    convenience init(session: Session) {
+        self.init(index: session.getIndexForMessage())
+    }
+    
     func serialize() -> [String: AnyObject] {
-        return ["type": type]
+        return ["type": type, "index": index]
     }
     
     class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        let maybeType: AnyObject? = dictionary["type"]
-        if let type = maybeType as? String {
-            switch type {
+        let type: AnyObject? = dictionary["type"]
+        if let definiteType = type as? String {
+            switch definiteType {
             case SessionCreateMessage.messageType:
                 return SessionCreateMessage.unserialize(dictionary)
             case SessionCreateResponseMessage.messageType:
@@ -38,24 +47,5 @@ class Message {
             }
         }
         return nil
-    }
-}
-
-class IndexedMessage: Message {
-    
-    let index: UInt
-    
-    convenience init(session: Session) {
-        self.init(index: session.getIndexForMessage())
-    }
-    
-    init(index: UInt) {
-        self.index = index
-    }
-    
-    override func serialize() -> [String: AnyObject] {
-        var dictionary = super.serialize()
-        dictionary["index"] = index
-        return dictionary
     }
 }

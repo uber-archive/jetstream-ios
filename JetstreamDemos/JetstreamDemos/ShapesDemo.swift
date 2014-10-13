@@ -10,7 +10,5 @@ import Foundation
 import Jetstream
 
 class ShapesDemo: ModelObject {
-    
     dynamic var shapes = [Shape]()
-    
 }

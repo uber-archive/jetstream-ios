@@ -8,8 +8,11 @@
 
 import UIKit
 
+class DemosListCollectionViewCell : UICollectionViewCell {
+    @IBOutlet weak var titleLabel: UILabel!
+}
+
 class DemosListViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
-    
     enum Demo {
         case ShapesDemo
     }
@@ -36,5 +39,4 @@ class DemosListViewController: UIViewController, UICollectionViewDataSource, UIC
             self.performSegueWithIdentifier("ShapesDemoSegue", sender: self)
         }
     }
-
 }
