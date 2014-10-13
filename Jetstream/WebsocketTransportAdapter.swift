@@ -3,7 +3,7 @@
 //  Jetstream
 //
 //  Created by Rob Skillington on 10/12/14.
-//  Copyright (c) 2014 Uber. All rights reserved.
+//  Copyright (c) 2014 Uber Technologies, Inc. All rights reserved.
 //
 
 import Foundation

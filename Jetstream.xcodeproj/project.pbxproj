@@ -351,7 +351,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0600;
-				ORGANIZATIONNAME = Uber;
+				ORGANIZATIONNAME = "Uber Technologies, Inc";
 				TargetAttributes = {
 					7291631419CB5FE500320F15 = {
 						CreatedOnToolsVersion = 6.0;

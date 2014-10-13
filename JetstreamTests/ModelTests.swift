@@ -3,7 +3,7 @@
 //  Jetstream
 //
 //  Created by Tuomas Artman on 10/10/14.
-//  Copyright (c) 2014 Uber. All rights reserved.
+//  Copyright (c) 2014 Uber Technologies, Inc. All rights reserved.
 //
 
 import UIKit
