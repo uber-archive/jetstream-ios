@@ -172,4 +172,23 @@ class ScopeTests: XCTestCase {
         XCTAssertEqual(fragments[0].type, SyncFragmentType.Change , "Correct type of fragment")
         XCTAssertEqual(fragments[0].properties!["childModel"]! as NSNull, NSNull() , "Correct type of fragment")
     }
+    
+    func testEnumerationParsing() {
+        let expectation = expectationWithDescription("onChange")
+        parent.setScopeAndMakeRootModel(scope)
+        scope.getAndClearSyncFragments()
+        
+        scope.onChanges.listen(self, callback: { (fragments) -> Void in
+            XCTAssertEqual(fragments.count, 1, "Created a fragment")
+            
+            var fragment = fragments[0]
+            XCTAssertEqual(fragment.properties!["testType"]! as Int, 1, "Fragment is correct")
+
+            expectation.fulfill()
+        })
+        
+        parent.testType = .Active
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
 }

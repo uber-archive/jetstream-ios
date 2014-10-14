@@ -43,11 +43,6 @@ public class Canvas: ModelObject {
     dynamic var shapes = [Shape]()
 }
 
-enum ShapeType: Int {
-    case Circle = 0
-    case Rectangle
-}
-
 public class Shape: ModelObject {
     dynamic var type: ShapeType = .Circle
     dynamic var x: Float = 0
@@ -56,6 +51,8 @@ public class Shape: ModelObject {
     dynamic var height: Float = 100
 }
 ```
+
+
 
 Supported types are `String`, `UInt`, `Int`, `UInt8`, `Int8`, `UInt16`, `Int16`, `UInt32`, `Int32`, `Float`, `Double`, `Bool`, `ModelObject` and `[ModelObject]`
 

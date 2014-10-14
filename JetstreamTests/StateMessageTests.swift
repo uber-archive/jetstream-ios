@@ -26,7 +26,7 @@ class StateMessageTests: XCTestCase {
         XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope to start with")
         
         client = Client(options: ConnectionOptions(url: "localhost"))
-        client.attachScope(scope)
+        client.scopeAttach(scope)
         
         let childUUID = NSUUID()
         
@@ -178,5 +178,27 @@ class StateMessageTests: XCTestCase {
         XCTAssertEqual(root.childModel2!.uuid, childUUID, "Child model added")
         XCTAssertEqual(root.childModel2!.childModel!.uuid, childUUID2, "Child model added")
         XCTAssertEqual(scope.modelObjects.count, 3, "Correct number of objects in scope")
+    }
+    
+    func testingEnumChanges() {
+        let childUUID = NSUUID()
+        let childUUID2 = NSUUID()
+        
+        var json: [String: AnyObject] = [
+            "type": "ScopeState",
+            "index": 1,
+            "scopeIndex": 1,
+            "rootFragment": [
+                "type": "root",
+                "uuid": uuid.UUIDString,
+                "properties": [
+                    "string": "set correctly",
+                    "testType": 1
+                ],
+                "cls": "TestModel"
+            ]
+        ]
+        client.receivedMessage(Message.unserialize(json)!)
+        XCTAssertEqual(root.testType, TestType.Active, "Applied enum")
     }
 }

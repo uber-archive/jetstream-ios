@@ -52,10 +52,12 @@
 		725C6AC719E36BDB006DBC1D /* ScopeStateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725C6AC519E3680E006DBC1D /* ScopeStateMessage.swift */; };
 		725FE2DE19E8ACDB000EAD87 /* Signals.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 725FE2DB19E8AC9D000EAD87 /* Signals.framework */; };
 		727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
+		7284120519EDBDAE0071DD0B /* WebsocketTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F7ACEB19EB989900BA50FB /* WebsocketTransportAdapter.swift */; };
 		728874B719E84D620045712F /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728874B619E84D620045712F /* ModelTests.swift */; };
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
 		72DBB64919E496D600F6AB96 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DBB64819E496D600F6AB96 /* ModelValue.swift */; };
 		72DBB64A19E4975900F6AB96 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DBB64819E496D600F6AB96 /* ModelValue.swift */; };
+		72EF1C8619EDB7D2009C4B42 /* Enumerations.h in Headers */ = {isa = PBXBuildFile; fileRef = 72EF1C8319EDB5EA009C4B42 /* Enumerations.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +134,7 @@
 		7291633019CB8B2C00320F15 /* TestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
 		72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeChangeTests.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		72DBB64819E496D600F6AB96 /* ModelValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelValue.swift; sourceTree = "<group>"; };
+		72EF1C8319EDB5EA009C4B42 /* Enumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Enumerations.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -289,6 +292,7 @@
 		72A6B5F619CD171500B7BD94 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				72EF1C8319EDB5EA009C4B42 /* Enumerations.h */,
 				7291633019CB8B2C00320F15 /* TestModel.swift */,
 			);
 			name = Models;
@@ -302,6 +306,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11EEC45B19D32B2200DCD737 /* Jetstream.h in Headers */,
+				72EF1C8619EDB7D2009C4B42 /* Enumerations.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,6 +492,7 @@
 				11A71EBC19DDFADF00B124B3 /* Session.swift in Sources */,
 				11A71EC119DDFAF400B124B3 /* Transport.swift in Sources */,
 				11A71EB819DDFAD500B124B3 /* Client.swift in Sources */,
+				7284120519EDBDAE0071DD0B /* WebsocketTransportAdapter.swift in Sources */,
 				11A71EBA19DDFADF00B124B3 /* Functions.swift in Sources */,
 				7202D16419D63ACF004E9A47 /* TestModel.swift in Sources */,
 				11A71EB919DDFADF00B124B3 /* Extensions.swift in Sources */,
@@ -652,6 +658,7 @@
 		7291632C19CB5FE500320F15 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -674,6 +681,7 @@
 		7291632D19CB5FE500320F15 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

@@ -6,16 +6,10 @@
 //  Copyright (c) 2014 Uber Technologies, Inc. All rights reserved.
 //
 
-import Foundation
-
-enum TestType: Int {
-    case Zero = 0
-    case One
-}
-
 @objc public class TestModel: ModelObject {
     dynamic var string: String?
     dynamic var int: Int = 0
+    dynamic var testType: TestType = .Normal
     dynamic var uint: UInt = 0
     dynamic var float: Float = 0.0
     dynamic var uint8: UInt8 = 0
