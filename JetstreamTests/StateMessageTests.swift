@@ -53,7 +53,6 @@ class StateMessageTests: XCTestCase {
             ]
         ]
         
-        
         firstMessage = Message.unserialize(json) as ScopeStateMessage
         client.receivedMessage(firstMessage)
         
@@ -180,7 +179,7 @@ class StateMessageTests: XCTestCase {
         XCTAssertEqual(scope.modelObjects.count, 3, "Correct number of objects in scope")
     }
     
-    func testingEnumChanges() {
+    func testModelValueTypes() {
         let childUUID = NSUUID()
         let childUUID2 = NSUUID()
         
@@ -193,12 +192,28 @@ class StateMessageTests: XCTestCase {
                 "uuid": uuid.UUIDString,
                 "properties": [
                     "string": "set correctly",
-                    "testType": 1
+                    "testType": 1,
+                    "color": 0xFF108040,
+                    "date" : 100.0
                 ],
                 "cls": "TestModel"
             ]
         ]
         client.receivedMessage(Message.unserialize(json)!)
         XCTAssertEqual(root.testType, TestType.Active, "Applied enum")
+       
+        var comp: [CGFloat] = Array(count: 4, repeatedValue: 0);
+        root.color!.getRed(&comp[0], green: &comp[1], blue: &comp[2], alpha: &comp[3])
+        var red = UInt32(comp[0] * 255)
+        var green = UInt32(comp[1] * 255)
+        var blue = UInt32(comp[2] * 255)
+        var alpha = UInt32(comp[3] * 255)
+        
+        XCTAssertEqual(red, 0xFF, "Applied color")
+        XCTAssertEqual(green, 0x10, "Applied color")
+        XCTAssertEqual(blue, 0x80, "Applied color")
+        XCTAssertEqual(alpha, 0x40, "Applied color")
+
+        XCTAssertEqual(root.date!, NSDate(timeIntervalSince1970: 100.0), "Applied enum")
     }
 }

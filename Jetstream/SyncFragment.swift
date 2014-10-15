@@ -124,54 +124,31 @@ public class SyncFragment: Equatable {
             }
             for (key, value) in definiteProperties {
                 if let propertyInfo = modelObject.properties[key] {
-                    switch propertyInfo.valueType {
-                    case .ModelObject:
-                        var applied = false
-                        if let uuidString = value as? String {
-                            let uuid = NSUUID(UUIDString: uuidString)
-                            if let referencedModelObject = scope.getObjectById(uuid) {
-                                modelObject.setValue(referencedModelObject, forKey: key)
-                                applied = true
-                            }
-                        }
-                        if !applied {
-                            modelObject.setValue(nil, forKey: key)
-                        }
-                    case .Array:
-                        var models = [ModelObject]()
-                        if let uuids = value as? [String] {
-                            for uuidString in uuids {
-                                let uuid = NSUUID(UUIDString: uuidString)
-                                if let referencedModelObject = scope.getObjectById(uuid) {
-                                    models.append(referencedModelObject)
-                                }
-                            }
-                        }
-                        modelObject.setValue(models, forKey: key)
-                    default:
-                        modelObject.setValue(value, forKey: key)
+                    if let convertedValue: AnyObject = unserializeModelValue(value, scope, propertyInfo.valueType) {
+                        modelObject.setValue(convertedValue, forKey: key)
+                    } else {
+                        modelObject.setValue(nil, forKey: key)
                     }
                 }
             }
         }
     }
     
-    func newValueForKeyFromModelObject(key: String, value:AnyObject?, modelObject: ModelObject) {
-        var appliedValue: AnyObject? = value
-        if (value == nil) {
-            appliedValue = NSNull()
-        }
-        let property = modelObject.properties[key]
+    func newValueForKeyFromModelObject(key: String, modelValue:ModelValue?, modelObject: ModelObject) {
         if (properties == nil) {
             properties = [String: AnyObject]()
         }
-        properties![key] = value
+        if (modelValue == nil) {
+            properties![key] = NSNull()
+        } else {
+            properties![key] = modelValue!.serialize()
+        }
     }
     
     func applyPropertiesFromModelObject(modelObject: ModelObject) {
         for (name, property) in modelObject.properties {
-            if (property.valueType != .Array && property.valueType != .ModelObject) {
-                if let value: AnyObject = modelObject.valueForKey(property.key) {
+            if let value: AnyObject = modelObject.valueForKey(property.key) {
+                if let modelValue = convertAnyObjectToModelValue(value, property.valueType) {
                     if (properties == nil) {
                         properties = [String: AnyObject]()
                     }
@@ -190,7 +167,7 @@ public class SyncFragment: Equatable {
                         }
                     }
                     if apply {
-                        properties![name] = value
+                        properties![name] = modelValue.serialize()
                     }
                 }
             }

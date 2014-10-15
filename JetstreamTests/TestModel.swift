@@ -22,6 +22,8 @@
     dynamic var int64: UInt64 = 0
     dynamic var double: Double = 0
     dynamic var bool: Bool = false
+    dynamic var date: NSDate?
+    dynamic var color: UIColor?
     
     dynamic var array: [TestModel] = []
     dynamic var array2: [TestModel] = []

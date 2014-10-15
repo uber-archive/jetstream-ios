@@ -51,23 +51,21 @@ public class Scope {
         modelObjects.append(modelObject)
         modelHash[modelObject.uuid] = modelObject
         
-        modelObject.onPropertyChange.listen(self, callback: { [weak self] (keyPath, oldValue, value) -> () in
+        modelObject.onPropertyChange.listen(self) { [weak self] (key, oldValue, value) -> () in
             if let this = self {
                 if (!this.applyingRemote) {
-                    var appliedValue: AnyObject? = value
-                    if let valueAsModelObject = value as? ModelObject {
-                        appliedValue = valueAsModelObject.uuid.UUIDString
+                    if let property = modelObject.properties[key] {
+                        var modelValue: ModelValue?
+                        if (value != nil) {
+                            modelValue = convertAnyObjectToModelValue(value!, property.valueType)
+                        }
+                        if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
+                            fragment.newValueForKeyFromModelObject(key, modelValue: modelValue, modelObject: modelObject)
+                        }
                     }
-                    if let valueAsModelObjectArray = value as? [ModelObject] {
-                        appliedValue = valueAsModelObjectArray.map { $0.uuid.UUIDString }
-                    }
-                    if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
-                        fragment.newValueForKeyFromModelObject(keyPath, value: appliedValue, modelObject: modelObject)
-                    }
-                    
                 }
             }
-        })
+        }
         
         if modelObject.parents.count > 0 {
             if (!applyingRemote) {

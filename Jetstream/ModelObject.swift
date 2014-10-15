@@ -193,13 +193,14 @@ struct PropertyInfo {
                     var accessible = (components[2] as String) != "R"
 
                     var valueType: ModelValueType?
+
                     if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
                         valueType = .Array
+                    } else if let definiteValueType = ModelValueType.fromRaw(type) {
+                         valueType = definiteValueType
                     } else if type.containsString("@\"") {
                         // Assuming that every custom type extends from ModelObject
                         valueType = .ModelObject
-                    } else if let definiteValueType = ModelValueType.fromRaw(type) {
-                        valueType = definiteValueType
                     }
                     
                     if let definiteValueType = valueType {
@@ -209,7 +210,6 @@ struct PropertyInfo {
                             properties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue)
                         }
                     }
-                    
                 }
             }
         }
@@ -243,7 +243,6 @@ struct PropertyInfo {
                                         strongSelf.removeParentRelationship(relationship)
                                     }
                                 }
-
                             }
                         }
                     }

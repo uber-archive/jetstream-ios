@@ -191,4 +191,37 @@ class ScopeTests: XCTestCase {
         waitForExpectationsWithTimeout(1, handler: nil)
     }
     
+    func testDateParsing() {
+        let expectation = expectationWithDescription("onChange")
+        parent.setScopeAndMakeRootModel(scope)
+        scope.getAndClearSyncFragments()
+        
+        scope.onChanges.listen(self, callback: { (fragments) -> Void in
+            XCTAssertEqual(fragments.count, 1, "Created a fragment")
+            var fragment = fragments[0]
+            XCTAssertEqual(fragment.properties!["date"]! as Double, 10.0, "Fragment is correct")
+            
+            expectation.fulfill()
+        })
+        
+        parent.date = NSDate(timeIntervalSince1970: 10)
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testColorParsing() {
+        let expectation = expectationWithDescription("onChange")
+        parent.setScopeAndMakeRootModel(scope)
+        scope.getAndClearSyncFragments()
+        
+        scope.onChanges.listen(self, callback: { (fragments) -> Void in
+            XCTAssertEqual(fragments.count, 1, "Created a fragment")
+            var fragment = fragments[0]
+            XCTAssertEqual(fragment.properties!["color"]! as UInt, 0xFF3F7F3F, "Fragment is correct")
+            
+            expectation.fulfill()
+        })
+        
+        parent.color = UIColor(red: 1.0, green: 0.25, blue: 0.5, alpha: 0.25)
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
 }
