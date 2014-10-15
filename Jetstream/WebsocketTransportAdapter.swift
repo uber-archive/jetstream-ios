@@ -9,6 +9,7 @@
 import Foundation
 import Signals
 import Starscream
+import SystemConfiguration
 
 public class WebsocketConnectionOptions: ConnectionOptions {
     public let headers: [String: String]
@@ -23,9 +24,11 @@ public class WebsocketConnectionOptions: ConnectionOptions {
     }
 }
 
-class WebsocketTransportAdapter: TransportAdapter, WebsocketDelegate {
+class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDelegate {
     struct Static {
         static let className = "WebsocketTransportAdapter"
+        static let inactivityPingIntervalSeconds: NSTimeInterval = 10
+        static let inactivityPingIntervalVarianceSeconds: NSTimeInterval = 2
     }
     
     let logger = Logging.loggerFor(Static.className)
@@ -42,12 +45,18 @@ class WebsocketTransportAdapter: TransportAdapter, WebsocketDelegate {
     }
     
     let options: ConnectionOptions
+    let url: NSURL
     let socket: Websocket
     var explicitlyClosed = false
+    var session: Session?
+    var pingTimer: NSTimer?
+    var nonAckedSends = [Message]()
     
     init(options: ConnectionOptions, headers: [String: String]) {
         self.options = options
-        socket = Websocket(url: NSURL.URLWithString(options.url))
+        self.url = NSURL.URLWithString(options.url)
+        socket = Websocket(url: url)
+        super.init()
         socket.delegate = self
         for (key, value) in headers {
             socket.headers[key] = value
@@ -67,7 +76,21 @@ class WebsocketTransportAdapter: TransportAdapter, WebsocketDelegate {
             return
         }
         status = .Connecting
-        socket.connect()
+        tryConnect()
+    }
+    
+    func tryConnect() {
+        if status != .Connecting {
+            return
+        }
+        
+        if canReachHost() {
+            socket.connect()
+        } else {
+            delay(0.1) {
+                self.tryConnect()
+            }
+        }
     }
     
     func disconnect() {
@@ -75,10 +98,31 @@ class WebsocketTransportAdapter: TransportAdapter, WebsocketDelegate {
             return
         }
         explicitlyClosed = true
+        session = nil
+        stopPingTimer()
+        socket.disconnect()
+    }
+    
+    func reconnect() {
+        if status != .Connected {
+            return
+        }
+        stopPingTimer()
         socket.disconnect()
     }
     
     func sendMessage(message: Message) {
+        if session != nil {
+            nonAckedSends.append(message)
+        }
+        transportMessage(message)
+    }
+    
+    func transportMessage(message: Message) {
+        if status != .Connected {
+            return
+        }
+        
         let dictionary = message.serialize()
         let error = NSErrorPointer()
         let json = NSJSONSerialization.dataWithJSONObject(
@@ -93,11 +137,65 @@ class WebsocketTransportAdapter: TransportAdapter, WebsocketDelegate {
         }
     }
     
+    func sessionEstablished(session: Session) {
+        self.session = session
+        socket.headers["X-Jetstream-SessionToken"] = session.token
+        startPingTimer()
+    }
+    
+    func startPingTimer() {
+        stopPingTimer()
+        var varianceLowerBound = Static.inactivityPingIntervalSeconds - (Static.inactivityPingIntervalVarianceSeconds / 2)
+        var randomVariance = Double(arc4random_uniform(UInt32(Static.inactivityPingIntervalVarianceSeconds)))
+        var delay = varianceLowerBound + randomVariance
+        
+        pingTimer = NSTimer.scheduledTimerWithTimeInterval(
+            delay,
+            target: self,
+            selector: Selector("pingTimerFired"),
+            userInfo: nil,
+            repeats: false)
+    }
+    
+    func stopPingTimer() {
+        pingTimer?.invalidate()
+        pingTimer = nil
+    }
+    
+    func pingTimerFired() {
+        sendMessage(PingMessage(session: session!))
+        startPingTimer()
+    }
+    
+    func pingMessageReceived(pingMessage: PingMessage) {
+        nonAckedSends = nonAckedSends.filter { $0.index > pingMessage.ack }
+        
+        if pingMessage.resendMissing {
+            for message in nonAckedSends {
+                transportMessage(message)
+            }
+        }
+    }
+    
     func websocketDidConnect() {
         status = .Connected
+        if session != nil {
+            // Request missed messages
+            sendMessage(PingMessage(session: session!, resendMissing: true))
+            // Restart the ping timer lost after disconnecting
+            startPingTimer()
+        }
     }
     
     func websocketDidDisconnect(error: NSError?) {
+        // Starscream sometimes dispatches this on another thread
+        dispatch_async(dispatch_get_main_queue()) {
+            self.didDisconnect()
+        }
+    }
+    
+    func didDisconnect() {
+        stopPingTimer()
         if status == TransportStatus.Connecting {
             status = .Closed
         }
@@ -108,7 +206,7 @@ class WebsocketTransportAdapter: TransportAdapter, WebsocketDelegate {
     
     func websocketDidWriteError(error: NSError?) {
         if error != nil {
-            logger.error("Error: " + error!.localizedDescription)
+            logger.error("socket error: \(error!.localizedDescription)")
         }
     }
     
@@ -140,13 +238,50 @@ class WebsocketTransportAdapter: TransportAdapter, WebsocketDelegate {
         if let dictionary = object as? [String: AnyObject] {
             let message = Message.unserialize(dictionary)
             if message != nil {
+                switch message! {
+                case let pingMessage as PingMessage:
+                    pingMessageReceived(pingMessage)
+                default:
+                    break
+                }
                 onMessage.fire(message!)
             }
         }
     }
     
-    
     func websocketDidReceiveData(data: NSData) {
         logger.debug("received data (len=\(data.length)")
+    }
+    
+    func canReachHost() -> Bool {
+        var hostAddress = sockaddr_in(
+            sin_len: 0,
+            sin_family: 0,
+            sin_port: 0,
+            sin_addr: in_addr(s_addr: 0),
+            sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
+        hostAddress.sin_len = UInt8(sizeofValue(hostAddress))
+        hostAddress.sin_family = sa_family_t(AF_INET)
+        hostAddress.sin_port = UInt16(UInt(url.port!))
+        inet_pton(AF_INET, url.host!, &hostAddress.sin_addr)
+        
+        let defaultRouteReachability = withUnsafePointer(&hostAddress) {
+            SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0)).takeRetainedValue()
+        }
+        
+        var flags: SCNetworkReachabilityFlags = 0
+        if SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) == 0 {
+            return false
+        }
+        
+        var isReachable = (flags & UInt32(kSCNetworkFlagsReachable)) != 0
+        var needsConnection = (flags & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
+        var transientConnection = (flags & UInt32(kSCNetworkFlagsTransientConnection)) != 0
+        var connectionAutomatic = (flags & UInt32(kSCNetworkFlagsConnectionAutomatic)) != 0
+        var interventionRequired = (flags & UInt32(kSCNetworkFlagsInterventionRequired)) != 0
+        var isLocalAddress = (flags & UInt32(kSCNetworkFlagsIsLocalAddress)) != 0
+        var isDirect = (flags & UInt32(kSCNetworkFlagsIsDirect)) != 0
+        
+        return isReachable && !needsConnection && !transientConnection ? true : false
     }
 }

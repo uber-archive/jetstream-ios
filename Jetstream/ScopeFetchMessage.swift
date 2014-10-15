@@ -27,11 +27,11 @@ class ScopeFetchMessage: Message {
     }
     
     convenience init(session: Session, name: String) {
-        self.init(index: session.getIndexForMessage(), name: name, params: [String: AnyObject]())
+        self.init(index: session.getNextMessageIndex(), name: name, params: [String: AnyObject]())
     }
     
     convenience init(session: Session, name: String, params: [String: AnyObject]) {
-        self.init(index: session.getIndexForMessage(), name: name, params: params)
+        self.init(index: session.getNextMessageIndex(), name: name, params: params)
     }
     
     override func serialize() -> [String: AnyObject] {

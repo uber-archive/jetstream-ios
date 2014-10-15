@@ -27,11 +27,11 @@ class ReplyMessage: Message {
     }
     
     convenience init(session: Session, replyTo: UInt) {
-        self.init(index: session.getIndexForMessage(), replyTo: replyTo, response: [String: AnyObject]())
+        self.init(index: session.getNextMessageIndex(), replyTo: replyTo, response: [String: AnyObject]())
     }
     
     convenience init(session: Session, replyTo: UInt, response: [String: AnyObject]) {
-        self.init(index: session.getIndexForMessage(), replyTo: replyTo, response: response)
+        self.init(index: session.getNextMessageIndex(), replyTo: replyTo, response: response)
     }
     
     override func serialize() -> [String: AnyObject] {

@@ -28,23 +28,24 @@ public class Client {
     
     public private(set) var status: ClientStatus = .Offline {
         didSet {
-            onStatusChanged.fire(status)
+            if oldValue != status {
+                onStatusChanged.fire(status)
+            }
         }
     }
     
     public private(set) var session: Session? {
         didSet {
             if session != nil {
+                transport.adapter.sessionEstablished(session!)
                 onSession.fire(session!)
             }
         }
     }
     
     let transport: Transport
-    var scopes = [UInt: Scope]()
-    
+
     /// MARK: Public interface
-    
     public init(options: ConnectionOptions) {
         var defaultAdapter = Transport.defaultTransportAdapter(options)
         transport = Transport(adapter: defaultAdapter)
@@ -63,10 +64,7 @@ public class Client {
     
     public func close() {
         transport.disconnect()
-        for (index, scope) in scopes {
-            scope.onChanges.removeListener(self)
-        }
-        scopes.removeAll(keepCapacity: false)
+        session?.close()
         session = nil
     }
     
@@ -96,9 +94,7 @@ public class Client {
         case .Online:
             logger.info("Online")
             if session == nil {
-                sessionCreate()
-            } else {
-                sessionResume()
+                transport.sendMessage(SessionCreateMessage())
             }
         case .Offline:
             logger.info("Offline")
@@ -129,100 +125,8 @@ public class Client {
                 logger.info("Starting session with token: \(token)")
                 session = Session(client: self, token: token)
             }
-        case let scopeStateMessage as ScopeStateMessage:
-            if let scope = scopes[scopeStateMessage.scopeIndex] {
-                if let rootModel = scope.rootModel {
-                    scope.startApplyingRemote()
-                    scope.applyRootFragment(scopeStateMessage.rootFragment, additionalFragments: scopeStateMessage.syncFragments)
-                    scope.endApplyingRemote()
-                }
-            }
-        case let scopeSyncMessage as ScopeSyncMessage:
-            if let scope = scopes[scopeSyncMessage.scopeIndex] {
-                if let rootModel = scope.rootModel {
-                    if scopeSyncMessage.syncFragments.count > 0 {
-                        scope.startApplyingRemote()
-                        scope.applySyncFragments(scopeSyncMessage.syncFragments)
-                        scope.endApplyingRemote()
-                    } else {
-                        logger.error("Received sync message without fragments")
-                    }
-                }
-            }
-        case let replyMessage as ReplyMessage:
-            // No-op
-            break
         default:
-            logger.debug("Unrecognized message received")
+            session?.receivedMessage(message)
         }
-    }
-    
-    func sessionCreate() {
-        transport.sendMessage(SessionCreateMessage())
-    }
-    
-    func sessionResume() {
-        // TODO: send a ping message to resume the session
-    }
-    
-    func scopeFetch(scope: Scope, callback: (NSError?) -> ()) {
-        transport.sendMessage(ScopeFetchMessage(session: session!, name: scope.name)) {
-            [weak self] (response) in
-            if let this = self {
-                this.scopeFetchCompleted(scope, response: response, callback: callback)
-            }
-        }
-    }
-    
-    func scopeFetchCompleted(scope: Scope, response: [String: AnyObject], callback: (NSError?) -> ()) {
-        var result: Bool? = response.valueForKey("result")
-        var scopeIndex: UInt? = response.valueForKey("scopeIndex")
-        
-        if result != nil && scopeIndex != nil && result! == true {
-            scopeAttach(scope, scopeIndex: scopeIndex!)
-            callback(nil)
-        } else {
-            var definiteErrorCode = 0
-            
-            var error: [String: AnyObject]? = response.valueForKey("error")
-            var errorMessage: String? = error?.valueForKey("message")
-            var errorCode: Int? = error?.valueForKey("code")
-            
-            if errorCode != nil {
-                definiteErrorCode = errorCode!
-            }
-            
-            var userInfo = [NSLocalizedDescriptionKey: "Fetch request failed"]
-            
-            if errorMessage != nil {
-                userInfo[NSLocalizedFailureReasonErrorKey] = errorMessage!
-            }
-            
-            callback(NSError(
-                domain: defaultErrorDomain,
-                code: definiteErrorCode,
-                userInfo: userInfo))
-        }
-    }
-    
-    func scopeAttach(scope: Scope, scopeIndex: UInt = 1) {
-        scopes[scopeIndex] = scope
-        scope.onChanges.listen(self) {
-            [weak self] (syncFragments) in
-            if let this = self {
-                this.scopeChanges(scope, atIndex: scopeIndex, syncFragments: syncFragments)
-            }
-        }
-    }
-    
-    func scopeChanges(scope: Scope, atIndex: UInt, syncFragments: [SyncFragment]) {
-        if session == nil {
-            return
-        }
-        
-        transport.sendMessage(ScopeSyncMessage(
-            session: session!,
-            scopeIndex: atIndex,
-            syncFragments: syncFragments))
     }
 }

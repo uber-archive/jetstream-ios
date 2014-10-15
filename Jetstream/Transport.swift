@@ -25,7 +25,9 @@ protocol TransportAdapter {
     
     func connect()
     func disconnect()
+    func reconnect()
     func sendMessage(message: Message)
+    func sessionEstablished(session: Session)
 }
 
 class Transport {
@@ -98,6 +100,10 @@ class Transport {
     
     func disconnect() {
         adapter.disconnect()
+    }
+    
+    func reconnect() {
+        adapter.reconnect()
     }
     
     func sendMessage(message: Message) {

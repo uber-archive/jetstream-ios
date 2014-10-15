@@ -27,7 +27,7 @@ class ScopeSyncMessage: Message {
     }
     
     convenience init(session: Session, scopeIndex: UInt, syncFragments: [SyncFragment]) {
-        self.init(index: session.getIndexForMessage(), scopeIndex: scopeIndex, syncFragments: syncFragments)
+        self.init(index: session.getNextMessageIndex(), scopeIndex: scopeIndex, syncFragments: syncFragments)
     }
     
     override func serialize() -> [String: AnyObject] {

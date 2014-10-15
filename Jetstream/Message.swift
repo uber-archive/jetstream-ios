@@ -21,7 +21,7 @@ class Message {
     }
     
     convenience init(session: Session) {
-        self.init(index: session.getIndexForMessage())
+        self.init(index: session.getNextMessageIndex())
     }
     
     func serialize() -> [String: AnyObject] {
@@ -42,6 +42,8 @@ class Message {
                 return ScopeStateMessage.unserialize(dictionary)
             case ScopeSyncMessage.messageType:
                 return ScopeSyncMessage.unserialize(dictionary)
+            case PingMessage.messageType:
+                return PingMessage.unserialize(dictionary)
             default:
                 return nil
             }

@@ -11,6 +11,9 @@
 		112EEB4119D5D2F500114268 /* SessionCreateResponseMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112EEB4019D5D2F500114268 /* SessionCreateResponseMessage.swift */; };
 		112EEB4319D5E18300114268 /* ScopeSyncMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112EEB4219D5E18300114268 /* ScopeSyncMessage.swift */; };
 		112EEB4519D5E1C900114268 /* ScopeFetchMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112EEB4419D5E1C900114268 /* ScopeFetchMessage.swift */; };
+		1147801B19EECCD900B7E4FB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1147801A19EECCD900B7E4FB /* SystemConfiguration.framework */; };
+		11A46E6119ECA4BF00F71BA2 /* PingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A46E6019ECA4BF00F71BA2 /* PingMessage.swift */; };
+		11A46E6719ECEDB700F71BA2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A46E6619ECEDB700F71BA2 /* Constants.swift */; };
 		11A71EB519DB6ECD00B124B3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71EB419DB6ECD00B124B3 /* Extensions.swift */; };
 		11A71EB719DCAE9C00B124B3 /* ReplyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71EB619DCAE9C00B124B3 /* ReplyMessage.swift */; };
 		11A71EB819DDFAD500B124B3 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC44E19D31F0300DCD737 /* Client.swift */; };
@@ -103,6 +106,9 @@
 		112EEB4019D5D2F500114268 /* SessionCreateResponseMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCreateResponseMessage.swift; sourceTree = "<group>"; };
 		112EEB4219D5E18300114268 /* ScopeSyncMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeSyncMessage.swift; sourceTree = "<group>"; };
 		112EEB4419D5E1C900114268 /* ScopeFetchMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeFetchMessage.swift; sourceTree = "<group>"; };
+		1147801A19EECCD900B7E4FB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		11A46E6019ECA4BF00F71BA2 /* PingMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PingMessage.swift; sourceTree = "<group>"; };
+		11A46E6619ECEDB700F71BA2 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		11A71EB419DB6ECD00B124B3 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		11A71EB619DCAE9C00B124B3 /* ReplyMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyMessage.swift; sourceTree = "<group>"; };
 		11EEC44019D319DC00DCD737 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
@@ -142,6 +148,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1147801B19EECCD900B7E4FB /* SystemConfiguration.framework in Frameworks */,
 				11F7ACEA19EB983100BA50FB /* Starscream.framework in Frameworks */,
 				725FE2DE19E8ACDB000EAD87 /* Signals.framework in Frameworks */,
 			);
@@ -180,6 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				11EEC44A19D31CA700DCD737 /* Message.swift */,
+				11A46E6019ECA4BF00F71BA2 /* PingMessage.swift */,
 				11A71EB619DCAE9C00B124B3 /* ReplyMessage.swift */,
 				112EEB4419D5E1C900114268 /* ScopeFetchMessage.swift */,
 				725C6AC519E3680E006DBC1D /* ScopeStateMessage.swift */,
@@ -220,6 +228,7 @@
 		7291630B19CB5FE500320F15 = {
 			isa = PBXGroup;
 			children = (
+				1147801A19EECCD900B7E4FB /* SystemConfiguration.framework */,
 				11EEC45819D32AEC00DCD737 /* Foundation.framework */,
 				7291631719CB5FE500320F15 /* Jetstream */,
 				7291632119CB5FE500320F15 /* JetstreamTests */,
@@ -244,6 +253,7 @@
 				7291631819CB5FE500320F15 /* Supporting Files */,
 				11EEC44419D31B0800DCD737 /* Transport */,
 				11EEC44E19D31F0300DCD737 /* Client.swift */,
+				11A46E6619ECEDB700F71BA2 /* Constants.swift */,
 				11A71EB419DB6ECD00B124B3 /* Extensions.swift */,
 				11181CEA19D5079300B0BA59 /* Functions.swift */,
 				11EEC45E19D3396300DCD737 /* Logging.swift */,
@@ -458,6 +468,7 @@
 				727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */,
 				7233FE2F19D4C9AE004B680C /* Scope.swift in Sources */,
 				11181CEB19D5079300B0BA59 /* Functions.swift in Sources */,
+				11A46E6719ECEDB700F71BA2 /* Constants.swift in Sources */,
 				11EEC45F19D3396300DCD737 /* Logging.swift in Sources */,
 				11EEC44319D31A3800DCD737 /* Transport.swift in Sources */,
 				11A71EB519DB6ECD00B124B3 /* Extensions.swift in Sources */,
@@ -466,6 +477,7 @@
 				725C6AC619E3680E006DBC1D /* ScopeStateMessage.swift in Sources */,
 				112EEB4519D5E1C900114268 /* ScopeFetchMessage.swift in Sources */,
 				11EEC44B19D31CA700DCD737 /* Message.swift in Sources */,
+				11A46E6119ECA4BF00F71BA2 /* PingMessage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

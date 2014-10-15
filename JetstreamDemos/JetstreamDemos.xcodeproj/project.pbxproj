@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1145E71E19DF082C0030A82A /* Jetstream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11EEC43619D236C800DCD737 /* Jetstream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11DD502C19EC4C5A005148D9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DD502B19EC4C5A005148D9 /* Extensions.swift */; };
+		11EACD3F19EDE302009D24FB /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11E11AB219EDE1390000565D /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11EEC41119D236B400DCD737 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC41019D236B400DCD737 /* AppDelegate.swift */; };
 		11EEC41319D236B400DCD737 /* DemosListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EEC41219D236B400DCD737 /* DemosListViewController.swift */; };
 		11EEC41619D236B400DCD737 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11EEC41419D236B400DCD737 /* Main.storyboard */; };
@@ -68,15 +69,27 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				11EACD3F19EDE302009D24FB /* Starscream.framework in Embed Frameworks */,
 				1145E71E19DF082C0030A82A /* Jetstream.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		11BF0B8319EDE2EC00DA70A5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		11DD502B19EC4C5A005148D9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		11E11AB219EDE1390000565D /* Starscream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Starscream.framework; path = "/Users/r/Library/Developer/Xcode/DerivedData/JetstreamDemos-dfootdybagmcltglgaskilpckodf/Build/Products/Debug-iphoneos/Starscream.framework"; sourceTree = "<absolute>"; };
+		11E11AB619EDE17E0000565D /* Signals.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Signals.framework; path = "/Users/r/Library/Developer/Xcode/DerivedData/JetstreamDemos-dfootdybagmcltglgaskilpckodf/Build/Products/Debug-iphoneos/Signals.framework"; sourceTree = "<absolute>"; };
 		11EEC40B19D236B400DCD737 /* JetstreamDemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JetstreamDemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11EEC40F19D236B400DCD737 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		11EEC41019D236B400DCD737 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +131,8 @@
 		11EEC40219D236B400DCD737 = {
 			isa = PBXGroup;
 			children = (
+				11E11AB619EDE17E0000565D /* Signals.framework */,
+				11E11AB219EDE1390000565D /* Starscream.framework */,
 				11EEC45619D329F600DCD737 /* Foundation.framework */,
 				11EEC43019D236C800DCD737 /* Jetstream.xcodeproj */,
 				11EEC40D19D236B400DCD737 /* JetstreamDemos */,
@@ -215,6 +230,7 @@
 				11EEC40919D236B400DCD737 /* Resources */,
 				1145E72119DF082C0030A82A /* Embed Frameworks */,
 				1145E72519DF29170030A82A /* Write host IP to Info.plist */,
+				11BF0B8319EDE2EC00DA70A5 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -487,6 +503,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = JetstreamDemos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -498,6 +515,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = JetstreamDemos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
