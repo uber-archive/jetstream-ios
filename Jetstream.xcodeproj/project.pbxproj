@@ -58,6 +58,8 @@
 		7284120519EDBDAE0071DD0B /* WebsocketTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F7ACEB19EB989900BA50FB /* WebsocketTransportAdapter.swift */; };
 		728874B719E84D620045712F /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728874B619E84D620045712F /* ModelTests.swift */; };
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
+		72A10C5019EF2A81005C5200 /* PingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A46E6019ECA4BF00F71BA2 /* PingMessage.swift */; };
+		72A10C5519EF2AA9005C5200 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A46E6619ECEDB700F71BA2 /* Constants.swift */; };
 		72DBB64919E496D600F6AB96 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DBB64819E496D600F6AB96 /* ModelValue.swift */; };
 		72DBB64A19E4975900F6AB96 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DBB64819E496D600F6AB96 /* ModelValue.swift */; };
 		72EF1C8619EDB7D2009C4B42 /* Enumerations.h in Headers */ = {isa = PBXBuildFile; fileRef = 72EF1C8319EDB5EA009C4B42 /* Enumerations.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -488,7 +490,9 @@
 				7212917119E60A2600332376 /* ScopeTests.swift in Sources */,
 				7212916F19E60A2600332376 /* DependencyTests.swift in Sources */,
 				7212917319E60A2600332376 /* TreeChangeTests.swift in Sources */,
+				72A10C5019EF2A81005C5200 /* PingMessage.swift in Sources */,
 				725C6AC719E36BDB006DBC1D /* ScopeStateMessage.swift in Sources */,
+				72A10C5519EF2AA9005C5200 /* Constants.swift in Sources */,
 				7212917219E60A2600332376 /* SyncFragmentTests.swift in Sources */,
 				7202D16619D63AED004E9A47 /* Scope.swift in Sources */,
 				11A71EC319DDFAFE00B124B3 /* ReplyMessage.swift in Sources */,

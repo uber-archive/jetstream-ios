@@ -26,7 +26,10 @@ class StateMessageTests: XCTestCase {
         XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope to start with")
         
         client = Client(options: ConnectionOptions(url: "localhost"))
-        client.scopeAttach(scope)
+        var msg = SessionCreateResponseMessage(index: 1, success: true, sessionToken: "jeah", response: nil)
+        client.receivedMessage(msg)
+        client.session!.scopeAttach(scope, scopeIndex: 1)
+
         
         let childUUID = NSUUID()
         
@@ -86,7 +89,7 @@ class StateMessageTests: XCTestCase {
         
         var json = [
             "type": "ScopeState",
-            "index": 1,
+            "index": 2,
             "scopeIndex": 1,
             "rootFragment": [
                 "type": "root",
@@ -106,7 +109,7 @@ class StateMessageTests: XCTestCase {
     func testReapplyingMoving() {
         var json = [
             "type": "ScopeState",
-            "index": 1,
+            "index": 2,
             "scopeIndex": 1,
             "rootFragment": [
                 "type": "root",
@@ -142,7 +145,7 @@ class StateMessageTests: XCTestCase {
         
         var json = [
             "type": "ScopeState",
-            "index": 1,
+            "index": 2,
             "scopeIndex": 1,
             "rootFragment": [
                 "type": "root",
@@ -185,7 +188,7 @@ class StateMessageTests: XCTestCase {
         
         var json: [String: AnyObject] = [
             "type": "ScopeState",
-            "index": 1,
+            "index": 2,
             "scopeIndex": 1,
             "rootFragment": [
                 "type": "root",
