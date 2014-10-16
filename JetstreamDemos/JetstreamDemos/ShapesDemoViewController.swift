@@ -12,7 +12,7 @@ import Jetstream
 
 class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
     var scope = Scope(name: "ShapesDemo")
-    var shapesDemo = ShapesDemo()
+    var canvas = Canvas()
 
     var client: Client?
     var session: Session?
@@ -24,8 +24,8 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         let tapRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleTap:"))
         self.view.addGestureRecognizer(tapRecognizer)
         
-        shapesDemo.setScopeAndMakeRootModel(scope)
-        shapesDemo.observeCollectionAdd(self, keyPath: "shapes") { (element: Shape) in
+        canvas.setScopeAndMakeRootModel(scope)
+        canvas.observeCollectionAdd(self, keyPath: "shapes") { (element: Shape) in
             let shapeView = ShapeView(shape: element)
             self.view.addSubview(shapeView)
         }
@@ -37,7 +37,7 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         var point = recognizer.locationInView(self.view)
         shape.x = point.x - shape.width / 2
         shape.y = point.y - shape.height / 2
-        shapesDemo.shapes.append(shape)
+        canvas.shapes.append(shape)
     }
     
     override func viewWillAppear(animated: Bool) {

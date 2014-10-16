@@ -274,14 +274,14 @@ class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDelegate {
             return false
         }
         
-        var isReachable = (flags & UInt32(kSCNetworkFlagsReachable)) != 0
-        var needsConnection = (flags & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
-        var transientConnection = (flags & UInt32(kSCNetworkFlagsTransientConnection)) != 0
-        var connectionAutomatic = (flags & UInt32(kSCNetworkFlagsConnectionAutomatic)) != 0
-        var interventionRequired = (flags & UInt32(kSCNetworkFlagsInterventionRequired)) != 0
-        var isLocalAddress = (flags & UInt32(kSCNetworkFlagsIsLocalAddress)) != 0
-        var isDirect = (flags & UInt32(kSCNetworkFlagsIsDirect)) != 0
+        var isReachable: Bool = (flags & UInt32(kSCNetworkFlagsReachable)) != 0
+        var needsConnection: Bool = (flags & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
+        var transientConnection: Bool = (flags & UInt32(kSCNetworkFlagsTransientConnection)) != 0
+        var connectionAutomatic: Bool = (flags & UInt32(kSCNetworkFlagsConnectionAutomatic)) != 0
+        var interventionRequired: Bool = (flags & UInt32(kSCNetworkFlagsInterventionRequired)) != 0
+        var isLocalAddress: Bool = (flags & UInt32(kSCNetworkFlagsIsLocalAddress)) != 0
+        var isDirect: Bool = (flags & UInt32(kSCNetworkFlagsIsDirect)) != 0
         
-        return isReachable && !needsConnection && !transientConnection ? true : false
+        return isReachable && !needsConnection && !transientConnection
     }
 }

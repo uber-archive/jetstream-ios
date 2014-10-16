@@ -1,4 +1,4 @@
-Jetstream is an elegant model framework written in Swift
+Jetstream for iOS is an elegant model framework written in Swift. It includes support for the Jetstream Sync protocol to sync local and remote models.  Out of the box it has a single Websocket transport adapter with the ability to add custom transport adapters.
 
 ## Features
 
@@ -27,35 +27,31 @@ Jetstream will be available as a [CocoaPod](http://cocoapods.org) once support f
 2. Open the `Jetstream` folder, and drag `Jetstream.xcodeproj` into the project navigator of your app.
 3. In Xcode, select your project, navigate to the General tab and click the + - icon in the "Embedded Binaries" section. Select `Jetstream.framework`.
 
----
-
-## Usage
+# Usage
 
 ### Creating models
 
-Jetstream works with two basic consepts: All your model objects extend from the superclass `ModelObject` and one of your ModelObject instances will be the root for your model tree encapsulated by a `Scope`.
+Jetstream works with two basic concepts: All your model objects extend from the superclass `ModelObject` and one of your ModelObject instances will be the root for your model tree encapsulated by a `Scope`.
 
 Let's model a canvas of shapes:
 
 ```swift
-public class Canvas: ModelObject {
-    dynamic var name: String?
-    dynamic var shapes = [Shape]()
-}
-
 public class Shape: ModelObject {
-    dynamic var type: ShapeType = .Circle
     dynamic var x: Float = 0
     dynamic var y: Float = 0
     dynamic var width: Float = 100
     dynamic var height: Float = 100
+    dynamic var type: ShapeType = .Circle
+}
+
+public class Canvas: ModelObject {
+    dynamic var name: String?
+    dynamic var shapes = [Shape]()
 }
 ```
 
+Supported types are `String`, `UInt`, `Int`, `UInt8`, `Int8`, `UInt16`, `Int16`, `UInt32`, `Int32`, `Float`, `Double`, `Bool`, `NSDate`, `UIColor`, `ModelObject` and `[ModelObject]`
 
-
-Supported types are `String`, `UInt`, `Int`, `UInt8`, `Int8`, `UInt16`, `Int16`, `UInt32`, `Int32`, `Float`, `Double`, `Bool`, `ModelObject` and `[ModelObject]`
-
-## License
+# License
 
 Jetstream is released under the MIT license. See LICENSE for details.
