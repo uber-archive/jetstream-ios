@@ -25,7 +25,7 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         self.view.addGestureRecognizer(tapRecognizer)
         
         canvas.setScopeAndMakeRootModel(scope)
-        canvas.observeCollectionAdd(self, keyPath: "shapes") { (element: Shape) in
+        canvas.observeCollectionAdd(self, key: "shapes") { (element: Shape) in
             let shapeView = ShapeView(shape: element)
             self.view.addSubview(shapeView)
         }

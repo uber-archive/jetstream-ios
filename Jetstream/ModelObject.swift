@@ -11,17 +11,17 @@ import Signals
 
 public struct ParentRelationship: Equatable {
     var parent: ModelObject
-    var keyPath: String
+    var key: String
     var listener: SignalListener<(key: String, oldValue: AnyObject?, value: AnyObject?)>?
     
-    init(parent: ModelObject, keyPath: String) {
+    init(parent: ModelObject, key: String) {
         self.parent = parent
-        self.keyPath = keyPath
+        self.key = key
     }
 }
 
 public func ==(lhs: ParentRelationship, rhs: ParentRelationship) -> Bool {
-    return lhs.parent == rhs.parent && lhs.keyPath == rhs.keyPath
+    return lhs.parent == rhs.parent && lhs.key == rhs.key
 }
 
 private var voidContext = 0
@@ -231,7 +231,7 @@ struct PropertyInfo {
            
             relationship.listener = relationship.parent.onPropertyChange.listen(self) { [weak self] (key, oldValue, value) -> Void in
                 if let strongSelf = self {
-                    if (key == relationship.keyPath) {
+                    if (key == relationship.key) {
                         if let definitePropertyInfo = strongSelf.properties[key] {
                             if definitePropertyInfo.valueType == ModelValueType.ModelObject {
                                 if value !== strongSelf {
@@ -250,7 +250,7 @@ struct PropertyInfo {
             }
             parents.append(relationship)
             
-            onAddedParent.fire((parent: parentRelationship.parent, key: parentRelationship.keyPath))
+            onAddedParent.fire((parent: parentRelationship.parent, key: parentRelationship.key))
 
             if (parents.count == 1) {
                 scope = parentRelationship.parent.scope
@@ -264,14 +264,14 @@ struct PropertyInfo {
             if let definiteListener = parentRelationship.listener {
                 definiteListener.cancel()
             }
-            parentRelationship.parent.removeChildAtKeyPath(parentRelationship.keyPath, child: self)
+            parentRelationship.parent.removeChildAtKey(parentRelationship.key, child: self)
             if (parents.count == 0) {
                 scope = nil
             }
         }
     }
 
-    func removeChildAtKeyPath(key: String, child: ModelObject) {
+    func removeChildAtKey(key: String, child: ModelObject) {
         if let definitePropertyInfo = properties[key] {
             if (definitePropertyInfo.valueType == ModelValueType.Array) {
                 if var array = valueForKey(key) as? [ModelObject] {
@@ -288,7 +288,7 @@ struct PropertyInfo {
         }
     }
     
-    func keyPathChanged(keyPath: String, oldValue: AnyObject?, newValue: AnyObject?) {
+    func keyChanged(key: String, oldValue: AnyObject?, newValue: AnyObject?) {
         let newArray = newValue as? [ModelObject]
         let oldArray = oldValue as? [ModelObject]
         
@@ -299,24 +299,24 @@ struct PropertyInfo {
             for index in 0 ..< oldArray!.count {
                 if !contains(newArray!, oldArray![index]) {
                     let model = oldArray![index]
-                    model.removeParentRelationship(ParentRelationship(parent: self, keyPath: keyPath))
-                    onModelRemovedFromCollection.fire(key: keyPath, element: model as AnyObject, atIndex: index)
+                    model.removeParentRelationship(ParentRelationship(parent: self, key: key))
+                    onModelRemovedFromCollection.fire(key: key, element: model as AnyObject, atIndex: index)
                 }
             }
             for index in 0 ..< newArray!.count {
                 if !contains(oldArray!, newArray![index]) {
                     let model = newArray![index]
-                    model.addParentRelationship(ParentRelationship(parent: self, keyPath: keyPath))
-                    onModelAddedToCollection.fire(key: keyPath, element: model as AnyObject, atIndex: index)
+                    model.addParentRelationship(ParentRelationship(parent: self, key: key))
+                    onModelAddedToCollection.fire(key: key, element: model as AnyObject, atIndex: index)
                 }
             }
         } else if let modelObject = newValue as? ModelObject {
-            modelObject.addParentRelationship(ParentRelationship(parent: self, keyPath: keyPath))
+            modelObject.addParentRelationship(ParentRelationship(parent: self, key: key))
         }
         
-        onPropertyChange.fire(key: keyPath, oldValue: oldValue, value: newValue)
+        onPropertyChange.fire(key: key, oldValue: oldValue, value: newValue)
         
-        if let dependencies = dependenciesForKey(keyPath) {
+        if let dependencies = dependenciesForKey(key) {
             for dependency in dependencies {
                 onPropertyChange.fire(key: dependency, oldValue: nil, value: nil)
             }
@@ -343,7 +343,7 @@ struct PropertyInfo {
                 }
             }
             if (notify) {
-                keyPathChanged(keyPath, oldValue: oldValue, newValue: newValue)
+                keyChanged(keyPath, oldValue: oldValue, newValue: newValue)
             }
         } else {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
@@ -366,7 +366,7 @@ struct PropertyInfo {
     /// :param: listener The listener to attach to the event.
     /// :param: callback The closure that gets executed every time the object changes.
     public func observeChange(listener: AnyObject, callback: () -> Void) {
-        let listener = onPropertyChange.listen(listener) { (keyPath, oldValue, value) -> Void in
+        let listener = onPropertyChange.listen(listener) { (key, oldValue, value) -> Void in
             callback()
         }
     }
@@ -374,62 +374,62 @@ struct PropertyInfo {
     /// Fires a listener whenever a specific property changes.
     ///
     /// :param: listener The listener to attach to the event.
-    /// :param: keyPath The keyPath of the property to listen to.
+    /// :param: key The key of the property to listen to.
     /// :param: callback The closure that gets executed every time the property changes.
-    public func observeChange(listener: AnyObject, keyPath: String, callback: () -> Void) {
-        let listener = onPropertyChange.listen(listener) { (keyPath, oldValue, value) -> Void in
+    public func observeChange(listener: AnyObject, key: String, callback: () -> Void) {
+        let listener = onPropertyChange.listen(listener) { (key, oldValue, value) -> Void in
             callback()
         }
-        listener.setFilter { (changedKeyPath, oldValue, value) -> Bool in
-            return keyPath == changedKeyPath
+        listener.setFilter { (changedKey, oldValue, value) -> Bool in
+            return key == changedKey
         }
     }
     
     /// Fires a listener whenever any of the specific properties change.
     ///
     /// :param: listener The listener to attach to the event.
-    /// :param: keyPaths An array of keyPaths to listen to.
+    /// :param: keys An array of keys to listen to.
     /// :param: callback The closure that gets executed every time any of the  properties change.
-    public func observeChange(listener: AnyObject, keyPaths: [String], callback: () -> Void) {
-        let listener = onPropertyChange.listen(listener) { (keyPath, oldValue, value) -> Void in
+    public func observeChange(listener: AnyObject, keys: [String], callback: () -> Void) {
+        let listener = onPropertyChange.listen(listener) { (key, oldValue, value) -> Void in
             callback()
         }
-        listener.setFilter { (changedKeyPath, oldValue, value) -> Bool in
-            return keyPaths.reduce(false, combine: { return $0 || $1 == changedKeyPath })
+        listener.setFilter { (changedKey, oldValue, value) -> Bool in
+            return keys.reduce(false, combine: { return $0 || $1 == changedKey })
         }
     }
     
     /// Fires a listener whenever a specific collection adds an element.
     ///
     /// :param: listener The listener to attach to the event.
-    /// :param: keyPath The keyPath of the the collection to listen to.
+    /// :param: key The key of the the collection to listen to.
     /// :param: callback The closure that gets executed every time the collection adds an element. Set the type of the element
     /// in the callback to the appropriate type of the collection.
-    public func observeCollectionAdd<T>(listener: AnyObject, keyPath: String, callback: (element: T) -> Void) {
-        let listener = onModelAddedToCollection.listen(listener) { (keyPath, element, atIndex) -> Void in
+    public func observeCollectionAdd<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) {
+        let listener = onModelAddedToCollection.listen(listener) { (key, element, atIndex) -> Void in
             if let definiteElement = element as? T {
                 callback(element: element as T)
             }
         }
-        listener.setFilter { (changedKeyPath, element, atIndex) -> Bool in
-            return keyPath == changedKeyPath
+        listener.setFilter { (changedKey, element, atIndex) -> Bool in
+            return key == changedKey
         }
     }
     
     /// Fires a listener whenever a specific collection removes an element.
     ///
     /// :param: listener The listener to attach to the event.
-    /// :param: keyPath The keyPath of the the collection to listen to.
+    /// :param: key The key of the the collection to listen to.
     /// :param: callback The closure that gets executed every time the collection removes an element. Set the type of the element
     /// in the callback to the appropriate type of the collection.
-    public func observeCollectionRemove<T>(listener: AnyObject, keyPath: String, callback: (element: T) -> Void) {
-        let listener = onModelRemovedFromCollection.listen(listener) { (keyPath, element, atIndex) -> Void in
+    public func observeCollectionRemove<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) {
+        let listener = onModelRemovedFromCollection.listen(listener) { (key, element, atIndex) -> Void in
             if let definiteElement = element as? T {
                 callback(element: element as T)
             }
         }
-        listener.setFilter { (changedKeyPath, element, atIndex) -> Bool in
-            return keyPath == changedKeyPath
+        listener.setFilter { (changedKey, element, atIndex) -> Bool in
+            return key == changedKey
         }
     }
     

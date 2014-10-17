@@ -60,6 +60,8 @@
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
 		72A10C5019EF2A81005C5200 /* PingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A46E6019ECA4BF00F71BA2 /* PingMessage.swift */; };
 		72A10C5519EF2AA9005C5200 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A46E6619ECEDB700F71BA2 /* Constants.swift */; };
+		72A10C6019F02886005C5200 /* Signals.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 725FE2DB19E8AC9D000EAD87 /* Signals.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		72A10C6119F02886005C5200 /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 11F7ACE619EB981200BA50FB /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		72DBB64919E496D600F6AB96 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DBB64819E496D600F6AB96 /* ModelValue.swift */; };
 		72DBB64A19E4975900F6AB96 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DBB64819E496D600F6AB96 /* ModelValue.swift */; };
 		72EF1C8619EDB7D2009C4B42 /* Enumerations.h in Headers */ = {isa = PBXBuildFile; fileRef = 72EF1C8319EDB5EA009C4B42 /* Enumerations.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -102,6 +104,20 @@
 			remoteInfo = Jetstream;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		72A10C5B19F02878005C5200 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				72A10C6019F02886005C5200 /* Signals.framework in CopyFiles */,
+				72A10C6119F02886005C5200 /* Starscream.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		11181CEA19D5079300B0BA59 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
@@ -333,6 +349,7 @@
 				7291631119CB5FE500320F15 /* Frameworks */,
 				7291631219CB5FE500320F15 /* Headers */,
 				7291631319CB5FE500320F15 /* Resources */,
+				72A10C5B19F02878005C5200 /* CopyFiles */,
 			);
 			buildRules = (
 			);

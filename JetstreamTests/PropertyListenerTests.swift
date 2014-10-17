@@ -17,8 +17,8 @@ class PropertyListenerTests: XCTestCase {
         var model = TestModel()
         var lastValue = ""
         
-        model.onPropertyChange.listen(self, callback: {(keyPath, oldValue, value) in
-            if keyPath == "string" {
+        model.onPropertyChange.listen(self, callback: {(key, oldValue, value) in
+            if key == "string" {
                 lastValue = value as String
             }
         })
@@ -32,7 +32,7 @@ class PropertyListenerTests: XCTestCase {
         var model = TestModel()
         var dispatchCount = 0
         
-        model.observeChange(self, keyPath: "string") {
+        model.observeChange(self, key: "string") {
             dispatchCount += 1
         }
 
@@ -52,7 +52,7 @@ class PropertyListenerTests: XCTestCase {
         var lastValue: NSString? = ""
         var dispatchCount = 0
         
-        model.observeChange(self, keyPaths: ["string", "int"]) {
+        model.observeChange(self, keys: ["string", "int"]) {
             dispatchCount += 1
         }
         
@@ -153,14 +153,14 @@ class PropertyListenerTests: XCTestCase {
         var addedCount = 0
         var removedCount = 0
         
-        model.observeChange(self, keyPath: "array") {
+        model.observeChange(self, key: "array") {
             changedCount += 1
         }
-        model.observeCollectionAdd(self, keyPath: "array") { (element: ModelObject) -> Void in
+        model.observeCollectionAdd(self, key: "array") { (element: ModelObject) -> Void in
             addedCount += 1
         }
         
-        model.observeCollectionRemove(self, keyPath: "array") { (element: ModelObject) -> Void in
+        model.observeCollectionRemove(self, key: "array") { (element: ModelObject) -> Void in
             removedCount += 1
         }
         

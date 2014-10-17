@@ -46,8 +46,6 @@ class SyncFragmentTests: XCTestCase {
         json = [
             "type": "add",
             "uuid": uuid.UUIDString,
-            "keyPath": "childModel",
-            "parent": child.uuid.UUIDString,
             "properties": ["string": "set correctly"],
         ]
         fragment = SyncFragment.unserialize(json)

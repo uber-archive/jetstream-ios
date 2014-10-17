@@ -6,7 +6,6 @@ Jetstream for iOS is an elegant model framework written in Swift. It includes su
 - [x] Fire-and-forget observation
 - [x] Modular architecture
 - [x] Comprehensive Unit Test Coverage
-- [x] Complete Documentation
 
 ## Requirements
 
@@ -49,9 +48,45 @@ public class Canvas: ModelObject {
     dynamic var shapes = [Shape]()
 }
 ```
+Once you've defined your model classes, instante a canvas and mark it as a scope root.
 
-Supported types are `String`, `UInt`, `Int`, `UInt8`, `Int8`, `UInt16`, `Int16`, `UInt32`, `Int32`, `Float`, `Double`, `Bool`, `NSDate`, `UIColor`, `ModelObject` and `[ModelObject]`
+```swift
+var cancas = Canvas()
+canvas.isScopeRoot = true
+```
+This will create a new scope and assing `canvas` as the root of the scope. The root object or any branches or leafs attached now belong to the scope. This lets you start observing changes happening to any models that have been attached to the tree:
 
-# License
+```swift
+canvas.observePropertyChange(self, key: "shapes") { (element: Shape) in
+    // A new shape was just added to our shapes-collection. Let's add listeners on it
+
+    element.observeChange(self, keys: ["x", "y", "width", "height"]) {
+        // Any of the provided properties have changed
+    }
+
+    element.observeDetach(self) {
+        // The shape has been removed from the scope 
+        // (i.e. it has been removed from the shapes collection)
+    }
+}
+
+canvas.observeCollectionAdd(self, key: "shapes") { (element: Shape) in
+    // A new shape was just added to our shapes-collection
+}
+
+canvas.observeChange(self, key: "name") {
+    // The name of our canvas changed
+}
+
+```
+
+You create a model by subclassing ModelObject and defining properties of the model as dynamic variables. Getters, private variables and constants are not counted as properties of the model and will not be observed.
+
+Supported types are `String`, `UInt`, `Int`, `UInt8`, `Int8`, `UInt16`, `Int16`, `UInt32`, `Int32`, `Float`, `Double`, `Bool`, `ModelObject`, `[ModelObject]`, `UIColor` and `NSDate` 
+
+As Jetstream relies on Objective-C runtime to detect changes to properties only types that can be represented in Objective-C can be used as property types. Unfortunately Swift enums can not be represented in Objective-C and can thus not be used. To use enums types, declare them in a Objective-C header file.
+
+## License
 
 Jetstream is released under the MIT license. See LICENSE for details.
+

@@ -15,7 +15,7 @@ public class ShapeView: UIView, UIGestureRecognizerDelegate {
             shape.removeObservers(self)
         }
         didSet {
-            shape.observeChange(self, keyPaths: ["x", "y", "width", "height"]) { [weak self] in
+            shape.observeChange(self, keys: ["x", "y", "width", "height"]) { [weak self] in
                 if let this = self {
                     this.updateView()
                 }
