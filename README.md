@@ -4,7 +4,7 @@ Jetstream for iOS is an elegant MVVM model framework written in Swift. It includ
 
 - [x] Change observation
 - [x] Fire-and-forget observation
-- [x] Synchronization protocol to create multi-user applications
+- [x] Synchronization protocol to create multi-user applications in minutes
 - [x] Modular architecture
 - [x] Comprehensive Unit Test Coverage
 
@@ -186,9 +186,26 @@ Since SyncFragments can serialize themselves to a JSON-serializable dictionary u
 There's one particular built-in extension that makes great use of this functionality: Synchronization.
 
 #Synchronization
-Jetstream comes out of the box with a synchronization mechanism that lets you create multi-user applications in minutes.
+Jetstream comes with a powerful synchronization mechanism that lets you create multi-user applications in minutes:
 
-(Some more about syncing here...)
+```
+// Synchronizing a scope
+scope = new Scope("ShapesCanvas")
+if let client = Client(options: WebsocketConnectionOptions(url: "ws://localhost")) {
+    client.connect()
+    client.onSession.listenOnce(self) { (session) in
+        self.session = session
+        session.fetch(scope) { (error) in
+            if error == nil {
+                // Registered to receive updates to the scope from the Jetstream server
+            }
+        }
+    }   	}    
+```
+
+This creates a scope and a client, using the built-in Websocket transport adapter. Once successfully connected to the Jetstream server running on localhost we ask our session to fetch the initial state of our scope. This will have the Jetstream server send us the full model tree for the scope and start keeping us in sync with remote changes as well as transmit changes that we make locally to our model up to the remote scope.
+
+This is all you need to do create a multi-user data model. When any remote clients connected to the same scope make changes to their local models, Jetstream will synchronization these changes in a efficient manner (sending a delta of these changes as sync fragments) with our local model and these changes will automatically be applied to our model and observers will fire, updating our views. Local changes made by our client will also be automatically be synchronized with the remote scope and any remote clients will receive the changes we make to our model in real-time.
 
 # Communication
 
