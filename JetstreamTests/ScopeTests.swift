@@ -124,7 +124,7 @@ class ScopeTests: XCTestCase {
         parent.setScopeAndMakeRootModel(scope)
         scope.getAndClearSyncFragments()
         
-        scope.onChanges.listen(self, callback: { (fragments) -> Void in
+        scope.onChanges.listen(self) { fragments in
             XCTAssertEqual(fragments.count, 3, "Changes don't create fragments when object have been added")
             
             var fragment = fragments[0]
@@ -149,7 +149,7 @@ class ScopeTests: XCTestCase {
             XCTAssertEqual(fragment.properties!["int"]! as Int, 10, "Fragment is correct")
 
             expectation.fulfill()
-        })
+        }
         
         parent.childModel = child
         child.childModel2 = child2

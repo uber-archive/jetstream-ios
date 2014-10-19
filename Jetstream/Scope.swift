@@ -97,16 +97,6 @@ public class Scope {
         applySyncFragments(fragments, applyDefaults: true)
     }
     
-    func applySyncFragments(syncFragments: [SyncFragment], applyDefaults: Bool = false) {
-        for fragment in syncFragments {
-            if let modelObject = fragment.createObjectForScopeIfNecessary(self) {
-                tempModelHash[modelObject.uuid] = modelObject
-            }
-        }
-        syncFragments.map { $0.applyChangesToScope(self, applyDefaults: applyDefaults) }
-        tempModelHash.removeAll(keepCapacity: false)
-    }
-    
     func syncFragmentWithType(type: SyncFragmentType, modelObject: ModelObject) -> SyncFragment? {
         if let fragment = syncFragmentLookup[modelObject.uuid] {
             if (type == SyncFragmentType.Remove && fragment.type == SyncFragmentType.Add) {
@@ -184,6 +174,19 @@ public class Scope {
             }
             return true
         }
+    }
+    
+    /// Applies sync fragments to the model
+    ///
+    /// :param: syncFragments An array of sync fragments to apply
+    func applySyncFragments(syncFragments: [SyncFragment], applyDefaults: Bool = false) {
+        for fragment in syncFragments {
+            if let modelObject = fragment.createObjectForScopeIfNecessary(self) {
+                tempModelHash[modelObject.uuid] = modelObject
+            }
+        }
+        syncFragments.map { $0.applyChangesToScope(self, applyDefaults: applyDefaults) }
+        tempModelHash.removeAll(keepCapacity: false)
     }
     
     /// Retrieve an object by it's uuid.
