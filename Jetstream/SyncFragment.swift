@@ -112,12 +112,15 @@ public class SyncFragment: Equatable {
     func applyPropertiesToModelObject(modelObject: ModelObject, scope: Scope, applyDefaults: Bool = false) {
         if var definiteProperties = properties {
             if (applyDefaults) {
-                for (name, propertyInfo) in modelObject.properties {
+                for (name, property) in modelObject.properties {
+                    if (property.valueType == ModelValueType.Composite) {
+                        continue
+                    }
                     if !contains(definiteProperties.keys, name) {
-                        if (propertyInfo.defaultValue == nil) {
+                        if (property.defaultValue == nil) {
                             definiteProperties[name] = NSNull()
                         } else {
-                            definiteProperties[name] = propertyInfo.defaultValue
+                            definiteProperties[name] = property.defaultValue
                         }
                     }
                 }
@@ -147,6 +150,9 @@ public class SyncFragment: Equatable {
     
     func applyPropertiesFromModelObject(modelObject: ModelObject) {
         for (name, property) in modelObject.properties {
+            if (property.valueType == .Composite) {
+                continue
+            }
             if let value: AnyObject = modelObject.valueForKey(property.key) {
                 if let modelValue = convertAnyObjectToModelValue(value, property.valueType) {
                     if (properties == nil) {

@@ -282,8 +282,5 @@ class TreeChangeTests: XCTestCase {
         XCTAssertEqual(child2.parents.count, 1 , "Correct number of parents")
         XCTAssertEqual(attachCount[2], 1 , "Correct amount of attaches observed for child2")
         XCTAssertEqual(detachCount[2], 1 , "Correct amount of detaches observed for child2")
-        
     }
-    
-    
 }

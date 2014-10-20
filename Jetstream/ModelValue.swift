@@ -31,6 +31,7 @@ enum ModelValueType: String {
     case Color = "@\"UIColor\""
     case Array = "@a"
     case ModelObject = "@m"
+    case Composite = "comp"
 }
 
 func convertAnyObjectToModelValue(value: AnyObject, type: ModelValueType) -> ModelValue? {
@@ -51,6 +52,7 @@ func convertAnyObjectToModelValue(value: AnyObject, type: ModelValueType) -> Mod
     case .Color: return value as? UIColor
     case .Array: return value as? [AnyObject]
     case .ModelObject: return value as? ModelObject
+    case .Composite: return nil
     }
 }
 
@@ -74,6 +76,7 @@ func unserializeModelValue(value: AnyObject, scope: Scope, type: ModelValueType)
     case .Color: return UIColor.unserialize(value, scope: scope)
     case .Array: return Array<ModelObject>.unserialize(value, scope: scope)
     case .ModelObject: return ModelObject.unserialize(value, scope: scope)
+    case .Composite: return nil
     }
 }
 

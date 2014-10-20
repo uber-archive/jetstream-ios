@@ -28,11 +28,11 @@ class DependencyTests: XCTestCase {
         var fireCount1 = 0
         var fireCount2 = 0
         
-        testModel.observeChange(self, key: "compositeProperty") { () -> Void in
+        testModel.observeChangeImmediately(self, key: "compositeProperty") { () -> Void in
             fireCount1 += 1
         }
         
-        anotherTestModel.observeChange(self, key: "anotherCompositeProperty") { () -> Void in
+        anotherTestModel.observeChangeImmediately(self, key: "anotherCompositeProperty") { () -> Void in
             fireCount2 += 1
         }
         

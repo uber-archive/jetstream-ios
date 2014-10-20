@@ -10,7 +10,6 @@ import UIKit
 import XCTest
 import Jetstream
 
-
 class PropertyListenerTests: XCTestCase {
     
     func testGenericPropertyListeners() {
@@ -32,7 +31,7 @@ class PropertyListenerTests: XCTestCase {
         var model = TestModel()
         var dispatchCount = 0
         
-        model.observeChange(self, key: "string") {
+        model.observeChangeImmediately(self, key: "string") {
             dispatchCount += 1
         }
 
@@ -47,12 +46,30 @@ class PropertyListenerTests: XCTestCase {
         XCTAssertEqual(dispatchCount, 2 , "Dispatched twice")
     }
     
+    func testCancelPropertyListeners() {
+        var model = TestModel()
+        var dispatchCount = 0
+        
+        var cancel = model.observeChangeImmediately(self, key: "string") {
+            dispatchCount += 1
+        }
+        
+        cancel()
+        
+        model.string = "test"
+        model.int = 1
+        model.float = 2.5
+        model.string = nil
+        
+        XCTAssertEqual(dispatchCount, 0 , "Never dispatehced")
+    }
+    
     func testMultiPropertyListeners() {
         var model = TestModel()
         var lastValue: NSString? = ""
         var dispatchCount = 0
         
-        model.observeChange(self, keys: ["string", "int"]) {
+        model.observeChangeImmediately(self, keys: ["string", "int"]) {
             dispatchCount += 1
         }
         
@@ -68,7 +85,7 @@ class PropertyListenerTests: XCTestCase {
         var lastValue: NSString? = ""
         var dispatchCount = 0
         
-        model.observeChange(self) {
+        model.observeChangeImmediately(self) {
             dispatchCount += 1
         }
         XCTAssertEqual(dispatchCount, 0 , "Dispatched once")
@@ -133,7 +150,6 @@ class PropertyListenerTests: XCTestCase {
         model.float = 10.2
         XCTAssertEqual(dispatchCount, 19 , "Dispatched four times") // float is part of composite property
         
-        
         model.double = 10.0
         model.double = 10.0
         XCTAssertEqual(dispatchCount, 20 , "Dispatched once")
@@ -153,7 +169,7 @@ class PropertyListenerTests: XCTestCase {
         var addedCount = 0
         var removedCount = 0
         
-        model.observeChange(self, key: "array") {
+        model.observeChangeImmediately(self, key: "array") {
             changedCount += 1
         }
         model.observeCollectionAdd(self, key: "array") { (element: ModelObject) in
@@ -175,7 +191,61 @@ class PropertyListenerTests: XCTestCase {
         
         model.array[0].detach()
         XCTAssertEqual(removedCount, 3 , "Dispatched three times")
-        
     }
-
+    
+    func testTreeListeners() {
+        let expectation = expectationWithDescription("onChange")
+        
+        var parent = TestModel()
+        var child = TestModel()
+        var child2 = TestModel()
+        
+        var changedCount1 = 0
+        var changedCount2 = 0
+        var changedCount3 = 0
+        
+        parent.observeTreeChange(self) {
+            changedCount1 += 1
+        }
+        child.observeTreeChange(self) {
+            changedCount2 += 1
+        }
+        child2.observeTreeChange(self) {
+            changedCount3 += 1
+        }
+        
+        parent.array.append(child)
+        
+        delay(0.001) {
+            XCTAssertEqual(changedCount1, 1 , "Correct dispatch count")
+            XCTAssertEqual(changedCount2, 0 , "Correct dispatch count")
+            XCTAssertEqual(changedCount3, 0 , "Correct dispatch count")
+            
+            child.childModel = child2
+            delay(0.001) {
+                XCTAssertEqual(changedCount1, 2 , "Correct dispatch count")
+                XCTAssertEqual(changedCount2, 1 , "Correct dispatch count")
+                XCTAssertEqual(changedCount3, 0 , "Correct dispatch count")
+                child.string = "changed this"
+                child.bool = true
+                
+                delay(0.001) {
+                    XCTAssertEqual(changedCount1, 3 , "Correct dispatch count")
+                    XCTAssertEqual(changedCount2, 2 , "Correct dispatch count")
+                    XCTAssertEqual(changedCount3, 0 , "Correct dispatch count")
+                    
+                    child2.string = "changed this"
+                    child2.bool = true
+                    
+                    delay(0.001) {
+                        XCTAssertEqual(changedCount1, 4 , "Correct dispatch count")
+                        XCTAssertEqual(changedCount2, 3 , "Correct dispatch count")
+                        XCTAssertEqual(changedCount3, 1 , "Correct dispatch count")
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+        waitForExpectationsWithTimeout(2.0, handler: nil)
+    }
 }

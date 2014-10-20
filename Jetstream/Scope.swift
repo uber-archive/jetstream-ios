@@ -55,12 +55,14 @@ public class Scope {
             if let this = self {
                 if (!this.applyingRemote) {
                     if let property = modelObject.properties[key] {
-                        var modelValue: ModelValue?
-                        if (value != nil) {
-                            modelValue = convertAnyObjectToModelValue(value!, property.valueType)
-                        }
-                        if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
-                            fragment.newValueForKeyFromModelObject(key, modelValue: modelValue, modelObject: modelObject)
+                        if (property.valueType != .Composite) {
+                            var modelValue: ModelValue?
+                            if (value != nil) {
+                                modelValue = convertAnyObjectToModelValue(value!, property.valueType)
+                            }
+                            if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
+                                fragment.newValueForKeyFromModelObject(key, modelValue: modelValue, modelObject: modelObject)
+                            }
                         }
                     }
                 }
@@ -147,7 +149,7 @@ public class Scope {
         }
     }
 
-    dynamic private func sendChanges() {
+    private func sendChanges() {
         changesQueued = false
         var fragments = getAndClearSyncFragments()
         if fragments.count > 0 {

@@ -9,6 +9,9 @@
 import Foundation
 import Signals
 
+/// A function that when invoked canceles the associated observer.
+public typealias CancelObserver = (() -> (Void))!
+
 public struct ParentRelationship: Equatable {
     var parent: ModelObject
     var key: String
@@ -40,6 +43,7 @@ struct PropertyInfo {
     public let onAttachToScope = Signal<(Scope)>()
     public let onAddedParent = Signal<(parent: ModelObject, key: String)>()
     public let onRemovedParent = Signal<(parent: ModelObject, key: String)>()
+    public let onTreeChange = Signal<()>()
     
     struct Static {
         static var allTypes = [String: AnyClass]()
@@ -152,6 +156,29 @@ struct PropertyInfo {
             }
         }
     }
+    
+    private var internalTreeInvalidated = false
+    var treeInvalidated: Bool {
+        get {
+            return internalTreeInvalidated
+        }
+        set {
+            if (internalTreeInvalidated != newValue) {
+                internalTreeInvalidated = newValue
+                if internalTreeInvalidated == true {
+                    delay(0.0) { [weak self] () -> () in
+                        if let definiteSelf = self {
+                            definiteSelf.treeInvalidated = false
+                            definiteSelf.onTreeChange.fire()
+                        }
+                    }
+                    for parentRelationship in parents {
+                        parentRelationship.parent.treeInvalidated = true
+                    }
+                }
+            }
+        }
+    }
 
     public override init() {
         uuid = NSUUID()
@@ -177,9 +204,10 @@ struct PropertyInfo {
 
     func setupPropertyListeners() {
         // TODO: Do this only once and store as static
+        let propertyDependencies = self.dynamicType.getCompositeDependencies()
         var propertyCount: UInt32 = 0
         let propertyList = class_copyPropertyList(self.dynamicType, &propertyCount)
-        
+
         for i in 0..<Int(propertyCount) {
             var propertyCName = property_getName(propertyList[i])
             if propertyCName != nil {
@@ -190,11 +218,13 @@ struct PropertyInfo {
    
                 if components.count > 2 {
                     var type: NSString = (components[0] as NSString).substringFromIndex(1)
-                    var accessible = (components[2] as String) != "R"
-
+                    var writeable = (components[2] as String) != "R"
+                    
                     var valueType: ModelValueType?
 
-                    if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
+                    if propertyDependencies[propertyName] != nil {
+                        valueType = .Composite
+                    } else if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
                         valueType = .Array
                     } else if let definiteValueType = ModelValueType.fromRaw(type) {
                          valueType = definiteValueType
@@ -202,9 +232,9 @@ struct PropertyInfo {
                         // Assuming that every custom type extends from ModelObject
                         valueType = .ModelObject
                     }
-                    
+
                     if let definiteValueType = valueType {
-                        if accessible {
+                        if writeable || definiteValueType == ModelValueType.Composite {
                             self.addObserver(self, forKeyPath: propertyName, options: .New | .Old, context: &voidContext)
                             let defaultValue: AnyObject? = valueForKey(propertyName)
                             properties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue)
@@ -321,6 +351,7 @@ struct PropertyInfo {
                 onPropertyChange.fire(key: dependency, oldValue: nil, value: nil)
             }
         }
+        treeInvalidated = true
     }
 
     override public func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
@@ -350,6 +381,31 @@ struct PropertyInfo {
         }
     }
     
+    private func observeChange(observer: AnyObject, keys: [String]?, delay: Bool, callback: () -> Void) -> CancelObserver {
+        assert(keys == nil || keys!.count > 0, "no key specified")
+        assert(keys == nil || keys!.filter { self.properties[$0] == nil }.count == 0, "no property found for \(keys!.filter { self.properties[$0] != nil })")
+        
+        let listener = onPropertyChange.listen(observer) { (key, oldValue, value) -> Void in
+            callback()
+        }
+        if let definiteKeys = keys {
+            if definiteKeys.count == 1 {
+                let key = definiteKeys[0]
+                listener.filter { $0.key == key }
+            } else {
+                var lookup = [String: Bool]()
+                for key in definiteKeys {
+                    lookup[key] = true
+                }
+                listener.filter { lookup[$0.key] != nil}
+            }
+        }
+        if delay {
+            listener.queueAndDelayBy(0.0)
+        }
+        return { listener.cancel() }
+    }
+    
     // MARK: - Public API
     
     /// Assigns a scope to the model object and makes it the new root for the scope.
@@ -361,42 +417,79 @@ struct PropertyInfo {
         self.scope = scope
     }
 
-    /// Fires a listener whenever any property or collection on the object changes.
+    /// Invokes a callback whenever any property or collection on the object has changed. This observer waits until the next runloop to
+    /// dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
     ///
-    /// :param: listener The listener to attach to the event.
-    /// :param: callback The closure that gets executed every time the object changes.
-    public func observeChange(listener: AnyObject, callback: () -> Void) {
-        let listener = onPropertyChange.listen(listener) { (key, oldValue, value) -> Void in
-            callback()
-        }
+    /// :param: observer A listener to attach to the event.
+    /// :param: callback A closure that gets executed whenever any property or collection on the object has changed.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChange(observer: AnyObject, callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: nil, delay: true, callback: callback)
     }
     
-    /// Fires a listener whenever a specific property changes.
+    /// Immediately invokes a callback whenever any property or collection on the object changes. This will happen for every single property
+    /// change. To get a distilled callback once every runloop, use the observeChange callback instead.
     ///
-    /// :param: listener The listener to attach to the event.
+    /// :param: observer A listener to attach to the event.
+    /// :param: callback A closure that gets executed every time any property or collection of the object changes.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChangeImmediately(observer: AnyObject, callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: nil, delay: false, callback: callback)
+    }
+    
+    /// Invokes a callback whenever any specific property or collection on the object has changed. This observer waits until the next 
+    /// runloop to dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
+    ///
+    /// :param: observer A listener to attach to the event.
     /// :param: key The key of the property to listen to.
-    /// :param: callback The closure that gets executed every time the property changes.
-    public func observeChange(listener: AnyObject, key: String, callback: () -> Void) {
-        let listener = onPropertyChange.listen(listener) { (key, oldValue, value) -> Void in
-            callback()
-        }
-        listener.setFilter { (changedKey, oldValue, value) -> Bool in
-            return key == changedKey
-        }
+    /// :param: callback A closure that gets executed whenever the provided property has changed.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChange(observer: AnyObject, key: String, callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: [key], delay: true, callback: callback)
     }
     
-    /// Fires a listener whenever any of the specific properties change.
+    /// Immediately invokes a callback whenever a specific property or collection on the object changes. This will happen for every single
+    /// change. To get a distilled callback once every runloop, use the observeChange callback instead.
     ///
-    /// :param: listener The listener to attach to the event.
+    /// :param: observer A listener to attach to the event.
+    /// :param: key The key of the property to listen to.
+    /// :param: callback A closure that gets executed every time the provided property changes.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChangeImmediately(observer: AnyObject, key: String, callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: [key], delay: false, callback: callback)
+    }
+    
+    /// Invokes a callback whenever any of the specified properties or collections have changed. This observer waits until the next
+    /// runloop to dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
+    ///
+    /// :param: observer A listener to attach to the event.
     /// :param: keys An array of keys to listen to.
-    /// :param: callback The closure that gets executed every time any of the  properties change.
-    public func observeChange(listener: AnyObject, keys: [String], callback: () -> Void) {
-        let listener = onPropertyChange.listen(listener) { (key, oldValue, value) -> Void in
-            callback()
-        }
-        listener.setFilter { (changedKey, oldValue, value) -> Bool in
-            return keys.reduce(false, combine: { return $0 || $1 == changedKey })
-        }
+    /// :param: callback A closure that gets executed whenever any of the provided properties or collections have changed.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChange(observer: AnyObject, keys: [String], callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: keys, delay: true, callback: callback)
+    }
+    
+    /// Immediately invokes a callback whenever any of the specified properties or collections change. This will happen for every single
+    /// change of any of the provided properties. To get a distilled callback once every runloop, use the observeChange callback instead.
+    ///
+    /// :param: observer A listener to attach to the event.
+    /// :param: keys An array of keys to listen to.
+    /// :param: callback A closure that gets executed every time any of the provided properties or collections change.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChangeImmediately(observer: AnyObject, keys: [String], callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: keys, delay: false, callback: callback)
+    }
+    
+    /// Invokes a callback when the object or any of its children change. This observer waits until the next runloop to
+    /// dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
+    ///
+    /// :param: observer A listener to attach to the event.
+    /// :param: callback A closure that gets executed whenever the object or any of its children and children's children change.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeTreeChange(observer: AnyObject, callback: () -> Void) -> CancelObserver {
+        let listener = onTreeChange.listen(observer) { callback() }
+        return { listener.cancel() }
     }
     
     /// Fires a listener whenever a specific collection adds an element.
@@ -405,15 +498,17 @@ struct PropertyInfo {
     /// :param: key The key of the the collection to listen to.
     /// :param: callback The closure that gets executed every time the collection adds an element. Set the type of the element
     /// in the callback to the appropriate type of the collection.
-    public func observeCollectionAdd<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) {
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeCollectionAdd<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver {
+        assert(properties[key] != nil, "no property found for key '\(key)'")
+        assert(properties[key]!.valueType == .Array, "property '\(key)' is not an Array")
+        
         let listener = onModelAddedToCollection.listen(listener) { (key, element, atIndex) -> Void in
             if let definiteElement = element as? T {
                 callback(element: element as T)
             }
-        }
-        listener.setFilter { (changedKey, element, atIndex) -> Bool in
-            return key == changedKey
-        }
+        }.filter { $0.key == key}
+        return { listener.cancel() }
     }
     
     /// Fires a listener whenever a specific collection removes an element.
@@ -422,15 +517,17 @@ struct PropertyInfo {
     /// :param: key The key of the the collection to listen to.
     /// :param: callback The closure that gets executed every time the collection removes an element. Set the type of the element
     /// in the callback to the appropriate type of the collection.
-    public func observeCollectionRemove<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) {
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeCollectionRemove<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver {
+        assert(properties[key] != nil, "no property found for key '\(key)'")
+        assert(properties[key]!.valueType == .Array, "property '\(key)' is not an Array")
+        
         let listener = onModelRemovedFromCollection.listen(listener) { (key, element, atIndex) -> Void in
             if let definiteElement = element as? T {
                 callback(element: element as T)
             }
-        }
-        listener.setFilter { (changedKey, element, atIndex) -> Bool in
-            return key == changedKey
-        }
+        }.filter { return $0.key == key }
+        return { listener.cancel() }
     }
     
     /// Fires a listener whenever the ModelObject is attached to a scope.
@@ -438,10 +535,12 @@ struct PropertyInfo {
     /// :param: listener The listener to attach to the event.
     /// :param: callback The closure that gets executed every time the ModelObject is added to a scope. The scope argument
     /// contains the scope to which the model object was attached to.
-    public func observeAttach(listener: AnyObject, callback: (scope: Scope) -> Void) {
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeAttach(listener: AnyObject, callback: (scope: Scope) -> Void) -> CancelObserver {
         let listener = onAttachToScope.listen(listener)  { (scope) -> Void in
             callback(scope: scope)
         }
+        return { listener.cancel() }
     }
     
     /// Fires a listener whenever the ModelObject is attached to a scope.
@@ -449,10 +548,12 @@ struct PropertyInfo {
     /// :param: listener The listener to attach to the event.
     /// :param: callback The closure that gets executed every time the ModelObject is added to a scope. The scope argument
     /// contains the scope from which the model object was removed from.
-    public func observeDetach(listener: AnyObject, callback: (scope: Scope) -> Void) {
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeDetach(listener: AnyObject, callback: (scope: Scope) -> Void) -> CancelObserver {
         let listener = onDetachedFromScope.listen(listener)  { (scope) -> Void in
             callback(scope: scope)
         }
+        return { listener.cancel() }
     }
     
     /// Fires a listener whenever the ModelObject is moved between scopes.
@@ -460,20 +561,24 @@ struct PropertyInfo {
     /// :param: listener The listener to attach to the event.
     /// :param: callback The closure that gets executed every time the ModelObject is moved between scopes. The scope argument
     /// contains the new scope of the model object.
-    public func observeAddedToParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) {
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeAddedToParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) -> CancelObserver {
         let listener = onAddedParent.listen(listener) { (parent, key) -> Void in
             callback(parent: parent, key:key)
         }
+        return { listener.cancel() }
     }
     
     /// Fires a listener whenever the ModelObject is moved between scopes.
     ///
     /// :param: listener The listener to attach to the event.
     /// :param: callback The closure that gets executed every time the ModelObject is moved between scopes.
-    public func observeRemovedFromParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) {
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeRemovedFromParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) -> CancelObserver {
         let listener = onRemovedParent.listen(listener) { (parent, key) -> Void in
             callback(parent: parent, key: key)
         }
+        return { listener.cancel() }
     }
     
     /// Removes all observers and signal listeners for a listening object.

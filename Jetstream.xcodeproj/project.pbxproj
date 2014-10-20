@@ -57,11 +57,13 @@
 		727EAA4319D4CD2100B7990A /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727EAA4219D4CD2100B7990A /* SyncFragment.swift */; };
 		7284120519EDBDAE0071DD0B /* WebsocketTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F7ACEB19EB989900BA50FB /* WebsocketTransportAdapter.swift */; };
 		728874B719E84D620045712F /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728874B619E84D620045712F /* ModelTests.swift */; };
+		728C6D6B19F1AEE900FA4301 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728C6D6A19F1AEE900FA4301 /* TestHelpers.swift */; };
 		7291632F19CB880200320F15 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7291632E19CB880200320F15 /* ModelObject.swift */; };
 		72A10C5019EF2A81005C5200 /* PingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A46E6019ECA4BF00F71BA2 /* PingMessage.swift */; };
 		72A10C5519EF2AA9005C5200 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A46E6619ECEDB700F71BA2 /* Constants.swift */; };
 		72A10C6019F02886005C5200 /* Signals.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 725FE2DB19E8AC9D000EAD87 /* Signals.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		72A10C6119F02886005C5200 /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 11F7ACE619EB981200BA50FB /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		72B34DC719F1C26400EA37C5 /* ImmediatePropertyListeners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B34DC619F1C26400EA37C5 /* ImmediatePropertyListeners.swift */; };
 		72DBB64919E496D600F6AB96 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DBB64819E496D600F6AB96 /* ModelValue.swift */; };
 		72DBB64A19E4975900F6AB96 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DBB64819E496D600F6AB96 /* ModelValue.swift */; };
 		72EF1C8619EDB7D2009C4B42 /* Enumerations.h in Headers */ = {isa = PBXBuildFile; fileRef = 72EF1C8319EDB5EA009C4B42 /* Enumerations.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -149,6 +151,7 @@
 		727EAA4B19D4DF8800B7990A /* ScopeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeTests.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragmentTests.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		728874B619E84D620045712F /* ModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelTests.swift; sourceTree = "<group>"; };
+		728C6D6A19F1AEE900FA4301 /* TestHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		7291631519CB5FE500320F15 /* Jetstream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Jetstream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7291631919CB5FE500320F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7291632019CB5FE500320F15 /* JetstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JetstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,6 +160,7 @@
 		7291632E19CB880200320F15 /* ModelObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelObject.swift; sourceTree = "<group>"; };
 		7291633019CB8B2C00320F15 /* TestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
 		72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeChangeTests.swift; sourceTree = "<group>"; wrapsLines = 1; };
+		72B34DC619F1C26400EA37C5 /* ImmediatePropertyListeners.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImmediatePropertyListeners.swift; sourceTree = "<group>"; };
 		72DBB64819E496D600F6AB96 /* ModelValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelValue.swift; sourceTree = "<group>"; };
 		72EF1C8319EDB5EA009C4B42 /* Enumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Enumerations.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -243,6 +247,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		728C6D6519F1AED900FA4301 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				728C6D6A19F1AEE900FA4301 /* TestHelpers.swift */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
 		7291630B19CB5FE500320F15 = {
 			isa = PBXGroup;
 			children = (
@@ -297,12 +309,14 @@
 			isa = PBXGroup;
 			children = (
 				722231A219DC9DB900D99795 /* DependencyTests.swift */,
+				72B34DC619F1C26400EA37C5 /* ImmediatePropertyListeners.swift */,
 				728874B619E84D620045712F /* ModelTests.swift */,
 				7291632419CB5FE500320F15 /* PropertyListenerTests.swift */,
 				727EAA4B19D4DF8800B7990A /* ScopeTests.swift */,
 				7202D09E19D62E70004E9A47 /* StateMessageTests.swift */,
 				727EAA4D19D4DFB800B7990A /* SyncFragmentTests.swift */,
 				72A6B5F419CD16F400B7BD94 /* TreeChangeTests.swift */,
+				728C6D6519F1AED900FA4301 /* Helpers */,
 				72A6B5F619CD171500B7BD94 /* Models */,
 				7291632219CB5FE500320F15 /* Supporting Files */,
 			);
@@ -515,12 +529,14 @@
 				11A71EC319DDFAFE00B124B3 /* ReplyMessage.swift in Sources */,
 				11A71EC519DDFAFE00B124B3 /* SessionCreateResponseMessage.swift in Sources */,
 				7212917019E60A2600332376 /* PropertyListenerTests.swift in Sources */,
+				728C6D6B19F1AEE900FA4301 /* TestHelpers.swift in Sources */,
 				11A71EBB19DDFADF00B124B3 /* Logging.swift in Sources */,
 				11A71EC419DDFAFE00B124B3 /* SessionCreateMessage.swift in Sources */,
 				72DBB64A19E4975900F6AB96 /* ModelValue.swift in Sources */,
 				7212916E19E5B3E400332376 /* StateMessageTests.swift in Sources */,
 				11A71EC619DDFAFE00B124B3 /* ScopeFetchMessage.swift in Sources */,
 				11A71EC219DDFAFE00B124B3 /* Message.swift in Sources */,
+				72B34DC719F1C26400EA37C5 /* ImmediatePropertyListeners.swift in Sources */,
 				728874B719E84D620045712F /* ModelTests.swift in Sources */,
 				11A71EBC19DDFADF00B124B3 /* Session.swift in Sources */,
 				11A71EC119DDFAF400B124B3 /* Transport.swift in Sources */,

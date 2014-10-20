@@ -224,4 +224,22 @@ class ScopeTests: XCTestCase {
         parent.color = UIColor(red: 1.0, green: 0.25, blue: 0.5, alpha: 0.25)
         waitForExpectationsWithTimeout(1, handler: nil)
     }
+    
+    func testCompositeProperties() {
+        let expectation = expectationWithDescription("onChange")
+        parent.setScopeAndMakeRootModel(scope)
+        scope.getAndClearSyncFragments()
+        
+        scope.onChanges.listen(self, callback: { (fragments) -> Void in
+            XCTAssertEqual(fragments.count, 1, "Created a fragment")
+            var fragment = fragments[0]
+            XCTAssertEqual(fragment.properties!.count, 1, "Property count is correct")
+            XCTAssert(fragment.properties!["compositeProperty"] == nil, "Don't record compositeProperty")
+            
+            expectation.fulfill()
+        })
+        
+        parent.float = 10.0 // Will invalidate composite property
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
 }
