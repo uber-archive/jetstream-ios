@@ -44,7 +44,7 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         super.viewWillAppear(animated)
         showLoader()
         
-        client = Client(options: WebsocketConnectionOptions(url: "ws://" + host + ":3000"))
+        client = Client(options: WebsocketConnectionOptions(url: NSURL(string: "ws://" + host + ":3000")!))
         client?.connect()
         client?.onSession.listenOnce(self) { (session) in
             self.session = session

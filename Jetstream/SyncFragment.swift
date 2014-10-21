@@ -39,7 +39,7 @@ public class SyncFragment: Equatable {
     
     func serialize() -> [String: AnyObject] {
         var dictionary = [String: AnyObject]()
-        dictionary["type"] = type.toRaw()
+        dictionary["type"] = type.rawValue
         dictionary["uuid"] = objectUUID.UUIDString
         if clsName != nil {
             dictionary["cls"] = clsName!
@@ -60,7 +60,7 @@ public class SyncFragment: Equatable {
             switch key {
             case "type":
                 if let valueAsString = value as? String {
-                    if let definiteType = SyncFragmentType.fromRaw(valueAsString) {
+                    if let definiteType = SyncFragmentType(rawValue: valueAsString) {
                         type = definiteType
                     }
                 }
@@ -183,7 +183,7 @@ public class SyncFragment: Equatable {
     func createObjectForScopeIfNecessary(scope: Scope) -> ModelObject? {
         if (type == .Add) {
             if let existingModelObject = scope.getObjectById(objectUUID) {
-                return nil
+                return existingModelObject
             } else if clsName != nil {
                 if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
                     return cls(uuid: objectUUID)

@@ -32,7 +32,7 @@ public class Session {
         if closed {
             return callback(NSError(
                 domain: defaultErrorDomain,
-                code: ErrorCode.SessionAlreadyClosed.toRaw(),
+                code: ErrorCode.SessionAlreadyClosed.rawValue,
                 userInfo: [NSLocalizedDescriptionKey: "Session already closed"]))
         }
         
@@ -78,7 +78,11 @@ public class Session {
                     scope.startApplyingRemote()
                     scope.applyRootFragment(scopeStateMessage.rootFragment, additionalFragments: scopeStateMessage.syncFragments)
                     scope.endApplyingRemote()
+                } else {
+                    logger.error("Received state message without having a root model")
                 }
+            } else {
+                logger.error("Received state message without having local scope")
             }
         case let scopeSyncMessage as ScopeSyncMessage:
             if let scope = scopes[scopeSyncMessage.scopeIndex] {
@@ -101,7 +105,7 @@ public class Session {
         if closed {
             return callback(NSError(
                 domain: defaultErrorDomain,
-                code: ErrorCode.SessionBecameClosed.toRaw(),
+                code: ErrorCode.SessionBecameClosed.rawValue,
                 userInfo: [NSLocalizedDescriptionKey: "Session became closed"]))
         }
         

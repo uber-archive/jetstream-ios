@@ -9,9 +9,9 @@
 import Foundation
 
 public class ConnectionOptions {
-    public let url: String
+    public let url: NSURL
     
-    public init(url: String) {
+    public init(url: NSURL) {
         self.url = url
     }
 }

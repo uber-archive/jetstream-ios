@@ -88,9 +88,9 @@ public class ShapeView: UIView, UIGestureRecognizerDelegate {
         bString = bString.substringToIndex(2)
         
         var r: CUnsignedInt = 0, g: CUnsignedInt = 0, b: CUnsignedInt = 0
-        NSScanner.scannerWithString(rString).scanHexInt(&r)
-        NSScanner.scannerWithString(gString).scanHexInt(&g)
-        NSScanner.scannerWithString(bString).scanHexInt(&b)
+        NSScanner(string: rString).scanHexInt(&r)
+        NSScanner(string: gString).scanHexInt(&g)
+        NSScanner(string: bString).scanHexInt(&b)
         
         var red = CGFloat(r) / 255.0
         var green = CGFloat(g) / 255.0

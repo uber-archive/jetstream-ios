@@ -224,8 +224,10 @@ extension Array: ModelValue {
         var models = [ModelObject]()
         if let uuids = value as? [String] {
             for uuid in uuids {
-                if let modelObject = scope.getObjectById(NSUUID(UUIDString: uuid)) {
-                    models.append(modelObject)
+                if let uuid = NSUUID(UUIDString: uuid) {
+                    if let modelObject = scope.getObjectById(uuid) {
+                        models.append(modelObject)
+                    }
                 }
             }
         }
@@ -239,8 +241,10 @@ extension ModelObject: ModelValue {
     func serialize() -> AnyObject { return self.uuid.UUIDString }
     
     class func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
-        if let uuid = value as? String {
-            return scope.getObjectById(NSUUID(UUIDString: uuid))
+        if let uuidString = value as? String {
+            if let uuid = NSUUID(UUIDString: uuidString) {
+                return scope.getObjectById(uuid)
+            }
         }
         return nil
     }

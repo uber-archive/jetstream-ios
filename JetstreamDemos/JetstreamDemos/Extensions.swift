@@ -15,7 +15,7 @@ let loaderKey = UnsafePointer<Void>()
 extension UIViewController {
     var host: String {
         get {
-            var result: AnyObject? = NSBundle.mainBundle().infoDictionary["JetstreamServer"]
+            var result: AnyObject? = NSBundle.mainBundle().infoDictionary!["JetstreamServer"]
             if let host = result as? String {
                 return host
             } else {

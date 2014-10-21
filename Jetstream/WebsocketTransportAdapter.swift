@@ -14,12 +14,12 @@ import SystemConfiguration
 public class WebsocketConnectionOptions: ConnectionOptions {
     public let headers: [String: String]
     
-    public init(url: String, headers: [String: String]) {
+    public init(url: NSURL, headers: [String: String]) {
         self.headers = headers
         super.init(url: url)
     }
     
-    override convenience public init(url: String) {
+    override convenience public init(url: NSURL) {
         self.init(url: url, headers: [String: String]())
     }
 }
@@ -54,7 +54,7 @@ class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDelegate {
     
     init(options: ConnectionOptions, headers: [String: String]) {
         self.options = options
-        self.url = NSURL.URLWithString(options.url)
+        self.url = options.url
         socket = Websocket(url: url)
         super.init()
         socket.delegate = self
@@ -131,9 +131,10 @@ class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDelegate {
             error: error)
         
         if json != nil {
-            let str = NSString(data: json!, encoding: NSUTF8StringEncoding)
-            socket.writeString(str)
-            logger.debug("sent: \(str)")
+            if let str = NSString(data: json!, encoding: NSUTF8StringEncoding) {
+                socket.writeString(str)
+                logger.debug("sent: \(str)")
+            }
         }
     }
     

@@ -15,7 +15,7 @@ class StateMessageTests: XCTestCase {
     
     var root = TestModel()
     var scope = Scope(name: "Testing")
-    var client = Client(options: ConnectionOptions(url: "localhost"))
+    var client = Client(options: ConnectionOptions(url: NSURL(string: "localhost")!))
     var firstMessage: ScopeStateMessage!
     let uuid = NSUUID()
 
@@ -25,7 +25,7 @@ class StateMessageTests: XCTestCase {
         root.setScopeAndMakeRootModel(scope)
         XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope to start with")
         
-        client = Client(options: ConnectionOptions(url: "localhost"))
+        client = Client(options: ConnectionOptions(url: NSURL(string: "localhost")!))
         var msg = SessionCreateResponseMessage(index: 1, success: true, sessionToken: "jeah", response: nil)
         client.receivedMessage(msg)
         client.session!.scopeAttach(scope, scopeIndex: 1)
@@ -207,10 +207,10 @@ class StateMessageTests: XCTestCase {
        
         var comp: [CGFloat] = Array(count: 4, repeatedValue: 0);
         root.color!.getRed(&comp[0], green: &comp[1], blue: &comp[2], alpha: &comp[3])
-        var red = UInt32(comp[0] * 255)
-        var green = UInt32(comp[1] * 255)
-        var blue = UInt32(comp[2] * 255)
-        var alpha = UInt32(comp[3] * 255)
+        var red = Int(comp[0] * 255)
+        var green = Int(comp[1] * 255)
+        var blue = Int(comp[2] * 255)
+        var alpha = Int(comp[3] * 255)
         
         XCTAssertEqual(red, 0xFF, "Applied color")
         XCTAssertEqual(green, 0x10, "Applied color")

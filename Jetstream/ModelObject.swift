@@ -45,9 +45,13 @@ struct PropertyInfo {
     public let onRemovedParent = Signal<(parent: ModelObject, key: String)>()
     public let onTreeChange = Signal<()>()
     
+    private let className: String!
+    
     struct Static {
         static var allTypes = [String: AnyClass]()
         static var compositeDependencies = [String: [String: [String]]]()
+        static var propertiesInitialzedForClasses = [String: Bool]()
+        static var properties = [String: [String: PropertyInfo]]()
     }
 
     override public class func initialize() {
@@ -69,6 +73,7 @@ struct PropertyInfo {
             }
         }
         Static.compositeDependencies[name] = keyToDependencies
+        Static.properties[name] = [String: PropertyInfo]()
     }
     
     public class func getCompositeDependencies() -> [String: [String]] {
@@ -76,7 +81,10 @@ struct PropertyInfo {
     }
     
     public internal(set) var uuid: NSUUID
-    var properties = Dictionary<String, PropertyInfo>()
+    
+    var properties: [String: PropertyInfo] {
+        return Static.properties[className]!
+    }
     
     private var internalIsScopeRoot = false
     public var isScopeRoot: Bool {
@@ -183,17 +191,23 @@ struct PropertyInfo {
     public override init() {
         uuid = NSUUID()
         super.init()
+        className = NSStringFromClass(self.dynamicType)
         setupPropertyListeners()
     }
     
     required public init(uuid: NSUUID) {
         self.uuid = uuid
         super.init()
+        className = NSStringFromClass(self.dynamicType)
         setupPropertyListeners()
     }
     
     convenience init(uuidString: String) {
-        self.init(uuid: NSUUID(UUIDString: uuidString))
+        if let uuid = NSUUID(UUIDString: uuidString) {
+            self.init(uuid: uuid)
+        } else {
+            self.init(uuid: NSUUID())
+        }
     }
     
     deinit {
@@ -203,47 +217,57 @@ struct PropertyInfo {
     }
 
     func setupPropertyListeners() {
-        // TODO: Do this only once and store as static
-        let propertyDependencies = self.dynamicType.getCompositeDependencies()
-        var propertyCount: UInt32 = 0
-        let propertyList = class_copyPropertyList(self.dynamicType, &propertyCount)
-
-        for i in 0..<Int(propertyCount) {
-            var propertyCName = property_getName(propertyList[i])
-            if propertyCName != nil {
-                let propertyName = NSString.stringWithCString(propertyCName, encoding: NSString.defaultCStringEncoding()) as String
-                let propertyAttributes = property_getAttributes(propertyList[i])
-                let attributes = NSString.stringWithCString(propertyAttributes, encoding: NSString.defaultCStringEncoding())
-                let components = attributes.componentsSeparatedByString(",")
-   
-                if components.count > 2 {
-                    var type: NSString = (components[0] as NSString).substringFromIndex(1)
-                    var writeable = (components[2] as String) != "R"
+        if Static.propertiesInitialzedForClasses[className] == nil {
+            Static.propertiesInitialzedForClasses[className] = true
+            
+            var trackedProperties = [String: PropertyInfo]()
+            
+            let propertyDependencies = self.dynamicType.getCompositeDependencies()
+            var propertyCount: UInt32 = 0
+            let propertyList = class_copyPropertyList(self.dynamicType, &propertyCount)
+            
+            for i in 0..<Int(propertyCount) {
+                var propertyCName = property_getName(propertyList[i])
+                if propertyCName != nil {
+                    let propertyName = NSString(CString: propertyCName, encoding: NSString.defaultCStringEncoding()) as String
+                    let propertyAttributes = property_getAttributes(propertyList[i])
+                    let attributes = NSString(CString: propertyAttributes, encoding: NSString.defaultCStringEncoding()) as String
                     
-                    var valueType: ModelValueType?
-
-                    if propertyDependencies[propertyName] != nil {
-                        valueType = .Composite
-                    } else if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
-                        valueType = .Array
-                    } else if let definiteValueType = ModelValueType.fromRaw(type) {
-                         valueType = definiteValueType
-                    } else if type.containsString("@\"") {
-                        // Assuming that every custom type extends from ModelObject
-                        valueType = .ModelObject
-                    }
-
-                    if let definiteValueType = valueType {
-                        if writeable || definiteValueType == ModelValueType.Composite {
-                            self.addObserver(self, forKeyPath: propertyName, options: .New | .Old, context: &voidContext)
-                            let defaultValue: AnyObject? = valueForKey(propertyName)
-                            properties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue)
+                    let components = attributes.componentsSeparatedByString(",")
+                    
+                    if components.count > 2 {
+                        var type: NSString = (components[0] as NSString).substringFromIndex(1)
+                        var writeable = (components[2] as String) != "R"
+                        
+                        var valueType: ModelValueType?
+                        
+                        if propertyDependencies[propertyName] != nil {
+                            valueType = .Composite
+                        } else if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
+                            valueType = .Array
+                        } else if let definiteValueType = ModelValueType(rawValue: type) {
+                            valueType = definiteValueType
+                        } else if type.containsString("@\"") {
+                            // Assuming that every custom type extends from ModelObject
+                            valueType = .ModelObject
+                        }
+                        
+                        if let definiteValueType = valueType {
+                            if writeable || definiteValueType == ModelValueType.Composite {
+                                let defaultValue: AnyObject? = valueForKey(propertyName)
+                                trackedProperties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue)
+                            }
                         }
                     }
                 }
             }
+            free(propertyList)
+            Static.properties[className] = trackedProperties
         }
-        free(propertyList)
+        
+        for (propertyName, propertyInfo) in properties {
+            addObserver(self, forKeyPath: propertyName, options: .New | .Old, context: &voidContext)
+        }
     }
     
     func dependenciesForKey(key: String) -> [String]? {
