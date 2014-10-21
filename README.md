@@ -1,4 +1,4 @@
-Jetstream for iOS is an elegant MVVM model framework written in Swift. It includes support for the Jetstream Sync protocol to sync local and remote models. Out of the box it has a single Websocket transport adapter with the ability to add custom transport adapters.
+Jetstream for iOS is an elegant MVVM model framework written in Swift. It includes support for the Jetstream Sync protocol to sync local and remote models. Out of the box, it has a single Websocket transport adapter with the ability to add custom transport adapters.
 
 ## Features
 
@@ -81,7 +81,7 @@ Class ShapeView: UIView {
 ```
 This is all that is needed to create an application that binds itself to a view and works no matter how your model is changed. In fact, if you use Jetstreams built-in Websocket support to connect to the Jetstream server, changes coming in from remote users would update your UI perfectly without any changes to the code.
 
-This is in essence how Jetstream works. You define a classes that model the data of your application. Your ViewControllers and Views then observe changes on the model to update their UI. In our canvas of shapes example, our ViewController listens to changes on the shapes-collection. Whenever a shape is added, it creates a ShapeView instance, adds it as a child view, and pass the Shape model to it. The ShapeView will bind to all the properties of the Shape and update its frame whenever. The ShapeView also observes whenever the Shape is detached (i.e. removed from the shapes-collection) and removes it from its parent view.
+This is in essence how Jetstream works. You define a classes that model the data of your application. Your ViewControllers and Views then observe changes on the model to update their UI. In our canvas of shapes example, our ViewController listens to changes on the shapes-collection. Whenever a shape is added, it creates a ShapeView instance, adds it as a child view, and passes the Shape model to it. The ShapeView will bind to all the properties of the Shape and update its frame whenever. The ShapeView also observes whenever the Shape is detached (i.e. removed from the shapes-collection) and removes it from its parent view.
 
 # Usage
 
@@ -90,10 +90,10 @@ You create a model by subclassing ModelObject and defining properties of the mod
 
 Supported types are `String`, `UInt`, `Int`, `Float`, `Double`, `Bool`, `ModelObject`, `[ModelObject]`, `UIColor` and `NSDate`, `UInt8`, `Int8`, `UInt16`, `Int16`, `UInt32`, `Int32`
 
-As Jetstream relies on Objective-C runtime to detect changes to properties only types that can be represented in Objective-C can be used as property types. Unfortunately Swift enums can not be represented in Objective-C and can thus not be used. To use enums types, declare them in a Objective-C header file.
+As Jetstream relies on Objective-C runtime to detect changes to properties, only types that can be represented in Objective-C can be used as property types. Unfortunately Swift enums cannot be represented in Objective-C and thus cannot be used. To use enums types, declare them in an Objective-C header file.
 
 ## Observation
-You have a number of methods to observe changes on model objects. Jetstream uses [Signals](http://github.com/artman/Signals) for all of its events. While you can subscribe to a number of signals that fire whenever changes occur on a model object, Jetstream provides a number observer methods that wrap around these signals to provide queueing and an even cleaner interface.
+You have a number of methods to observe changes on model objects. Jetstream uses [Signals](http://github.com/artman/Signals) for all of its events. While you can subscribe to a number of signals that fire whenever changes occur on a model object, Jetstream provides various observer methods that wrap around these signals to provide queueing and a cleaner interface.
 
 ```
 // Observe property changes on models
@@ -101,9 +101,9 @@ model.observeChange(self) { ... } // Observe all changes
 model.observeChange(self, key: "width") { ... } // Observe a single property
 model.observeChange(self, keys: ["width", "height"]) { ... } // Observe a set of properties
 ```
-All of these methods queue up their notifications and fire only one time per run-loop. This is usually the behavior you want. When updating your view whenever properties change, you usually don't want to run view update code for every single property change, but do an update whenever all of the changes have been applied. For example, if the elements width and height properties have both changed, all of the observers will only fire off once in the next run-loop.
+All of these methods queue up their notifications and fire only one time per run-loop. This is usually the behavior you want. When updating your view whenever properties change, you usually don't want to run the view update code for every single property change, but do an update whenever all of the changes have been applied. For example, if the elements width and height properties have both changed, all of the observers will only fire off once in the next run-loop.
 
-In some cases you might actually do want have the change observers fire off the callback for every single property change, which you can do using the immediate variants of the change observers:
+In some cases you might actually the change observers to fire off the callback for every single property change, which you can do using the immediate variants of the change observers:
 
 ```
 // Observe property changes on models without queueing them up
@@ -111,16 +111,16 @@ model.observeChangeImmediately(self) { ... }
 model.observeChangeImmediately(self, key: "width") { ... }
 model.observeChangeImmediately(self, keys: ["width", "height"]) { ... }
 ```
-Whenever collections change, they fire of the property change observers, but they also fire off two other observers:
+Whenever collections change, they fire off the property change observers, but they also fire off two other observers:
 
 ```
 // Observe collection changes
 model.observeCollectionAdd(self, key: "collection") { (element: ElementType) in ... }
 model.observeCollectionRemove(self, key: "collection") { (element: ElementType) in ... }
 ```
-Callbacks fire immediately whenever an element is added or removed from the collection and the callback receives the element as an argument.
+Callbacks fire immediately whenever an element is added or removed from the collection and the callbacks receive the element as an argument.
 
-A very powerful feature is the ability to observe changes in the properties of a model object or **any** of it's children and its children's children. This is useful when your UI needs to re-render itself when a model object or any of its children 
+A very powerful feature is the ability to observe changes in the properties of a model object or **any** of it's children and its children's children. This is useful when your UI needs to re-render itself when a model object or any of its children change.
 
 ```
 // Observe changes of an entire model object and its children
@@ -161,7 +161,7 @@ A scope wraps around a model tree and keeps tabs on what models have been added 
 * **Remove**: Removes a model from the scope and all its parents
 * **Change**: Updates properties on an existing model
 
-When you make changes to models in a scope, add new models by assigning them to properties or collections or remove models by removing them from collections setting the property under which they are mounted to the tree to nil, the scope registers these changes and combines them to a number of sync fragments. You can listen to these changes by listening to the onChanges [signal](http://github.com/artman/Signals) on the scope:
+When you make changes to models in a scope, add new models by assigning them to properties or collections or remove models by removing them from collections by setting the property under which they are mounted to the tree to nil, the scope registers these changes and combines them to a number of sync fragments. You can listen to these changes by listening to the onChanges [signal](http://github.com/artman/Signals) on the scope:
 
 ```
 // Listening to changes
@@ -169,7 +169,7 @@ scope.onChanges.listen(self) { fragments in
     // fragments is an Array of SyncFragments that describe the changes that happened
 }
 ```
-The onChanges signal fires whenever changes have been made to models in the tree. It queue up changes for a fraction of a second and deliver them all at once. The scope is intelligent enough to combine subsequent changes and deliver only required fragments. For example, if you add a model to a tree (resulting in an Add fragment) and immediately remove it from the tree (resulting in a Remove fragment), both fragments will cancel themselves out and neither one will be delivered on the onChanges signal.
+The onChanges signal fires whenever changes have been made to models in the tree. It queues up changes for a fraction of a second and delivers them all at once. The scope is intelligent enough to combine subsequent changes and deliver only required fragments. For example, if you add a model to a tree (resulting in an Add fragment) and immediately remove it from the tree (resulting in a Remove fragment), both fragments will cancel themselves out and neither one will be delivered on the onChanges signal.
 
 ### Applying changes to a scope
 With the onChanges signal you can easily detect changes that happen on your local model. But you can also apply sync fragments to update your local model:
@@ -200,12 +200,13 @@ if let client = Client(options: WebsocketConnectionOptions(url: "ws://localhost"
                 // Registered to receive updates to the scope from the Jetstream server
             }
         }
-    }   	}    
+    }   	
+}    
 ```
 
-This creates a scope and a client, using the built-in Websocket transport adapter. Once successfully connected to the Jetstream server running on localhost we ask our session to fetch the initial state of our scope. This will have the Jetstream server send us the full model tree for the scope and start keeping us in sync with remote changes as well as transmit changes that we make locally to our model up to the remote scope.
+This creates a scope and a client, using the built-in Websocket transport adapter. Once successfully connected to the Jetstream server running on localhost, we ask our session to fetch the initial state of our scope. This will have the Jetstream server send us the full model tree for the scope and start keeping us in sync with remote changes as well as transmit changes that we make locally to our model up to the remote scope.
 
-This is all you need to do create a multi-user data model. When any remote clients connected to the same scope make changes to their local models, Jetstream will synchronization these changes in a efficient manner (sending a delta of these changes as sync fragments) with our local model and these changes will automatically be applied to our model and observers will fire, updating our views. Local changes made by our client will also be automatically be synchronized with the remote scope and any remote clients will receive the changes we make to our model in real-time.
+This is all you need to do create a multi-user data model. When any remote clients connected to the same scope make changes to their local models, Jetstream will synchronize these changes in a efficient manner (sending a delta of these changes as sync fragments) with our local model and these changes will automatically be applied to our model and observers will fire, updating our views. Local changes made by our client will also be automatically synchronized with the remote scope and any remote clients will receive the changes we make to our model in real-time.
 
 # Communication
 
@@ -216,4 +217,3 @@ This is all you need to do create a multi-user data model. When any remote clien
 # License
 
 Jetstream is released under the MIT license. See LICENSE for details.
-
