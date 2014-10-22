@@ -9,17 +9,16 @@
 import Foundation
 import Jetstream
 
-let shapeColors = [
-    "#1dd2af", "#19b698", "#40d47e", "#2cc36b", "#4aa3df",
-    "#2e8ece", "#a66bbe", "#9b50ba", "#3d566e", "#354b60",
-    "#f2ca27", "#f4a62a", "#e98b39", "#ec5e00", "#ea6153",
-    "#d14233", "#8c9899"
-]
-
 class Shape: ModelObject {
     dynamic var x: CGFloat = 100
     dynamic var y: CGFloat = 100
     dynamic var width: CGFloat = 100
     dynamic var height: CGFloat = 100
-    dynamic var color: String = shapeColors[0]
+    dynamic var color: UIColor = shapeColors[0]
 }
+
+let shapeColors = [
+    "#1dd2af", "#19b698", "#40d47e", "#2cc36b", "#4aa3df", "#2e8ece",
+    "#a66bbe", "#9b50ba", "#3d566e", "#354b60", "#f2ca27", "#f4a62a",
+    "#e98b39", "#ec5e00", "#ea6153", "#d14233", "#8c9899"
+].map { UIColor.colorWithHexString($0) }

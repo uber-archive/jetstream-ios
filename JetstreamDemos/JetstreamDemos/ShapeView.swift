@@ -35,7 +35,7 @@ public class ShapeView: UIView, UIGestureRecognizerDelegate {
     
     init(shape: Shape) {
         super.init(frame: CGRectZero)
-        backgroundColor = colorWithHexString(shape.color)
+        backgroundColor = shape.color
         layer.cornerRadius = 5
         let panRecognizer = UIPanGestureRecognizer(target: self, action: Selector("handlePan:"))
         self.addGestureRecognizer(panRecognizer)
@@ -67,34 +67,5 @@ public class ShapeView: UIView, UIGestureRecognizerDelegate {
             y: CGFloat(shape.y),
             width: CGFloat(shape.width),
             height: CGFloat(shape.height))
-    }
-    
-    func colorWithHexString(hex: String) -> UIColor {
-        let whitespace = NSCharacterSet.whitespaceAndNewlineCharacterSet()
-        var colorString: NSString = hex.stringByTrimmingCharactersInSet(whitespace).uppercaseString
-        
-        if colorString.hasPrefix("#") {
-            colorString = colorString.substringFromIndex(1)
-        }
-        
-        if colorString.length != 6 {
-            return UIColor.grayColor()
-        }
-        
-        var rString: NSString = colorString.substringToIndex(2)
-        var gString: NSString = colorString.substringFromIndex(2)
-        gString = gString.substringToIndex(2)
-        var bString: NSString = colorString.substringFromIndex(4)
-        bString = bString.substringToIndex(2)
-        
-        var r: CUnsignedInt = 0, g: CUnsignedInt = 0, b: CUnsignedInt = 0
-        NSScanner(string: rString).scanHexInt(&r)
-        NSScanner(string: gString).scanHexInt(&g)
-        NSScanner(string: bString).scanHexInt(&b)
-        
-        var red = CGFloat(r) / 255.0
-        var green = CGFloat(g) / 255.0
-        var blue = CGFloat(b) / 255.0
-        return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
     }
 }
