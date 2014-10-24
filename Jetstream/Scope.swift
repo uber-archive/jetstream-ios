@@ -9,7 +9,7 @@
 import Foundation
 import Signals
 
-public class Scope {
+@objc public class Scope: NSObject {
     /// A signal that fires when changes have been made to the model. Provides a array of changes
     /// since the signal last fired.
     public let onChanges = Signal<(ChangeSet)>()
@@ -88,7 +88,7 @@ public class Scope {
     ///
     /// :param: The string representing the uuid of the object to get.
     /// :returns: The model object with the given uuid.
-    public func getObjectById(uuidString: String) -> ModelObject? {
+    public func getObjectByIdString(uuidString: String) -> ModelObject? {
         if let uuid = NSUUID(UUIDString: uuidString) {
             return getObjectById(uuid)
         }

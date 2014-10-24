@@ -8,7 +8,7 @@
 
 import Foundation
 
-class PingMessage: Message {
+public class PingMessage: Message {
     class var messageType: String {
         return "Ping"
     }
@@ -17,8 +17,8 @@ class PingMessage: Message {
         return PingMessage.messageType
     }
     
-    let ack: UInt
-    let resendMissing: Bool
+    public let ack: UInt
+    public let resendMissing: Bool
     
     init(index: UInt, ack: UInt, resendMissing: Bool) {
         self.ack = ack
@@ -26,22 +26,22 @@ class PingMessage: Message {
         super.init(index: index)
     }
     
-    convenience init(session: Session) {
+    public convenience init(session: Session) {
         self.init(index: 0, ack: session.serverIndex, resendMissing: false)
     }
     
-    convenience init(session: Session, resendMissing: Bool) {
+    public convenience init(session: Session, resendMissing: Bool) {
         self.init(index: 0, ack: session.serverIndex, resendMissing: resendMissing)
     }
     
-    override func serialize() -> [String: AnyObject] {
+    public override func serialize() -> [String: AnyObject] {
         var dictionary = super.serialize()
         dictionary["ack"] = ack
         dictionary["resendMissing"] = resendMissing
         return dictionary
     }
-    
-    override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
+
+    public override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
         var index = dictionary["index"] as? UInt
         var ack = dictionary["ack"] as? UInt
         var resendMissing = dictionary["resendMissing"] as? Bool

@@ -22,7 +22,7 @@ public enum ClientStatus {
 
 /// A Client is used to initiate a connection between the application model and the remote Jetstream
 /// server. A client uses a TransportAdapter to establish a connection to the server.
-public class Client {
+@objc public class Client: NSObject {
     // MARK: - Events
     /// Signal that fires whenever the status of the client changes. The fired data contains the
     /// new status for the client.
@@ -66,6 +66,7 @@ public class Client {
     /// :param: transportAdapter The transport adapter to use to connect to the Jetstream server.
     public init(transportAdapter: TransportAdapter) {
         transport = Transport(adapter: transportAdapter)
+        super.init()
         bindListeners()
     }
     

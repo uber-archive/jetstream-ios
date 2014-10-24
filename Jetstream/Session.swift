@@ -27,6 +27,10 @@ public class Session {
     
     // MARK: - Public interface
     public func fetch(scope: Scope, callback: (NSError?) -> ()) {
+        fetch(scope, params: [String: String](), callback: callback)
+    }
+    
+    public func fetch(scope: Scope, params: [String: String], callback: (NSError?) -> ()) {
         if closed {
             return callback(NSError(
                 domain: defaultErrorDomain,
@@ -34,7 +38,8 @@ public class Session {
                 userInfo: [NSLocalizedDescriptionKey: "Session already closed"]))
         }
         
-        client.transport.sendMessage(ScopeFetchMessage(session: self, name: scope.name)) {
+        let scopeFetchMessage = ScopeFetchMessage(session: self, name: scope.name, params: params)
+        client.transport.sendMessage(scopeFetchMessage) {
             [weak self] (response) in
             if let this = self {
                 this.scopeFetchCompleted(scope, response: response, callback: callback)

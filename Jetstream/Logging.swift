@@ -41,7 +41,7 @@ public class Logging {
         }
     }
     
-    class func loggerFor(str: String) -> Logger {
+    public class func loggerFor(str: String) -> Logger {
         let loggerName = "\(Static.baseLoggerName).\(str)"
 
         var logger = Static.loggers[loggerName]
@@ -85,7 +85,7 @@ public class Logging {
     }
 }
 
-class Logger {
+public class Logger {
     let name: String
     var enabled: Bool
 
@@ -98,35 +98,35 @@ class Logger {
         self.init(name: name, enabled: true)
     }
     
-    func trace<T>(message: T) {
+    public func trace<T>(message: T) {
         if !Logging.Static.enabled || !enabled {
             return
         }
         log(.Trace, message: message)
     }
-    
-    func debug<T>(message: T) {
+
+    public func debug<T>(message: T) {
         if !Logging.Static.enabled || !enabled {
             return
         }
         log(.Debug, message: message)
     }
-    
-    func info<T>(message: T) {
+
+    public func info<T>(message: T) {
         if !Logging.Static.enabled || !enabled {
             return
         }
         log(.Info, message: message)
     }
-    
-    func warn<T>(message: T) {
+
+    public func warn<T>(message: T) {
         if !Logging.Static.enabled || !enabled {
             return
         }
         log(.Warning, message: message)
     }
     
-    func error<T>(message: T) {
+    public func error<T>(message: T) {
         if !Logging.Static.enabled || !enabled {
             return
         }

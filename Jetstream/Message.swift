@@ -16,7 +16,7 @@ public class Message {
         return "Message"
     }
     
-    let index: UInt
+    public let index: UInt
     
     init(index: UInt) {
         self.index = index
@@ -26,11 +26,11 @@ public class Message {
         self.init(index: session.getNextMessageIndex())
     }
     
-    func serialize() -> [String: AnyObject] {
+    public func serialize() -> [String: AnyObject] {
         return ["type": type, "index": index]
     }
     
-    class func unserialize(dictionary: [String: AnyObject]) -> Message? {
+    public class func unserialize(dictionary: [String: AnyObject]) -> Message? {
         let type: AnyObject? = dictionary["type"]
         if let definiteType = type as? String {
             switch definiteType {

@@ -13,7 +13,6 @@ import SystemConfiguration
 
 /// A set of connection options.
 public struct WebsocketConnectionOptions: ConnectionOptions {
-    
     /// Headers to connect with
     public var url: NSURL
     
@@ -44,9 +43,8 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
             onStatusChanged.fire(status)
         }
     }
-    
+
     let logger = Logging.loggerFor(Static.className)
-    let url: NSURL
     let socket: Websocket
     var explicitlyClosed = false
     var session: Session?
@@ -58,15 +56,15 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
     /// :param: options Options to connect to the service with.
     public init(options: WebsocketConnectionOptions ) {
         self.options = options
-        self.url = options.url
-        socket = Websocket(url: url)
+        socket = Websocket(url: options.url)
         super.init()
         socket.delegate = self
         for (key, value) in options.headers {
             socket.headers[key] = value
         }
+
     }
-    
+
     // MARK: - TransportAdapter
     public func connect() {
         if status == TransportStatus.Connecting {
@@ -165,7 +163,7 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
         }
     }
     
-    private func tryReadSerializedMessage(object: AnyObject) {
+    func tryReadSerializedMessage(object: AnyObject) {
         if let dictionary = object as? [String: AnyObject] {
             let message = Message.unserialize(dictionary)
             if message != nil {
@@ -262,8 +260,8 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
             sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
         hostAddress.sin_len = UInt8(sizeofValue(hostAddress))
         hostAddress.sin_family = sa_family_t(AF_INET)
-        hostAddress.sin_port = UInt16(UInt(url.port!))
-        inet_pton(AF_INET, url.host!, &hostAddress.sin_addr)
+        hostAddress.sin_port = UInt16(UInt(options.url.port!))
+        inet_pton(AF_INET, options.url.host!, &hostAddress.sin_addr)
         
         let defaultRouteReachability = withUnsafePointer(&hostAddress) {
             SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0)).takeRetainedValue()
