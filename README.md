@@ -47,7 +47,7 @@ Once you've defined your model classes, instante a canvas and mark it as a scope
 var canvas = Canvas()
 canvas.isScopeRoot = true
 ```
-This will create a new scope and assing `canvas` as the root of the scope. The root object or any branches or leafs attached now belong to the scope. This lets you start observing changes happening to any models that have been attached to the tree:
+This will create a new scope and assign `canvas` as the root of the scope. The root object or any branches or leafs attached now belong to the scope. This lets you start observing changes happening to any models that have been attached to the tree:
 
 ```swift
 Class CanvasViewController: UIViewController {
