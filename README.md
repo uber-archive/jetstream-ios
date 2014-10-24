@@ -1,4 +1,4 @@
-Jetstream for iOS is an elegant MVVM model framework written in Swift. It includes support for the Jetstream Sync protocol to sync local and remote models. Out of the box, it has a single Websocket transport adapter with the ability to add custom transport adapters (Jetstream server to be release as OSS later).
+Jetstream for iOS is an elegant MVVM model framework written in Swift. It includes support for the Jetstream Sync protocol to sync local and remote models. Out of the box, it has a single Websocket transport adapter with the ability to add custom transport adapters (Jetstream server to be released as OSS later).
 
 ### Features
 
