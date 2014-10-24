@@ -215,7 +215,202 @@ struct PropertyInfo {
             removeObserver(self, forKeyPath: property.key)
         }
     }
-
+    
+    // MARK: - Public Interface
+    
+    /// Assigns a scope to the model object and makes it the new root for the scope.
+    ///
+    /// :param: The scope to add the model object to.
+    public func setScopeAndMakeRootModel(scope: Scope) {
+        detach()
+        internalIsScopeRoot = true
+        self.scope = scope
+    }
+    
+    /// Invokes a callback whenever any property or collection on the object has changed. This observer waits until the next runloop to
+    /// dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
+    ///
+    /// :param: observer A listener to attach to the event.
+    /// :param: callback A closure that gets executed whenever any property or collection on the object has changed.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChange(observer: AnyObject, callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: nil, delay: true, callback: callback)
+    }
+    
+    /// Immediately invokes a callback whenever any property or collection on the object changes. This will happen for every single property
+    /// change. To get a distilled callback once every runloop, use the observeChange callback instead.
+    ///
+    /// :param: observer A listener to attach to the event.
+    /// :param: callback A closure that gets executed every time any property or collection of the object changes.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChangeImmediately(observer: AnyObject, callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: nil, delay: false, callback: callback)
+    }
+    
+    /// Invokes a callback whenever any specific property or collection on the object has changed. This observer waits until the next
+    /// runloop to dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
+    ///
+    /// :param: observer A listener to attach to the event.
+    /// :param: key The key of the property to listen to.
+    /// :param: callback A closure that gets executed whenever the provided property has changed.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChange(observer: AnyObject, key: String, callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: [key], delay: true, callback: callback)
+    }
+    
+    /// Immediately invokes a callback whenever a specific property or collection on the object changes. This will happen for every single
+    /// change. To get a distilled callback once every runloop, use the observeChange callback instead.
+    ///
+    /// :param: observer A listener to attach to the event.
+    /// :param: key The key of the property to listen to.
+    /// :param: callback A closure that gets executed every time the provided property changes.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChangeImmediately(observer: AnyObject, key: String, callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: [key], delay: false, callback: callback)
+    }
+    
+    /// Invokes a callback whenever any of the specified properties or collections have changed. This observer waits until the next
+    /// runloop to dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
+    ///
+    /// :param: observer A listener to attach to the event.
+    /// :param: keys An array of keys to listen to.
+    /// :param: callback A closure that gets executed whenever any of the provided properties or collections have changed.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChange(observer: AnyObject, keys: [String], callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: keys, delay: true, callback: callback)
+    }
+    
+    /// Immediately invokes a callback whenever any of the specified properties or collections change. This will happen for every single
+    /// change of any of the provided properties. To get a distilled callback once every runloop, use the observeChange callback instead.
+    ///
+    /// :param: observer A listener to attach to the event.
+    /// :param: keys An array of keys to listen to.
+    /// :param: callback A closure that gets executed every time any of the provided properties or collections change.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeChangeImmediately(observer: AnyObject, keys: [String], callback: () -> Void) -> CancelObserver {
+        return observeChange(observer, keys: keys, delay: false, callback: callback)
+    }
+    
+    /// Invokes a callback when the object or any of its children change. This observer waits until the next runloop to
+    /// dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
+    ///
+    /// :param: observer A listener to attach to the event.
+    /// :param: callback A closure that gets executed whenever the object or any of its children and children's children change.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeTreeChange(observer: AnyObject, callback: () -> Void) -> CancelObserver {
+        let listener = onTreeChange.listen(observer) { callback() }
+        return { listener.cancel() }
+    }
+    
+    /// Fires a listener whenever a specific collection adds an element.
+    ///
+    /// :param: listener The listener to attach to the event.
+    /// :param: key The key of the the collection to listen to.
+    /// :param: callback The closure that gets executed every time the collection adds an element. Set the type of the element
+    /// in the callback to the appropriate type of the collection.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeCollectionAdd<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver {
+        assert(properties[key] != nil, "no property found for key '\(key)'")
+        assert(properties[key]!.valueType == ModelValueType.Array, "property '\(key)' is not an Array")
+        
+        let listener = onModelAddedToCollection.listen(listener) { (key, element, atIndex) -> Void in
+            if let definiteElement = element as? T {
+                callback(element: element as T)
+            }
+            }.filter { $0.key == key}
+        return { listener.cancel() }
+    }
+    
+    /// Fires a listener whenever a specific collection removes an element.
+    ///
+    /// :param: listener The listener to attach to the event.
+    /// :param: key The key of the the collection to listen to.
+    /// :param: callback The closure that gets executed every time the collection removes an element. Set the type of the element
+    /// in the callback to the appropriate type of the collection.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeCollectionRemove<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver {
+        assert(properties[key] != nil, "no property found for key '\(key)'")
+        assert(properties[key]!.valueType == .Array, "property '\(key)' is not an Array")
+        
+        let listener = onModelRemovedFromCollection.listen(listener) { (key, element, atIndex) -> Void in
+            if let definiteElement = element as? T {
+                callback(element: element as T)
+            }
+            }.filter { return $0.key == key }
+        return { listener.cancel() }
+    }
+    
+    /// Fires a listener whenever the ModelObject is attached to a scope.
+    ///
+    /// :param: listener The listener to attach to the event.
+    /// :param: callback The closure that gets executed every time the ModelObject is added to a scope. The scope argument
+    /// contains the scope to which the model object was attached to.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeAttach(listener: AnyObject, callback: (scope: Scope) -> Void) -> CancelObserver {
+        let listener = onAttachToScope.listen(listener)  { (scope) -> Void in
+            callback(scope: scope)
+        }
+        return { listener.cancel() }
+    }
+    
+    /// Fires a listener whenever the ModelObject is attached to a scope.
+    ///
+    /// :param: listener The listener to attach to the event.
+    /// :param: callback The closure that gets executed every time the ModelObject is added to a scope. The scope argument
+    /// contains the scope from which the model object was removed from.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeDetach(listener: AnyObject, callback: (scope: Scope) -> Void) -> CancelObserver {
+        let listener = onDetachedFromScope.listen(listener)  { (scope) -> Void in
+            callback(scope: scope)
+        }
+        return { listener.cancel() }
+    }
+    
+    /// Fires a listener whenever the ModelObject is moved between scopes.
+    ///
+    /// :param: listener The listener to attach to the event.
+    /// :param: callback The closure that gets executed every time the ModelObject is moved between scopes. The scope argument
+    /// contains the new scope of the model object.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeAddedToParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) -> CancelObserver {
+        let listener = onAddedParent.listen(listener) { (parent, key) -> Void in
+            callback(parent: parent, key:key)
+        }
+        return { listener.cancel() }
+    }
+    
+    /// Fires a listener whenever the ModelObject is moved between scopes.
+    ///
+    /// :param: listener The listener to attach to the event.
+    /// :param: callback The closure that gets executed every time the ModelObject is moved between scopes.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeRemovedFromParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) -> CancelObserver {
+        let listener = onRemovedParent.listen(listener) { (parent, key) -> Void in
+            callback(parent: parent, key: key)
+        }
+        return { listener.cancel() }
+    }
+    
+    /// Removes all observers and signal listeners for a listening object.
+    ///
+    /// :param: listener The listener to remove.
+    public func removeObservers(listener: AnyObject) {
+        onModelAddedToCollection.removeListener(listener)
+        onModelRemovedFromCollection.removeListener(listener)
+        onDetachedFromScope.removeListener(listener)
+        onAttachToScope.removeListener(listener)
+        onAddedParent.removeListener(listener)
+        onRemovedParent.removeListener(listener)
+    }
+    
+    /// Removes the ModelObject from its scope.
+    public func detach() {
+        for parentRelationship in parents {
+            removeParentRelationship(parentRelationship)
+        }
+    }
+    
+    // MARK: - Internal Interface
     func setupPropertyListeners() {
         if Static.propertiesInitialzedForClasses[className] == nil {
             Static.propertiesInitialzedForClasses[className] = true
@@ -378,7 +573,7 @@ struct PropertyInfo {
         treeInvalidated = true
     }
 
-    override public func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
+    override public func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if context == &voidContext {
             var oldValue: AnyObject? = change[NSKeyValueChangeOldKey]
             var newValue: AnyObject? = change[NSKeyValueChangeNewKey]
@@ -428,199 +623,5 @@ struct PropertyInfo {
             listener.queueAndDelayBy(0.0)
         }
         return { listener.cancel() }
-    }
-    
-    // MARK: - Public API
-    
-    /// Assigns a scope to the model object and makes it the new root for the scope.
-    ///
-    /// :param: The scope to add the model object to.
-    public func setScopeAndMakeRootModel(scope: Scope) {
-        detach()
-        internalIsScopeRoot = true
-        self.scope = scope
-    }
-
-    /// Invokes a callback whenever any property or collection on the object has changed. This observer waits until the next runloop to
-    /// dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
-    ///
-    /// :param: observer A listener to attach to the event.
-    /// :param: callback A closure that gets executed whenever any property or collection on the object has changed.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeChange(observer: AnyObject, callback: () -> Void) -> CancelObserver {
-        return observeChange(observer, keys: nil, delay: true, callback: callback)
-    }
-    
-    /// Immediately invokes a callback whenever any property or collection on the object changes. This will happen for every single property
-    /// change. To get a distilled callback once every runloop, use the observeChange callback instead.
-    ///
-    /// :param: observer A listener to attach to the event.
-    /// :param: callback A closure that gets executed every time any property or collection of the object changes.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeChangeImmediately(observer: AnyObject, callback: () -> Void) -> CancelObserver {
-        return observeChange(observer, keys: nil, delay: false, callback: callback)
-    }
-    
-    /// Invokes a callback whenever any specific property or collection on the object has changed. This observer waits until the next 
-    /// runloop to dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
-    ///
-    /// :param: observer A listener to attach to the event.
-    /// :param: key The key of the property to listen to.
-    /// :param: callback A closure that gets executed whenever the provided property has changed.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeChange(observer: AnyObject, key: String, callback: () -> Void) -> CancelObserver {
-        return observeChange(observer, keys: [key], delay: true, callback: callback)
-    }
-    
-    /// Immediately invokes a callback whenever a specific property or collection on the object changes. This will happen for every single
-    /// change. To get a distilled callback once every runloop, use the observeChange callback instead.
-    ///
-    /// :param: observer A listener to attach to the event.
-    /// :param: key The key of the property to listen to.
-    /// :param: callback A closure that gets executed every time the provided property changes.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeChangeImmediately(observer: AnyObject, key: String, callback: () -> Void) -> CancelObserver {
-        return observeChange(observer, keys: [key], delay: false, callback: callback)
-    }
-    
-    /// Invokes a callback whenever any of the specified properties or collections have changed. This observer waits until the next
-    /// runloop to dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
-    ///
-    /// :param: observer A listener to attach to the event.
-    /// :param: keys An array of keys to listen to.
-    /// :param: callback A closure that gets executed whenever any of the provided properties or collections have changed.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeChange(observer: AnyObject, keys: [String], callback: () -> Void) -> CancelObserver {
-        return observeChange(observer, keys: keys, delay: true, callback: callback)
-    }
-    
-    /// Immediately invokes a callback whenever any of the specified properties or collections change. This will happen for every single
-    /// change of any of the provided properties. To get a distilled callback once every runloop, use the observeChange callback instead.
-    ///
-    /// :param: observer A listener to attach to the event.
-    /// :param: keys An array of keys to listen to.
-    /// :param: callback A closure that gets executed every time any of the provided properties or collections change.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeChangeImmediately(observer: AnyObject, keys: [String], callback: () -> Void) -> CancelObserver {
-        return observeChange(observer, keys: keys, delay: false, callback: callback)
-    }
-    
-    /// Invokes a callback when the object or any of its children change. This observer waits until the next runloop to
-    /// dispatch and merges any changes that happen during the current runloop to dispatch changes only once.
-    ///
-    /// :param: observer A listener to attach to the event.
-    /// :param: callback A closure that gets executed whenever the object or any of its children and children's children change.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeTreeChange(observer: AnyObject, callback: () -> Void) -> CancelObserver {
-        let listener = onTreeChange.listen(observer) { callback() }
-        return { listener.cancel() }
-    }
-    
-    /// Fires a listener whenever a specific collection adds an element.
-    ///
-    /// :param: listener The listener to attach to the event.
-    /// :param: key The key of the the collection to listen to.
-    /// :param: callback The closure that gets executed every time the collection adds an element. Set the type of the element
-    /// in the callback to the appropriate type of the collection.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeCollectionAdd<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver {
-        assert(properties[key] != nil, "no property found for key '\(key)'")
-        assert(properties[key]!.valueType == .Array, "property '\(key)' is not an Array")
-        
-        let listener = onModelAddedToCollection.listen(listener) { (key, element, atIndex) -> Void in
-            if let definiteElement = element as? T {
-                callback(element: element as T)
-            }
-        }.filter { $0.key == key}
-        return { listener.cancel() }
-    }
-    
-    /// Fires a listener whenever a specific collection removes an element.
-    ///
-    /// :param: listener The listener to attach to the event.
-    /// :param: key The key of the the collection to listen to.
-    /// :param: callback The closure that gets executed every time the collection removes an element. Set the type of the element
-    /// in the callback to the appropriate type of the collection.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeCollectionRemove<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver {
-        assert(properties[key] != nil, "no property found for key '\(key)'")
-        assert(properties[key]!.valueType == .Array, "property '\(key)' is not an Array")
-        
-        let listener = onModelRemovedFromCollection.listen(listener) { (key, element, atIndex) -> Void in
-            if let definiteElement = element as? T {
-                callback(element: element as T)
-            }
-        }.filter { return $0.key == key }
-        return { listener.cancel() }
-    }
-    
-    /// Fires a listener whenever the ModelObject is attached to a scope.
-    ///
-    /// :param: listener The listener to attach to the event.
-    /// :param: callback The closure that gets executed every time the ModelObject is added to a scope. The scope argument
-    /// contains the scope to which the model object was attached to.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeAttach(listener: AnyObject, callback: (scope: Scope) -> Void) -> CancelObserver {
-        let listener = onAttachToScope.listen(listener)  { (scope) -> Void in
-            callback(scope: scope)
-        }
-        return { listener.cancel() }
-    }
-    
-    /// Fires a listener whenever the ModelObject is attached to a scope.
-    ///
-    /// :param: listener The listener to attach to the event.
-    /// :param: callback The closure that gets executed every time the ModelObject is added to a scope. The scope argument
-    /// contains the scope from which the model object was removed from.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeDetach(listener: AnyObject, callback: (scope: Scope) -> Void) -> CancelObserver {
-        let listener = onDetachedFromScope.listen(listener)  { (scope) -> Void in
-            callback(scope: scope)
-        }
-        return { listener.cancel() }
-    }
-    
-    /// Fires a listener whenever the ModelObject is moved between scopes.
-    ///
-    /// :param: listener The listener to attach to the event.
-    /// :param: callback The closure that gets executed every time the ModelObject is moved between scopes. The scope argument
-    /// contains the new scope of the model object.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeAddedToParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) -> CancelObserver {
-        let listener = onAddedParent.listen(listener) { (parent, key) -> Void in
-            callback(parent: parent, key:key)
-        }
-        return { listener.cancel() }
-    }
-    
-    /// Fires a listener whenever the ModelObject is moved between scopes.
-    ///
-    /// :param: listener The listener to attach to the event.
-    /// :param: callback The closure that gets executed every time the ModelObject is moved between scopes.
-    /// :returns: A function that cancels the observation when invoked.
-    public func observeRemovedFromParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) -> CancelObserver {
-        let listener = onRemovedParent.listen(listener) { (parent, key) -> Void in
-            callback(parent: parent, key: key)
-        }
-        return { listener.cancel() }
-    }
-    
-    /// Removes all observers and signal listeners for a listening object.
-    ///
-    /// :param: listener The listener to remove.
-    public func removeObservers(listener: AnyObject) {
-        onModelAddedToCollection.removeListener(listener)
-        onModelRemovedFromCollection.removeListener(listener)
-        onDetachedFromScope.removeListener(listener)
-        onAttachToScope.removeListener(listener)
-        onAddedParent.removeListener(listener)
-        onRemovedParent.removeListener(listener)
-    }
-    
-    /// Removes the ModelObject from its scope.
-    public func detach() {
-        for parentRelationship in parents {
-            removeParentRelationship(parentRelationship)
-        }
     }
 }

@@ -29,9 +29,9 @@ class SessionCreateResponseMessage: Message {
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var index: UInt? = dictionary.valueForKey("index")
-        var success: Bool? = dictionary.valueForKey("success")
-        var sessionToken: String? = dictionary.valueForKey("sessionToken")
+        var index = dictionary["index"] as? UInt
+        var success = dictionary["success"] as? Bool
+        var sessionToken = dictionary["sessionToken"] as? String
         var response: AnyObject? = dictionary["response"]
         
         if index == nil || success == nil || sessionToken == nil {

@@ -42,9 +42,9 @@ class PingMessage: Message {
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var index: UInt? = dictionary.valueForKey("index")
-        var ack: UInt? = dictionary.valueForKey("ack")
-        var resendMissing: Bool? = dictionary.valueForKey("resendMissing")
+        var index = dictionary["index"] as? UInt
+        var ack = dictionary["ack"] as? UInt
+        var resendMissing = dictionary["resendMissing"] as? Bool
         
         if index == nil || ack == nil || resendMissing == nil {
             return nil

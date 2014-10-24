@@ -8,10 +8,8 @@
 
 import UIKit
 import XCTest
-import Jetstream
 
 class ImmediatePropertyListenerTests: XCTestCase {
-    
     func testSpecificPropertyListeners() {
         var model = TestModel()
         var dispatchCount = 0

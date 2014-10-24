@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Uber Technologies, Inc. All rights reserved.
 //
 
+import Jetstream
+
 @objc public class TestModel: ModelObject {
     dynamic var string: String?
     dynamic var int: Int = 0
@@ -24,6 +26,7 @@
     dynamic var bool: Bool = false
     dynamic var date: NSDate?
     dynamic var color: UIColor?
+    dynamic var image: UIImage?
     
     dynamic var array: [TestModel] = []
     dynamic var array2: [TestModel] = []

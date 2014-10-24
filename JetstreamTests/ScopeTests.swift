@@ -8,11 +8,8 @@
 
 import UIKit
 import XCTest
-import Jetstream
-
 
 class ScopeTests: XCTestCase {
-    
     var parent = TestModel()
     var child = TestModel()
     var child2 = TestModel()
@@ -124,24 +121,25 @@ class ScopeTests: XCTestCase {
         parent.setScopeAndMakeRootModel(scope)
         scope.getAndClearSyncFragments()
         
-        scope.onChanges.listen(self) { fragments in
-            XCTAssertEqual(fragments.count, 3, "Changes don't create fragments when object have been added")
+        scope.onChanges.listen(self) { changeSet in
+            XCTAssertEqual(changeSet.syncFragments.count, 3, "Changes don't create fragments when object have been added")
             
-            var fragment = fragments[0]
-            XCTAssertEqual(fragment.type, SyncFragmentType.Add, "Fragment is correct")
+            var fragment = changeSet.syncFragments[0]
+         
+            XCTAssert(fragment.type == SyncFragmentType.Add, "Fragment is correct")
             XCTAssertEqual(fragment.objectUUID, self.child.uuid, "Fragment is correct")
             XCTAssert(fragment.properties!.count > 2, "Sending up all default values")
             XCTAssertEqual(fragment.properties!["string"]! as String, "testing", "Fragment is correct")
             XCTAssertEqual(fragment.properties!["childModel2"]! as String, self.child2.uuid.UUIDString, "Fragment is correct")
             
-            fragment = fragments[1]
+            fragment = changeSet.syncFragments[1]
             XCTAssertEqual(fragment.type, SyncFragmentType.Change, "Fragment is correct")
             XCTAssertEqual(fragment.objectUUID, self.parent.uuid, "Fragment is correct")
             XCTAssertEqual(fragment.properties!.count, 2, "Fragment is correct")
             XCTAssertEqual(fragment.properties!["string"]! as String, "testing parent", "Fragment is correct")
             XCTAssertEqual(fragment.properties!["childModel"]! as String, self.child.uuid.UUIDString, "Fragment is correct")
             
-            fragment = fragments[2]
+            fragment = changeSet.syncFragments[2]
             XCTAssertEqual(fragment.type, SyncFragmentType.Add, "Fragment is correct")
             XCTAssertEqual(fragment.objectUUID, self.child2.uuid, "Fragment is correct")
             XCTAssert(fragment.properties!.count > 2, "Sending up all default values")
@@ -178,10 +176,10 @@ class ScopeTests: XCTestCase {
         parent.setScopeAndMakeRootModel(scope)
         scope.getAndClearSyncFragments()
         
-        scope.onChanges.listen(self, callback: { (fragments) -> Void in
-            XCTAssertEqual(fragments.count, 1, "Created a fragment")
+        scope.onChanges.listen(self, callback: { changeSet in
+            XCTAssertEqual(changeSet.syncFragments.count, 1, "Created a fragment")
             
-            var fragment = fragments[0]
+            var fragment = changeSet.syncFragments[0]
             XCTAssertEqual(fragment.properties!["testType"]! as Int, 1, "Fragment is correct")
 
             expectation.fulfill()
@@ -196,9 +194,9 @@ class ScopeTests: XCTestCase {
         parent.setScopeAndMakeRootModel(scope)
         scope.getAndClearSyncFragments()
         
-        scope.onChanges.listen(self, callback: { (fragments) -> Void in
-            XCTAssertEqual(fragments.count, 1, "Created a fragment")
-            var fragment = fragments[0]
+        scope.onChanges.listen(self, callback: { changeSet in
+            XCTAssertEqual(changeSet.syncFragments.count, 1, "Created a fragment")
+            var fragment = changeSet.syncFragments[0]
             XCTAssertEqual(fragment.properties!["date"]! as Double, 10.0, "Fragment is correct")
             
             expectation.fulfill()
@@ -213,9 +211,9 @@ class ScopeTests: XCTestCase {
         parent.setScopeAndMakeRootModel(scope)
         scope.getAndClearSyncFragments()
         
-        scope.onChanges.listen(self, callback: { (fragments) -> Void in
-            XCTAssertEqual(fragments.count, 1, "Created a fragment")
-            var fragment = fragments[0]
+        scope.onChanges.listen(self, callback: { changeSet in
+            XCTAssertEqual(changeSet.syncFragments.count, 1, "Created a fragment")
+            var fragment = changeSet.syncFragments[0]
             XCTAssertEqual(fragment.properties!["color"]! as Int, 0xFF3F7F3F, "Fragment is correct")
             
             expectation.fulfill()
@@ -225,14 +223,37 @@ class ScopeTests: XCTestCase {
         waitForExpectationsWithTimeout(1, handler: nil)
     }
     
+    func testImageParsing() {
+        let expectation = expectationWithDescription("onChange")
+        parent.setScopeAndMakeRootModel(scope)
+        scope.getAndClearSyncFragments()
+        
+        scope.onChanges.listen(self, callback: { changeSet in
+            XCTAssertEqual(changeSet.syncFragments.count, 1, "Created a fragment")
+            var fragment = changeSet.syncFragments[0]
+            var str = fragment.properties!["image"]! as String
+            XCTAssert(countElements(str) > 100, "Fragment is correct")
+            
+            expectation.fulfill()
+        })
+        
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 10, height: 10), true, 0)
+        UIColor.whiteColor().setFill()
+        UIRectFill(CGRect(x: 0, y: 0, width: 10, height: 10))
+        let image = UIGraphicsGetImageFromCurrentImageContext();
+
+        parent.image = image
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
     func testCompositeProperties() {
         let expectation = expectationWithDescription("onChange")
         parent.setScopeAndMakeRootModel(scope)
         scope.getAndClearSyncFragments()
         
-        scope.onChanges.listen(self, callback: { (fragments) -> Void in
-            XCTAssertEqual(fragments.count, 1, "Created a fragment")
-            var fragment = fragments[0]
+        scope.onChanges.listen(self, callback: { changeSet in
+            XCTAssertEqual(changeSet.syncFragments.count, 1, "Created a fragment")
+            var fragment = changeSet.syncFragments[0]
             XCTAssertEqual(fragment.properties!.count, 1, "Property count is correct")
             XCTAssert(fragment.properties!["compositeProperty"] == nil, "Don't record compositeProperty")
             

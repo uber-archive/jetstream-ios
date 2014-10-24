@@ -12,20 +12,32 @@ import Signals
 let clientVersion = "0.1.0"
 let defaultErrorDomain = "com.uber.jetstream"
 
+/// Connectivity status of the client.
 public enum ClientStatus {
+    /// Client is offline.
     case Offline
+    /// Client is online.
     case Online
 }
 
+/// A Client is used to initiate a connection between the application model and the remote Jetstream
+/// server. A client uses a TransportAdapter to establish a connection to the server.
 public class Client {
-    /// MARK: Events
+    // MARK: - Events
+    /// Signal that fires whenever the status of the client changes. The fired data contains the
+    /// new status for the client.
     public let onStatusChanged = Signal<(ClientStatus)>()
-    public let onSession = Signal<(Session)>()
-    public let onSessionDenied = Signal<(Void)>()
-
-    /// MARK: Properties
-    let logger = Logging.loggerFor("Client")
     
+    /// Signal that fires whenever the clients gets a new session. THe fired data contains the
+    /// new session.
+    public let onSession = Signal<(Session)>()
+    
+    /// Signal that fires whenever a session was denied.
+    public let onSessionDenied = Signal<()>()
+
+    // MARK: - Properties
+
+    /// The status of the client.
     public private(set) var status: ClientStatus = .Offline {
         didSet {
             if oldValue != status {
@@ -34,6 +46,7 @@ public class Client {
         }
     }
     
+    /// The session of the client.
     public private(set) var session: Session? {
         didSet {
             if session != nil {
@@ -43,32 +56,32 @@ public class Client {
         }
     }
     
+    let logger = Logging.loggerFor("Client")
     let transport: Transport
-
-    /// MARK: Public interface
-    public init(options: ConnectionOptions) {
-        var defaultAdapter = Transport.defaultTransportAdapter(options)
-        transport = Transport(adapter: defaultAdapter)
+    
+    // MARK: - Public interface
+    
+    /// Constructs a client.
+    ///
+    /// :param: transportAdapter The transport adapter to use to connect to the Jetstream server.
+    public init(transportAdapter: TransportAdapter) {
+        transport = Transport(adapter: transportAdapter)
         bindListeners()
     }
     
-    public init(options: WebsocketConnectionOptions) {
-        var adapter = WebsocketTransportAdapter(options: options)
-        transport = Transport(adapter: adapter)
-        bindListeners()
-    }
-    
+    /// Starts connecting the client to the server.
     public func connect() {
         transport.connect()
     }
     
+    /// Closes the connection to the server.
     public func close() {
         transport.disconnect()
         session?.close()
         session = nil
     }
     
-    /// MARK: Internal interface
+    /// MARK: - Internal interface
     func bindListeners() {
         onStatusChanged.listen(self) { [weak self] (status) in
             if let this = self {

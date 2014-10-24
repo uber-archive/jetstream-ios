@@ -8,7 +8,9 @@
 
 import Foundation
 
-class Message {
+/// A message wrapper used by Jetstream to communicate between the .client and server. The message does not have 
+/// a public interface as messages are internal to Jetstream.
+public class Message {
     // Override to provide message type
     var type: String {
         return "Message"

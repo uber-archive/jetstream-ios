@@ -8,10 +8,8 @@
 
 import UIKit
 import XCTest
-import Jetstream
 
 class SyncFragmentTests: XCTestCase {
-    
     var parent = TestModel()
     var child = TestModel()
     var scope = Scope(name: "Testing")

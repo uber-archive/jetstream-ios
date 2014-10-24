@@ -42,9 +42,9 @@ class ReplyMessage: Message {
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var index: UInt? = dictionary.valueForKey("index")
-        var replyTo: UInt? = dictionary.valueForKey("replyTo")
-        var response: [String: AnyObject]? = dictionary.valueForKey("response")
+        var index = dictionary["index"] as? UInt
+        var replyTo = dictionary["replyTo"] as? UInt
+        var response = dictionary["response"] as? [String: AnyObject]
         
         if index == nil || replyTo == nil {
             return nil

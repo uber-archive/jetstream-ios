@@ -8,10 +8,8 @@
 
 import UIKit
 import XCTest
-import Jetstream
 
 class PropertyListenerTests: XCTestCase {
-    
     func testGenericPropertyListeners() {
         var model = TestModel()
         var lastValue = ""

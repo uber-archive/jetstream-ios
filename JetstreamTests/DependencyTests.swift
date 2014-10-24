@@ -8,10 +8,8 @@
 
 import Foundation
 import XCTest
-import Jetstream
 
 class DependencyTests: XCTestCase {
-    
     var testModel = TestModel()
     var anotherTestModel = AnotherTestModel()
     

@@ -28,7 +28,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 11EEC43019D236C800DCD737 /* Jetstream.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 7291631419CB5FE500320F15;
+			remoteGlobalIDString = 722555F519F819D90016D8F8;
 			remoteInfo = Jetstream;
 		};
 		11EEC42119D236B400DCD737 /* PBXContainerItemProxy */ = {
@@ -56,7 +56,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 11EEC43019D236C800DCD737 /* Jetstream.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 7291631419CB5FE500320F15;
+			remoteGlobalIDString = 722555F519F819D90016D8F8;
 			remoteInfo = Jetstream;
 		};
 /* End PBXContainerItemProxy section */
@@ -499,6 +499,7 @@
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = JetstreamDemos/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -511,6 +512,7 @@
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = JetstreamDemos/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

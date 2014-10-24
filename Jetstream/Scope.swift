@@ -12,7 +12,7 @@ import Signals
 public class Scope {
     /// A signal that fires when changes have been made to the model. Provides a array of changes
     /// since the signal last fired.
-    public let onChanges = Signal<([SyncFragment])>()
+    public let onChanges = Signal<(ChangeSet)>()
     
     public var name: String
     
@@ -39,6 +39,63 @@ public class Scope {
         self.changeInterval = changeInterval
     }
     
+    // MARK: - Public Interface
+    
+    /// Retrieves all sync fragments that have been generated since this function was last called. Calling
+    /// this method will clear out all sync fragments.
+    ///
+    /// :returns: An Array of sync fragments that have been observed in the scope.
+    public func getAndClearSyncFragments() -> [SyncFragment] {
+        let fragments = syncFragments
+        syncFragments.removeAll(keepCapacity: false)
+        syncFragmentLookup.removeAll(keepCapacity: false)
+        return fragments.filter { (fragment) -> Bool in
+            // Filter out any empty change fragments
+            if fragment.type == .Change &&
+                (fragment.properties == nil ||
+                    fragment.properties?.count == 0) {
+                        return false
+            }
+            return true
+        }
+    }
+    
+    /// Applies sync fragments to the model
+    ///
+    /// :param: syncFragments An array of sync fragments to apply
+    func applySyncFragments(syncFragments: [SyncFragment], applyDefaults: Bool = false) {
+        for fragment in syncFragments {
+            if let modelObject = fragment.createObjectForScopeIfNecessary(self) {
+                tempModelHash[modelObject.uuid] = modelObject
+            }
+        }
+        syncFragments.map { $0.applyChangesToScope(self, applyDefaults: applyDefaults) }
+        tempModelHash.removeAll(keepCapacity: false)
+    }
+    
+    /// Retrieve an object by it's uuid.
+    ///
+    /// :param: The uuid of the object to get.
+    /// :returns: The model object with the given uuid.
+    public func getObjectById(uuid: NSUUID) -> ModelObject? {
+        if let modelObject = modelHash[uuid] {
+            return modelObject
+        }
+        return tempModelHash[uuid]
+    }
+    
+    /// Retrieve an object by it's uuid.
+    ///
+    /// :param: The string representing the uuid of the object to get.
+    /// :returns: The model object with the given uuid.
+    public func getObjectById(uuidString: String) -> ModelObject? {
+        if let uuid = NSUUID(UUIDString: uuidString) {
+            return getObjectById(uuid)
+        }
+        return nil
+    }
+
+    // MARK: - Internal Interface
     func startApplyingRemote() {
         applyingRemote = true
     }
@@ -61,7 +118,7 @@ public class Scope {
                                 modelValue = convertAnyObjectToModelValue(value!, property.valueType)
                             }
                             if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
-                                fragment.newValueForKeyFromModelObject(key, modelValue: modelValue, modelObject: modelObject)
+                                fragment.newValueForKeyFromModelObject(key, newValue: modelValue, oldValue: oldValue, modelObject: modelObject)
                             }
                         }
                     }
@@ -151,65 +208,10 @@ public class Scope {
 
     private func sendChanges() {
         changesQueued = false
-        var fragments = getAndClearSyncFragments()
-        if fragments.count > 0 {
-            onChanges.fire(fragments)
+        var syncFragments = getAndClearSyncFragments()
+        if syncFragments.count > 0 {
+            let changeSet = ChangeSet(syncFragments: syncFragments, scope: self)
+            onChanges.fire(changeSet)
         }
-    }
-    
-    // MARK: - Public API
-    
-    /// Retrieves all sync fragments that have been generated since this function was last called. Calling
-    /// this method will clear out all sync fragments.
-    ///
-    /// :returns: An Array of sync fragments that have been observed in the scope.
-    public func getAndClearSyncFragments() -> [SyncFragment] {
-        let fragments = syncFragments
-        syncFragments.removeAll(keepCapacity: false)
-        syncFragmentLookup.removeAll(keepCapacity: false)
-        return fragments.filter { (fragment) -> Bool in
-            // Filter out any empty change fragments
-            if fragment.type == .Change &&
-                (fragment.properties == nil ||
-                fragment.properties?.count == 0) {
-                return false
-            }
-            return true
-        }
-    }
-    
-    /// Applies sync fragments to the model
-    ///
-    /// :param: syncFragments An array of sync fragments to apply
-    func applySyncFragments(syncFragments: [SyncFragment], applyDefaults: Bool = false) {
-        for fragment in syncFragments {
-            if let modelObject = fragment.createObjectForScopeIfNecessary(self) {
-                tempModelHash[modelObject.uuid] = modelObject
-            }
-        }
-        syncFragments.map { $0.applyChangesToScope(self, applyDefaults: applyDefaults) }
-        tempModelHash.removeAll(keepCapacity: false)
-    }
-    
-    /// Retrieve an object by it's uuid.
-    ///
-    /// :param: The uuid of the object to get.
-    /// :returns: The model object with the given uuid.
-    public func getObjectById(uuid: NSUUID) -> ModelObject? {
-        if let modelObject = modelHash[uuid] {
-            return modelObject
-        }
-        return tempModelHash[uuid]
-    }
-    
-    /// Retrieve an object by it's uuid.
-    ///
-    /// :param: The string representing the uuid of the object to get.
-    /// :returns: The model object with the given uuid.
-    public func getObjectById(uuidString: String) -> ModelObject? {
-        if let uuid = NSUUID(UUIDString: uuidString) {
-            return getObjectById(uuid)
-        }
-        return nil
     }
 }

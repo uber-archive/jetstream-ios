@@ -42,8 +42,8 @@ class SessionCreateMessage: Message {
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var params: [String: String]? = dictionary.valueForKey("params")
-        var version: String? = dictionary.valueForKey("version")
+        var params = dictionary["params"] as? [String: String]
+        var version = dictionary["version"] as? String
         
         if params != nil && version != nil {
             return SessionCreateMessage(params: params!, version: version!)

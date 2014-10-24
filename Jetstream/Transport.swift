@@ -9,13 +9,19 @@
 import Foundation
 import Signals
 
-enum TransportStatus {
+/// Transport adapters initialize themselves with options that conform to ConnectionOptions.
+public protocol ConnectionOptions {
+    /// The url to connect to.
+    var url: NSURL { get }
+}
+
+public enum TransportStatus {
     case Closed
     case Connecting
     case Connected
 }
 
-protocol TransportAdapter {
+public protocol TransportAdapter {
     var onStatusChanged: Signal<(TransportStatus)> { get }
     var onMessage: Signal<(Message)> { get }
     
@@ -30,27 +36,23 @@ protocol TransportAdapter {
     func sessionEstablished(session: Session)
 }
 
+typealias ReplyCallback = ([String: AnyObject]) -> Void
+
 class Transport {
-    typealias ReplyCallback = ([String: AnyObject]) -> Void
-    
     class func defaultTransportAdapter(options: ConnectionOptions) -> TransportAdapter {
-        return WebsocketTransportAdapter(options: options)
+        return WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: options.url))
     }
     
     let logger = Logging.loggerFor("Transport")
-    
     let onStatusChanged: Signal<(TransportStatus)>
     let onMessage: Signal<Message>
-    
-    var status: TransportStatus {
-        get {
-            return adapter.status
-        }
-    }
-    
     let adapter: TransportAdapter
     var waitingReply = [UInt: ReplyCallback]()
     
+    var status: TransportStatus {
+        return adapter.status
+    }
+
     init(adapter: TransportAdapter) {
         self.adapter = adapter
         onStatusChanged = adapter.onStatusChanged
@@ -60,13 +62,13 @@ class Transport {
     
     func bindListeners() {
         onStatusChanged.listen(self) { [weak self] (status) in
-            if let this = self {
-                this.statusChanged(status)
+            if let definiteSelf = self {
+                definiteSelf.statusChanged(status)
             }
         }
         onMessage.listen(self) { [weak self] (message) in
-            if let this = self {
-                this.messageReceived(message)
+            if let definiteSelf = self {
+                definiteSelf.messageReceived(message)
             }
         }
     }

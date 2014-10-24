@@ -8,11 +8,8 @@
 
 import UIKit
 import XCTest
-import Jetstream
-
 
 class ModelTests: XCTestCase {
-    
     func testModelProperties() {
         var model = TestModel()
         

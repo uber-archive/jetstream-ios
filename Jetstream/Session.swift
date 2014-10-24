@@ -9,15 +9,13 @@
 import Foundation
 
 public class Session {
-    /// MARK: Properties
+    /// The token of the session
     public let token: String
     
     let logger = Logging.loggerFor("Client")
     let client: Client
-    
     var nextMessageIndex: UInt = 1
     var serverIndex: UInt = 0
-    
     var scopes = [UInt: Scope]()
     var closed = false
     
@@ -27,7 +25,7 @@ public class Session {
         // TODO: start timer that pings at regular interval
     }
     
-    /// MARK: Public interface
+    // MARK: - Public interface
     public func fetch(scope: Scope, callback: (NSError?) -> ()) {
         if closed {
             return callback(NSError(
@@ -44,7 +42,7 @@ public class Session {
         }
     }
     
-    /// MARK: Internal interface
+    // MARK: - Internal interface
     func getNextMessageIndex() -> UInt {
         return nextMessageIndex++
     }
@@ -109,8 +107,8 @@ public class Session {
                 userInfo: [NSLocalizedDescriptionKey: "Session became closed"]))
         }
         
-        var result: Bool? = response.valueForKey("result")
-        var scopeIndex: UInt? = response.valueForKey("scopeIndex")
+        var result = response["result"] as? Bool
+        var scopeIndex = response["scopeIndex"] as? UInt
         
         if result != nil && scopeIndex != nil && result! == true {
             scopeAttach(scope, scopeIndex: scopeIndex!)
@@ -118,9 +116,9 @@ public class Session {
         } else {
             var definiteErrorCode = 0
             
-            var error: [String: AnyObject]? = response.valueForKey("error")
-            var errorMessage: String? = error?.valueForKey("message")
-            var errorCode: Int? = error?.valueForKey("code")
+            var error = response["error"] as? [String: AnyObject]
+            var errorMessage = error?["message"] as? String
+            var errorCode = error?["code"] as? Int
             
             if errorCode != nil {
                 definiteErrorCode = errorCode!
@@ -142,9 +140,9 @@ public class Session {
     func scopeAttach(scope: Scope, scopeIndex: UInt) {
         scopes[scopeIndex] = scope
         scope.onChanges.listen(self) {
-            [weak self] (syncFragments) in
-            if let this = self {
-                this.scopeChanges(scope, atIndex: scopeIndex, syncFragments: syncFragments)
+            [weak self] changeSet in
+            if let definiteSelf = self {
+                definiteSelf.scopeChanges(scope, atIndex: scopeIndex, syncFragments: changeSet.syncFragments)
             }
         }
     }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum ErrorCode: Int {
+public enum ErrorCode: Int {
     case SessionAlreadyClosed = 1
     case SessionBecameClosed
 }

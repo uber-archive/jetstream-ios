@@ -11,13 +11,23 @@ import Signals
 
 let disabledLoggers = [String: Bool]()
 
+public enum LogLevel: String {
+    case Trace = "TRACE"
+    case Debug = "DEBUG"
+    case Info = "INFO"
+    case Warning = "WARN"
+    case Error = "ERROR"
+}
+
+/// Jetstreams logging class. To subscribe to logging events from Jetstream, subscribe to the
+/// Logging.onMessage - signal.
 public class Logging {
     struct Static {
         static let baseLoggerName = "Jetstream"
         static var enabled = false
         static var consoleEnabled = true
         static var loggers = [String: Logger]()
-        static let onMessage = Signal<(level: String, message: String)>()
+        static let onMessage = Signal<(level: LogLevel, message: String)>()
     }
     
     class var logger: Logger {
@@ -45,25 +55,31 @@ public class Logging {
         return logger!
     }
     
-    public class var onMessage: Signal<(level: String, message: String)> {
+    /// A signal that is fired whenever Jetstream logs. The signal fires with the parameters LogLevel
+    /// and Message.
+    public class var onMessage: Signal<(level: LogLevel, message: String)> {
         get {
             return Static.onMessage
         }
     }
     
+    /// Enables all logging.
     public class func enableAll() {
         Static.enabled = true
     }
     
+    /// Disables all logging.
     public class func disableAll() {
         Static.enabled = false
     }
     
+    /// Enables logging to the console.
     public class func enableConsole() {
         Static.enabled = true
         Static.consoleEnabled = true
     }
     
+    /// Disables logging to the console
     public class func disableConsole() {
         Static.consoleEnabled = false
     }
@@ -82,42 +98,42 @@ class Logger {
         self.init(name: name, enabled: true)
     }
     
-    func trace<T: Printable>(message: T) {
+    func trace<T>(message: T) {
         if !Logging.Static.enabled || !enabled {
             return
         }
-        log("TRACE", message: message)
+        log(.Trace, message: message)
     }
     
-    func debug<T: Printable>(message: T) {
+    func debug<T>(message: T) {
         if !Logging.Static.enabled || !enabled {
             return
         }
-        log("DEBUG", message: message)
+        log(.Debug, message: message)
     }
     
-    func info<T: Printable>(message: T) {
+    func info<T>(message: T) {
         if !Logging.Static.enabled || !enabled {
             return
         }
-        log("INFO", message: message)
+        log(.Info, message: message)
     }
     
-    func warn<T: Printable>(message: T) {
+    func warn<T>(message: T) {
         if !Logging.Static.enabled || !enabled {
             return
         }
-        log("WARN", message: message)
+        log(.Warning, message: message)
     }
     
-    func error<T: Printable>(message: T) {
+    func error<T>(message: T) {
         if !Logging.Static.enabled || !enabled {
             return
         }
-        log("ERROR", message: message)
+        log(.Error, message: message)
     }
     
-    func log<T: Printable>(level: String, message: T) {
+    func log<T>(level: LogLevel, message: T) {
         let str = "\(name): \(message)"
         if Logging.Static.consoleEnabled {
             println("\(level) \(str)")

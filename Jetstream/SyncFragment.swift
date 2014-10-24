@@ -9,27 +9,46 @@
 import Foundation
 import Jetstream
 
+/// Fragment types
 public enum SyncFragmentType: String {
+    /// Denotes a fragment that changes the properties of a root object of the scope.
     case Root = "root"
+    
+    /// Denotes a fragment that changes the properties of an object in the scope.
     case Change = "change"
+    
+    /// Denotes a fragment that adds a new ModelObject to the scope.
     case Add = "add"
+    
+    /// Denotes a fragment that removes an object from the scope.
     case Remove = "remove"
 }
 
 private let OnlyTransmitNonDefaultValues = false
 private var classPrefix: String?
 
-
-public func ==(lhs: SyncFragment, rhs: SyncFragment) -> Bool {
-    return lhs === rhs
-}
-
 public class SyncFragment: Equatable {
-    let type: SyncFragmentType
-    let objectUUID: NSUUID
-    let clsName: String?
-    var properties: [String: AnyObject]?
+    /// The type of the fragment.
+    public let type: SyncFragmentType
     
+    /// The UUID of the object that the fragment is associated with.
+    public let objectUUID: NSUUID
+    
+    /// The name of the class to create in the case of an Add fragment.
+    public let clsName: String?
+    
+    /// A dictionary of key-value pairs to apply to the object associated with the fragment.
+    public var properties: [String: AnyObject]?
+    
+    var originalProperties: [String: AnyObject]?
+    
+    /// Creates a new fragment.
+    ///
+    /// :param: type The type of the fragment
+    /// :param: objectUUID The UUID of the associated object.
+    /// :clsName: The name of the class to instantiate in case of an Add fragment.
+    /// :properties: A dictionary of key-value pairs of properties to apply to the associated model object
+    /// in case the fragment is not of type Remove.
     init(type: SyncFragmentType, objectUUID: NSUUID, clsName: String?, properties: [String: AnyObject]?) {
         self.type = type
         self.objectUUID = objectUUID
@@ -37,7 +56,27 @@ public class SyncFragment: Equatable {
         self.properties = properties
     }
     
-    func serialize() -> [String: AnyObject] {
+    /// Creates a new fragment.
+    ///
+    /// :param: type The type of the fragment
+    /// :param: modelObject The model object to associate the fragment with. Properties will be copied over
+    /// from the model object.
+    init(type: SyncFragmentType, modelObject: ModelObject) {
+        self.type = type
+        self.objectUUID = modelObject.uuid
+        
+        if (type == .Add) {
+            var fullyQualifiedClassName = NSStringFromClass(modelObject.dynamicType)
+            var qualifiers = fullyQualifiedClassName.componentsSeparatedByString(".")
+            self.clsName = qualifiers[qualifiers.count-1]
+            applyPropertiesFromModelObject(modelObject)
+        }
+    }
+    
+    /// Serializes the sync fragment into an JSON-serializable dictionary.
+    ///
+    /// :returns: A JSON-serializable dictionary representing the sync fragment.
+    public func serialize() -> [String: AnyObject] {
         var dictionary = [String: AnyObject]()
         dictionary["type"] = type.rawValue
         dictionary["uuid"] = objectUUID.UUIDString
@@ -50,11 +89,17 @@ public class SyncFragment: Equatable {
         return dictionary
     }
     
-    class func unserialize(dictionary: [String: AnyObject]) -> SyncFragment? {
+    /// Creates a sync fragment from a dictionary.
+    ///
+    /// :param: dictionary The dictionary to unserialize the sync fragment from.
+    /// :returns: A sync fragment if unserialization was successfull.
+    public class func unserialize(dictionary: [String: AnyObject]) -> SyncFragment? {
         var type: SyncFragmentType?
         var objectUUID: NSUUID?
         var clsName: String?
         var properties: [String: AnyObject]?
+        
+        let logger = Logging.loggerFor("Transport")
 
         for (key, value) in dictionary {
             switch key {
@@ -77,16 +122,17 @@ public class SyncFragment: Equatable {
                     properties = propertyDictionary
                 }
             default:
-                // TODO: Log error
-                println("unkown key \(key)")
+                logger.warn("Dictionary provided for unserialization of sync fragment contained unkown key \(key)")
             }
         }
         
         // Check validity of properties
         if type == nil || objectUUID == nil {
+            logger.error("Could not unserialize SyncFragment. Type and objectUUID are required")
             return nil
         }
         if (type == .Root || type == .Add) && clsName == nil {
+            logger.error("Could not unserialize SyncFragment. clsName is required for fragments of type Root and Add")
             return nil
         }
 
@@ -95,18 +141,6 @@ public class SyncFragment: Equatable {
             objectUUID: objectUUID!,
             clsName: clsName,
             properties: properties)
-    }
-    
-    init(type: SyncFragmentType, modelObject: ModelObject) {
-        self.type = type
-        self.objectUUID = modelObject.uuid
-
-        if (type == .Add) {
-            var fullyQualifiedClassName = NSStringFromClass(modelObject.dynamicType)
-            var qualifiers = fullyQualifiedClassName.componentsSeparatedByString(".")
-            self.clsName = qualifiers[qualifiers.count-1]
-            applyPropertiesFromModelObject(modelObject)
-        }
     }
 
     func applyPropertiesToModelObject(modelObject: ModelObject, scope: Scope, applyDefaults: Bool = false) {
@@ -137,14 +171,24 @@ public class SyncFragment: Equatable {
         }
     }
     
-    func newValueForKeyFromModelObject(key: String, modelValue:ModelValue?, modelObject: ModelObject) {
-        if (properties == nil) {
+    func newValueForKeyFromModelObject(key: String, newValue:ModelValue?, oldValue: AnyObject?, modelObject: ModelObject) {
+        if properties == nil {
             properties = [String: AnyObject]()
         }
-        if (modelValue == nil) {
+        if originalProperties == nil {
+            originalProperties = [String: AnyObject]()
+        }
+        if originalProperties![key] == nil {
+            if oldValue == nil {
+                originalProperties![key] = NSNull()
+            } else {
+                originalProperties![key] = oldValue
+            }
+        }
+        if newValue == nil {
             properties![key] = NSNull()
         } else {
-            properties![key] = modelValue!.serialize()
+            properties![key] = newValue!.serialize()
         }
     }
     
@@ -228,4 +272,8 @@ public class SyncFragment: Equatable {
             }
         }
     }
+}
+
+public func ==(lhs: SyncFragment, rhs: SyncFragment) -> Bool {
+    return lhs === rhs
 }

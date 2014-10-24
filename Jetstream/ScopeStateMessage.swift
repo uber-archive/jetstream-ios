@@ -9,7 +9,6 @@
 import Foundation
 
 class ScopeStateMessage: Message {
-    
     class var messageType: String {
         return "ScopeState"
     }
@@ -44,13 +43,11 @@ class ScopeStateMessage: Message {
         return dictionary
     }
     
-    
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
         var index: UInt?
         var scopeIndex: UInt?
         var rootFragment: SyncFragment!
         var syncFragments = [SyncFragment]()
-        
         
         for (key, value) in dictionary {
             switch key {

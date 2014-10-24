@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol ModelValue {
     func equalTo(value: ModelValue) -> Bool
@@ -29,6 +30,7 @@ enum ModelValueType: String {
     case Str = "@"
     case Date = "@\"NSDate\""
     case Color = "@\"UIColor\""
+    case Image = "@\"UIImage\""
     case Array = "@a"
     case ModelObject = "@m"
     case Composite = "comp"
@@ -50,6 +52,7 @@ func convertAnyObjectToModelValue(value: AnyObject, type: ModelValueType) -> Mod
     case .Str: return value as? String
     case .Date: return value as? NSDate
     case .Color: return value as? UIColor
+    case .Image: return value as? UIImage
     case .Array: return value as? [AnyObject]
     case .ModelObject: return value as? ModelObject
     case .Composite: return nil
@@ -74,6 +77,7 @@ func unserializeModelValue(value: AnyObject, scope: Scope, type: ModelValueType)
     case .Str: return String.unserialize(value, scope: scope)
     case .Date: return NSDate.unserialize(value, scope: scope)
     case .Color: return UIColor.unserialize(value, scope: scope)
+    case .Image: return UIImage.unserialize(value, scope: scope)
     case .Array: return Array<ModelObject>.unserialize(value, scope: scope)
     case .ModelObject: return ModelObject.unserialize(value, scope: scope)
     case .Composite: return nil
@@ -193,6 +197,25 @@ extension NSDate: ModelValue {
         return nil
     }
 }
+
+extension UIImage: ModelValue {
+    func equalTo(value: ModelValue) -> Bool { return false }
+    func serialize() -> AnyObject {
+        let data = UIImageJPEGRepresentation(self, 1.0)
+        return data.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(0))
+    }
+    
+    class func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
+        if let stringValue = value as? String {
+            if let data = NSData(base64EncodedString: stringValue, options:NSDataBase64DecodingOptions(0)) {
+                var image = UIImage(data: data)
+                return image
+            }
+        }
+        return nil
+    }
+}
+
 
 extension Array: ModelValue {
     func equalTo(value: ModelValue) -> Bool {

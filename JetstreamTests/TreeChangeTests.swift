@@ -8,11 +8,8 @@
 
 import UIKit
 import XCTest
-import Jetstream
-
 
 class TreeChangeTests: XCTestCase {
-    
     var parent = TestModel()
     var child = TestModel()
     var child2 = TestModel()
