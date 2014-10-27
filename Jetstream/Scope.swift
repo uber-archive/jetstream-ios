@@ -14,7 +14,7 @@ import Signals
     /// since the signal last fired.
     public let onChanges = Signal<(ChangeSet)>()
     
-    // A signal that fires when changes have been made to the model from a remote source.
+    /// A signal that fires when changes have been made to the model from a remote source.
     public let onRemoteSync = Signal<Void>()
     
     public var name: String
