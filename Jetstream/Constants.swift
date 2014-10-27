@@ -11,4 +11,6 @@ import Foundation
 public enum ErrorCode: Int {
     case SessionAlreadyClosed = 1
     case SessionBecameClosed
+    case SessionDenied
+    case SessionFetchFailed
 }

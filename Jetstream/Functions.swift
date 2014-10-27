@@ -18,3 +18,17 @@ public func delay(delay: Double, callback: () -> ()) {
 public func asyncMain(callback: () -> ()) {
     dispatch_async(dispatch_get_main_queue(), callback)
 }
+
+func error(code: ErrorCode) -> NSError {
+    return NSError(
+        domain: defaultErrorDomain,
+        code: code.rawValue,
+        userInfo: nil)
+}
+
+func errorWithUserInfo(code: ErrorCode, userInfo: [NSObject: AnyObject]) -> NSError {
+    return NSError(
+        domain: defaultErrorDomain,
+        code: code.rawValue,
+        userInfo: userInfo)
+}

@@ -58,6 +58,7 @@ public enum ClientStatus {
     
     let logger = Logging.loggerFor("Client")
     let transport: Transport
+    var sessionCreateParams = [String: AnyObject]()
     
     // MARK: - Public interface
     
@@ -73,6 +74,12 @@ public enum ClientStatus {
     /// Starts connecting the client to the server.
     public func connect() {
         transport.connect()
+    }
+    
+    /// Starts connecting the client to the server with params to supply to server when creating a session.
+    public func connectWithSessionCreateParams(sessionCreateParams: [String: AnyObject]) {
+        self.sessionCreateParams = sessionCreateParams
+        connect()
     }
     
     /// Closes the connection to the server.
@@ -108,7 +115,7 @@ public enum ClientStatus {
         case .Online:
             logger.info("Online")
             if session == nil {
-                transport.sendMessage(SessionCreateMessage())
+                transport.sendMessage(SessionCreateMessage(params: sessionCreateParams))
             }
         case .Offline:
             logger.info("Offline")
