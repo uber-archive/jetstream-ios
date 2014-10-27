@@ -124,11 +124,11 @@ public class Session {
             var errorSlug = error?["slug"] as? String
             
             var userInfo = [NSLocalizedDescriptionKey: "Fetch request failed"]
-            if errorMessage != nil {
-                userInfo[NSLocalizedFailureReasonErrorKey] = errorMessage!
+            if let definiteErrorMessage = errorMessage {
+                userInfo[NSLocalizedFailureReasonErrorKey] = definiteErrorMessage
             }
-            if errorSlug != nil {
-                userInfo[NSLocalizedFailureReasonErrorKey] = errorSlug!
+            if let definiteErrorSlug = errorSlug {
+                userInfo[NSLocalizedFailureReasonErrorKey] = definiteErrorSlug
             }
             
             callback(errorWithUserInfo(.SessionFetchFailed, userInfo))
