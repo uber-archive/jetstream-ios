@@ -77,6 +77,8 @@ public enum ClientStatus {
     }
     
     /// Starts connecting the client to the server with params to supply to server when creating a session.
+    ///
+    /// :param: sessionCreateParams The params that should be sent along with the session create request.
     public func connectWithSessionCreateParams(sessionCreateParams: [String: AnyObject]) {
         self.sessionCreateParams = sessionCreateParams
         connect()

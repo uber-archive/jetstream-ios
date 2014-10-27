@@ -263,7 +263,6 @@ struct PropertyInfo {
     ///
     /// :param: scopeName The scope name.
     /// :param: adapter The transport adapter the sync client should use.
-    /// :param: sessionCreateParams Any params that should be sent along with the session create request.
     /// :param: scopeFetchAttemptCallback Will be called once either the session was either denied or accepted and syncing began.
     public func syncWithScopeName(scopeName: String, adapter: TransportAdapter, scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
         syncWithScopeName(scopeName,
@@ -278,6 +277,7 @@ struct PropertyInfo {
     ///
     /// :param: scopeName The scope name.
     /// :param: adapter The transport adapter the sync client should use.
+    /// :param: sessionCreateParams Any params that should be sent along with the session create request.
     /// :param: scopeFetchAttemptCallback Will be called once either the session was either denied or accepted and syncing began.
     public func syncWithScopeName(scopeName: String, adapter: TransportAdapter, sessionCreateParams: [String: AnyObject], scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
         syncWithScopeName(scopeName,
