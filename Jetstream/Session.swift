@@ -117,18 +117,14 @@ public class Session {
             scopeAttach(scope, scopeIndex: scopeIndex!)
             callback(nil)
         } else {
-            var definiteErrorCode = 0
-            
             var error = response["error"] as? [String: AnyObject]
-            var errorMessage = error?["message"] as? String
-            var errorSlug = error?["slug"] as? String
             
             var userInfo = [NSLocalizedDescriptionKey: "Fetch request failed"]
-            if let definiteErrorMessage = errorMessage {
-                userInfo[NSLocalizedFailureReasonErrorKey] = definiteErrorMessage
+            if let errorMessage = error?["message"] as? String {
+                userInfo[NSLocalizedFailureReasonErrorKey] = errorMessage
             }
-            if let definiteErrorSlug = errorSlug {
-                userInfo[NSLocalizedFailureReasonErrorKey] = definiteErrorSlug
+            if let errorSlug = error?["slug"] as? String {
+                userInfo[NSLocalizedFailureReasonErrorKey] = errorSlug
             }
             
             callback(errorWithUserInfo(.SessionFetchFailed, userInfo))
