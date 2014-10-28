@@ -17,20 +17,20 @@ class SessionCreateMessage: Message {
         return SessionCreateMessage.messageType
     }
     
-    let params: [String: String]
+    let params: [String: AnyObject]
     let version: String
     
-    init(params: [String: String], version: String) {
+    init(params: [String: AnyObject], version: String) {
         self.params = params
         self.version = version
         super.init(index: 0)
     }
     
     convenience init() {
-        self.init(params: [String: String]())
+        self.init(params: [String: AnyObject]())
     }
     
-    convenience init(params: [String: String]) {
+    convenience init(params: [String: AnyObject]) {
         self.init(params: params, version: clientVersion)
     }
     
@@ -42,7 +42,7 @@ class SessionCreateMessage: Message {
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
-        var params = dictionary["params"] as? [String: String]
+        var params = dictionary["params"] as? [String: AnyObject]
         var version = dictionary["version"] as? String
         
         if params != nil && version != nil {

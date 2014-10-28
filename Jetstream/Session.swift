@@ -27,15 +27,14 @@ public class Session {
     
     // MARK: - Public interface
     public func fetch(scope: Scope, callback: (NSError?) -> ()) {
-        fetch(scope, params: [String: String](), callback: callback)
+        fetch(scope, params: [String: AnyObject](), callback: callback)
     }
     
-    public func fetch(scope: Scope, params: [String: String], callback: (NSError?) -> ()) {
+    public func fetch(scope: Scope, params: [String: AnyObject], callback: (NSError?) -> ()) {
         if closed {
-            return callback(NSError(
-                domain: defaultErrorDomain,
-                code: ErrorCode.SessionAlreadyClosed.rawValue,
-                userInfo: [NSLocalizedDescriptionKey: "Session already closed"]))
+            return callback(errorWithUserInfo(
+                .SessionAlreadyClosed,
+                [NSLocalizedDescriptionKey: "Session already closed"]))
         }
         
         let scopeFetchMessage = ScopeFetchMessage(session: self, name: scope.name, params: params)
@@ -106,10 +105,9 @@ public class Session {
     
     func scopeFetchCompleted(scope: Scope, response: [String: AnyObject], callback: (NSError?) -> ()) {
         if closed {
-            return callback(NSError(
-                domain: defaultErrorDomain,
-                code: ErrorCode.SessionBecameClosed.rawValue,
-                userInfo: [NSLocalizedDescriptionKey: "Session became closed"]))
+            return callback(errorWithUserInfo(
+                .SessionBecameClosed,
+                [NSLocalizedDescriptionKey: "Session became closed"]))
         }
         
         var result = response["result"] as? Bool
@@ -119,26 +117,17 @@ public class Session {
             scopeAttach(scope, scopeIndex: scopeIndex!)
             callback(nil)
         } else {
-            var definiteErrorCode = 0
-            
             var error = response["error"] as? [String: AnyObject]
-            var errorMessage = error?["message"] as? String
-            var errorCode = error?["code"] as? Int
-            
-            if errorCode != nil {
-                definiteErrorCode = errorCode!
-            }
             
             var userInfo = [NSLocalizedDescriptionKey: "Fetch request failed"]
-            
-            if errorMessage != nil {
-                userInfo[NSLocalizedFailureReasonErrorKey] = errorMessage!
+            if let errorMessage = error?["message"] as? String {
+                userInfo[NSLocalizedFailureReasonErrorKey] = errorMessage
+            }
+            if let errorSlug = error?["slug"] as? String {
+                userInfo[NSLocalizedFailureReasonErrorKey] = errorSlug
             }
             
-            callback(NSError(
-                domain: defaultErrorDomain,
-                code: definiteErrorCode,
-                userInfo: userInfo))
+            callback(errorWithUserInfo(.SessionFetchFailed, userInfo))
         }
     }
     

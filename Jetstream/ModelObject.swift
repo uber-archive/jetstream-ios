@@ -220,11 +220,71 @@ struct PropertyInfo {
     
     /// Assigns a scope to the model object and makes it the new root for the scope.
     ///
-    /// :param: The scope to add the model object to.
+    /// :param: scope The scope to add the model object to.
     public func setScopeAndMakeRootModel(scope: Scope) {
         detach()
         internalIsScopeRoot = true
         self.scope = scope
+    }
+    
+    /// Creates a scope and a sync client with the specified transport adapter and once connected will issue
+    /// a scope fetch request and begin syncing this ModelObject with the server on the specified scope.
+    /// You can provide params for both the session it creates and the scope fetch request that is issued.
+    ///
+    /// :param: scopeName The scope name.
+    /// :param: adapter The transport adapter the sync client should use.
+    /// :param: sessionCreateParams Any params that should be sent along with the session create request.
+    /// :param: scopeFetchParams Any params that should be sent along with the scope fetch request.
+    /// :param: scopeFetchAttemptCallback Will be called once either the session was either denied or accepted and syncing began.
+    public func syncWithScopeName(scopeName: String, adapter: TransportAdapter, sessionCreateParams: [String: AnyObject], scopeFetchParams: [String: AnyObject], scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
+        let scope = Scope(name: scopeName)
+        setScopeAndMakeRootModel(scope)
+        
+        let client = Client(transportAdapter: adapter)
+        client.connectWithSessionCreateParams(sessionCreateParams)
+        
+        var sessionAcceptedListener: SignalListener<Session>?
+        var sessionDeniedListener: SignalListener<Void>?
+        sessionAcceptedListener = client.onSession.listenOnce(self) { session in
+            sessionDeniedListener?.cancel()
+            session.fetch(scope, params: scopeFetchParams) { error in
+                scopeFetchAttemptCallback(error, client)
+            }
+        }
+        sessionDeniedListener = client.onSessionDenied.listenOnce(self) {
+            sessionAcceptedListener?.cancel()
+            scopeFetchAttemptCallback(error(.SessionDenied), client)
+        }
+    }
+    
+    /// Creates a scope and a sync client with the specified transport adapter and once connected will issue
+    /// a scope fetch request and begin syncing this ModelObject with the server on the specified scope.
+    /// You can provide params for the session it creates.
+    ///
+    /// :param: scopeName The scope name.
+    /// :param: adapter The transport adapter the sync client should use.
+    /// :param: scopeFetchAttemptCallback Will be called once either the session was either denied or accepted and syncing began.
+    public func syncWithScopeName(scopeName: String, adapter: TransportAdapter, scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
+        syncWithScopeName(scopeName,
+            adapter: adapter,
+            sessionCreateParams: [String: AnyObject](),
+            scopeFetchParams: [String: AnyObject](),
+            scopeFetchAttemptCallback: scopeFetchAttemptCallback)
+    }
+    
+    /// Creates a scope and a sync client with the specified transport adapter and once connected will issue
+    /// a scope fetch request and begin syncing this ModelObject with the server on the specified scope.
+    ///
+    /// :param: scopeName The scope name.
+    /// :param: adapter The transport adapter the sync client should use.
+    /// :param: sessionCreateParams Any params that should be sent along with the session create request.
+    /// :param: scopeFetchAttemptCallback Will be called once either the session was either denied or accepted and syncing began.
+    public func syncWithScopeName(scopeName: String, adapter: TransportAdapter, sessionCreateParams: [String: AnyObject], scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
+        syncWithScopeName(scopeName,
+            adapter: adapter,
+            sessionCreateParams: sessionCreateParams,
+            scopeFetchParams: [String: AnyObject](),
+            scopeFetchAttemptCallback: scopeFetchAttemptCallback)
     }
     
     /// Invokes a callback whenever any property or collection on the object has changed. This observer waits until the next runloop to

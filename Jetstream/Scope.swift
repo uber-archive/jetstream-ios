@@ -14,6 +14,9 @@ import Signals
     /// since the signal last fired.
     public let onChanges = Signal<(ChangeSet)>()
     
+    /// A signal that fires when changes have been made to the model from a remote source.
+    public let onRemoteSync = Signal<Void>()
+    
     public var name: String
     
     /// The root model associates with the scope
@@ -71,6 +74,9 @@ import Signals
         }
         syncFragments.map { $0.applyChangesToScope(self, applyDefaults: applyDefaults) }
         tempModelHash.removeAll(keepCapacity: false)
+        if applyingRemote {
+            onRemoteSync.fire()
+        }
     }
     
     /// Retrieve an object by it's uuid.
