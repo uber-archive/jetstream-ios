@@ -209,6 +209,10 @@ This creates a scope and a client, using the built-in Websocket transport adapte
 
 This is all you need to do create a multi-user data model. When any remote clients connected to the same scope make changes to their local models, Jetstream will synchronize these changes in a efficient manner (sending a delta of these changes as sync fragments) with our local model and these changes will automatically be applied to our model and observers will fire, updating our views. Local changes made by our client will also be automatically synchronized with the remote scope and any remote clients will receive the changes we make to our model in real-time.
 
+### Protocol
+
+Jetstream uses JSON-based messages to create sessions, fetch scopes and synchronize changes. In case you want to build your own client or server, refer to the [protocol documentation](https://github.com/uber/jetstream-ios/wiki/Protocol).
+
 ## Communication
 
 - If you **found a bug**, open an issue or submit a fix via a pull request.
