@@ -81,7 +81,7 @@ public class SyncFragment: Equatable {
         dictionary["type"] = type.rawValue
         dictionary["uuid"] = objectUUID.UUIDString
         if clsName != nil {
-            dictionary["cls"] = clsName!
+            dictionary["clsName"] = clsName!
         }
         if properties != nil {
             dictionary["properties"] = properties!
@@ -113,7 +113,7 @@ public class SyncFragment: Equatable {
                 if let valueAsString = value as? String {
                     objectUUID = NSUUID(UUIDString: valueAsString)
                 }
-            case "cls":
+            case "clsName":
                 if let valueAsString = value as? String {
                     clsName = valueAsString
                 }

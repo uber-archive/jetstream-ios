@@ -87,7 +87,7 @@ class SyncFragmentTests: XCTestCase {
             "type": "root",
             "uuid": uuid.UUIDString,
             "properties": ["string": "set correctly"],
-            "cls": "TestModel"
+            "clsName": "TestModel"
         ]
         var fragment = SyncFragment.unserialize(json)
         XCTAssertEqual(fragment!.objectUUID, uuid , "UUID unserialized")
@@ -106,7 +106,7 @@ class SyncFragmentTests: XCTestCase {
             "type": "add",
             "uuid": uuid.UUIDString,
             "properties": ["string": "set correctly"],
-            "cls": "TestModel"
+            "clsName": "TestModel"
         ]
         var fragment = SyncFragment.unserialize(json)
         var json2: [String: AnyObject] = [
@@ -136,7 +136,7 @@ class SyncFragmentTests: XCTestCase {
             "type": "add",
             "uuid": uuid.UUIDString,
             "properties": ["string": "set correctly"],
-            "cls": "TestModel"
+            "clsName": "TestModel"
         ]
         var fragment = SyncFragment.unserialize(json)
         var json2: [String: AnyObject] = [
