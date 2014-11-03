@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ScopeFetchMessage: Message {
+class ScopeFetchMessage: NetworkMessage {
     class var messageType: String {
         return "ScopeFetch"
     }

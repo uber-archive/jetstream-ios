@@ -17,7 +17,7 @@
 		7225565F19F81B040016D8F8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564819F81B040016D8F8 /* Constants.swift */; };
 		7225566119F81B040016D8F8 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564A19F81B040016D8F8 /* Functions.swift */; };
 		7225566219F81B040016D8F8 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564B19F81B040016D8F8 /* Logging.swift */; };
-		7225566319F81B040016D8F8 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564C19F81B040016D8F8 /* Message.swift */; };
+		7225566319F81B040016D8F8 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564C19F81B040016D8F8 /* NetworkMessage.swift */; };
 		7225566419F81B040016D8F8 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564D19F81B040016D8F8 /* ModelObject.swift */; };
 		7225566519F81B040016D8F8 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564E19F81B040016D8F8 /* ModelValue.swift */; };
 		7225566619F81B040016D8F8 /* PingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564F19F81B040016D8F8 /* PingMessage.swift */; };
@@ -38,7 +38,7 @@
 		7225567619F81B430016D8F8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564819F81B040016D8F8 /* Constants.swift */; };
 		7225567819F81B430016D8F8 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564A19F81B040016D8F8 /* Functions.swift */; };
 		7225567919F81B430016D8F8 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564B19F81B040016D8F8 /* Logging.swift */; };
-		7225567A19F81B430016D8F8 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564C19F81B040016D8F8 /* Message.swift */; };
+		7225567A19F81B430016D8F8 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564C19F81B040016D8F8 /* NetworkMessage.swift */; };
 		7225567B19F81B430016D8F8 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564D19F81B040016D8F8 /* ModelObject.swift */; };
 		7225567C19F81B430016D8F8 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564E19F81B040016D8F8 /* ModelValue.swift */; };
 		7225567D19F81B430016D8F8 /* PingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564F19F81B040016D8F8 /* PingMessage.swift */; };
@@ -156,7 +156,7 @@
 		7225564819F81B040016D8F8 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		7225564A19F81B040016D8F8 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		7225564B19F81B040016D8F8 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
-		7225564C19F81B040016D8F8 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		7225564C19F81B040016D8F8 /* NetworkMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMessage.swift; sourceTree = "<group>"; };
 		7225564D19F81B040016D8F8 /* ModelObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelObject.swift; sourceTree = "<group>"; };
 		7225564E19F81B040016D8F8 /* ModelValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelValue.swift; sourceTree = "<group>"; };
 		7225564F19F81B040016D8F8 /* PingMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PingMessage.swift; sourceTree = "<group>"; };
@@ -318,7 +318,7 @@
 		7225568C19F81BAF0016D8F8 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
-				7225564C19F81B040016D8F8 /* Message.swift */,
+				7225564C19F81B040016D8F8 /* NetworkMessage.swift */,
 				7225564F19F81B040016D8F8 /* PingMessage.swift */,
 				7225565019F81B040016D8F8 /* ReplyMessage.swift */,
 				7225565219F81B040016D8F8 /* ScopeFetchMessage.swift */,
@@ -542,7 +542,7 @@
 				7225566C19F81B040016D8F8 /* Session.swift in Sources */,
 				7225567119F81B040016D8F8 /* ChangeSetQueue.swift in Sources */,
 				7225567319F81B040016D8F8 /* WebsocketTransportAdapter.swift in Sources */,
-				7225566319F81B040016D8F8 /* Message.swift in Sources */,
+				7225566319F81B040016D8F8 /* NetworkMessage.swift in Sources */,
 				7225566F19F81B040016D8F8 /* SyncFragment.swift in Sources */,
 				7225566619F81B040016D8F8 /* PingMessage.swift in Sources */,
 			);
@@ -563,7 +563,7 @@
 				723A39801A07F8E900FD47A0 /* ScopeFetchReplyMessage.swift in Sources */,
 				7225568419F81B430016D8F8 /* SessionCreateMessage.swift in Sources */,
 				7225567619F81B430016D8F8 /* Constants.swift in Sources */,
-				7225567A19F81B430016D8F8 /* Message.swift in Sources */,
+				7225567A19F81B430016D8F8 /* NetworkMessage.swift in Sources */,
 				7225567B19F81B430016D8F8 /* ModelObject.swift in Sources */,
 				7225568019F81B430016D8F8 /* ScopeFetchMessage.swift in Sources */,
 				7225567919F81B430016D8F8 /* Logging.swift in Sources */,

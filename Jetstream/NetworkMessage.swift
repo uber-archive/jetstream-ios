@@ -8,9 +8,9 @@
 
 import Foundation
 
-/// A message wrapper used by Jetstream to communicate between the .client and server. The message does not have 
-/// a public interface as messages are internal to Jetstream.
-public class Message {
+/// A message wrapper used by Jetstream to communicate between the client and server. The message does not have
+/// a public interface as netwotk messages are internal to Jetstream.
+public class NetworkMessage {
     // Override to provide message type
     var type: String {
         return "Message"
@@ -30,7 +30,7 @@ public class Message {
         return ["type": type, "index": index]
     }
     
-    public class func unserialize(dictionary: [String: AnyObject]) -> Message? {
+    public class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         let type: AnyObject? = dictionary["type"]
         if let definiteType = type as? String {
             switch definiteType {

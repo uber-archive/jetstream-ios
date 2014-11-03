@@ -67,7 +67,7 @@ public class Session {
         return nextMessageIndex++
     }
     
-    func receivedMessage(message: Message) {
+    func receivedMessage(message: NetworkMessage) {
         if closed {
             return
         }

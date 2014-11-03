@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ReplyMessage: Message {
+class ReplyMessage: NetworkMessage {
     
     let replyTo: UInt
     

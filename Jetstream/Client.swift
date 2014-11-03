@@ -103,7 +103,7 @@ public enum ClientStatus {
                 this.transportStatusChanged(status)
             }
         }
-        transport.onMessage.listen(self) { [weak self] (message: Message) in
+        transport.onMessage.listen(self) { [weak self] (message: NetworkMessage) in
             asyncMain {
                 if let this = self {
                     this.receivedMessage(message)
@@ -135,7 +135,7 @@ public enum ClientStatus {
         }
     }
     
-    func receivedMessage(message: Message) {
+    func receivedMessage(message: NetworkMessage) {
         switch message {
         case let sessionCreateResponse as SessionCreateReplyMessage:
             if session != nil {

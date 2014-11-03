@@ -8,7 +8,7 @@
 
 import Foundation
 
-class SessionCreateReplyMessage: Message {
+class SessionCreateReplyMessage: NetworkMessage {
     class var messageType: String {
         return "SessionCreateReply"
     }
@@ -28,7 +28,7 @@ class SessionCreateReplyMessage: Message {
         super.init(index: index)
     }
     
-    override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
+    override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index = dictionary["index"] as? UInt
         var success = dictionary["success"] as? Bool
         var sessionToken = dictionary["sessionToken"] as? String

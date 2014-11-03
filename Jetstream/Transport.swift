@@ -23,7 +23,7 @@ public enum TransportStatus {
 
 public protocol TransportAdapter {
     var onStatusChanged: Signal<(TransportStatus)> { get }
-    var onMessage: Signal<(Message)> { get }
+    var onMessage: Signal<(NetworkMessage)> { get }
     
     var adapterName: String { get }
     var status: TransportStatus { get }
@@ -32,7 +32,7 @@ public protocol TransportAdapter {
     func connect()
     func disconnect()
     func reconnect()
-    func sendMessage(message: Message)
+    func sendMessage(message: NetworkMessage)
     func sessionEstablished(session: Session)
 }
 
@@ -45,7 +45,7 @@ class Transport {
     
     let logger = Logging.loggerFor("Transport")
     let onStatusChanged: Signal<(TransportStatus)>
-    let onMessage: Signal<Message>
+    let onMessage: Signal<NetworkMessage>
     let adapter: TransportAdapter
     var waitingReply = [UInt: ReplyCallback]()
     
@@ -84,7 +84,7 @@ class Transport {
         }
     }
     
-    func messageReceived(message: Message) {
+    func messageReceived(message: NetworkMessage) {
         switch message {
         case let replyMessage as ReplyMessage:
             if let callback = waitingReply[replyMessage.replyTo] {
@@ -108,11 +108,11 @@ class Transport {
         adapter.reconnect()
     }
     
-    func sendMessage(message: Message) {
+    func sendMessage(message: NetworkMessage) {
         adapter.sendMessage(message)
     }
     
-    func sendMessage(message: Message, withCallback: ReplyCallback) {
+    func sendMessage(message: NetworkMessage, withCallback: ReplyCallback) {
         adapter.sendMessage(message)
         waitingReply[message.index] = withCallback
     }
