@@ -137,7 +137,7 @@ public enum ClientStatus {
     
     func receivedMessage(message: Message) {
         switch message {
-        case let sessionCreateResponse as SessionCreateResponseMessage:
+        case let sessionCreateResponse as SessionCreateReplyMessage:
             if session != nil {
                 logger.error("Received session create response with existing session")
             } else if sessionCreateResponse.success == false {

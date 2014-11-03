@@ -36,10 +36,10 @@ public class Message {
             switch definiteType {
             case SessionCreateMessage.messageType:
                 return SessionCreateMessage.unserialize(dictionary)
-            case SessionCreateResponseMessage.messageType:
-                return SessionCreateResponseMessage.unserialize(dictionary)
-            case ReplyMessage.messageType:
-                return ReplyMessage.unserialize(dictionary)
+            case SessionCreateReplyMessage.messageType:
+                return SessionCreateReplyMessage.unserialize(dictionary)
+            case SessionCreateReplyMessage.messageType:
+                return SessionCreateReplyMessage.unserialize(dictionary)
             case ScopeStateMessage.messageType:
                 return ScopeStateMessage.unserialize(dictionary)
             case ScopeSyncMessage.messageType:

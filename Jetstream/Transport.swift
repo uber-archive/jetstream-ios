@@ -36,7 +36,7 @@ public protocol TransportAdapter {
     func sessionEstablished(session: Session)
 }
 
-typealias ReplyCallback = ([String: AnyObject]) -> Void
+typealias ReplyCallback = (ReplyMessage) -> Void
 
 class Transport {
     class func defaultTransportAdapter(options: ConnectionOptions) -> TransportAdapter {
@@ -88,7 +88,7 @@ class Transport {
         switch message {
         case let replyMessage as ReplyMessage:
             if let callback = waitingReply[replyMessage.replyTo] {
-                callback(replyMessage.response)
+                callback(replyMessage)
                 waitingReply.removeValueForKey(replyMessage.replyTo)
             }
         default:

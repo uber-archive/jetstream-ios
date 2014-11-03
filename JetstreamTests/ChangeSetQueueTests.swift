@@ -36,7 +36,7 @@ class ChangeSetQueueTests: XCTestCase {
         root.int = 2
         root.float = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet)
         changeSet.completed()
         
@@ -55,7 +55,7 @@ class ChangeSetQueueTests: XCTestCase {
         root.int = 2
         root.float = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet)
         changeSet.revert(scope)
         
@@ -74,13 +74,13 @@ class ChangeSetQueueTests: XCTestCase {
         root.int = 2
         root.float = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet)
         
         root.int = 3
         root.float = 3.0
         root.string = "test 3"
-        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet2)
         
         changeSet.revert(scope)
@@ -104,18 +104,18 @@ class ChangeSetQueueTests: XCTestCase {
         scope.getAndClearSyncFragments()
         
         root.int = 2
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet)
         
         root.int = 3
         root.float = 3.0
-        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet2)
         
         root.int = 4
         root.float = 4.0
         root.string = "test 4"
-        var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet3)
         
         changeSet.revert(scope)
@@ -137,16 +137,16 @@ class ChangeSetQueueTests: XCTestCase {
         root.int = 2
         root.float = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet)
         
         root.int = 3
         root.float = 3.0
-        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet2)
         
         root.int = 4
-        var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet3)
         
         changeSet.revert(scope)
@@ -168,13 +168,13 @@ class ChangeSetQueueTests: XCTestCase {
         root.int = 2
         root.float = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet)
         
         root.int = 3
         root.float = 3.0
         root.string = "test 3"
-        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet2)
         
         changeSet.revert(scope)
@@ -195,18 +195,18 @@ class ChangeSetQueueTests: XCTestCase {
         root.int = 2
         root.float = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet)
         
         root.int = 3
         root.string = "test 3"
-        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet2)
         
         root.int = 4
         root.float = 4.0
         root.string = "test 4"
-        var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet3)
         
         changeSet.revert(scope)

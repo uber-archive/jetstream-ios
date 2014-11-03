@@ -19,11 +19,15 @@ public func asyncMain(callback: () -> ()) {
     dispatch_async(dispatch_get_main_queue(), callback)
 }
 
-func error(code: ErrorCode) -> NSError {
+func error(code: ErrorCode, localizedDescription: String? = nil) -> NSError {
+    var userInfo: [NSObject: AnyObject]?
+    if let definiteLocalizedDescription = localizedDescription {
+        userInfo = [NSLocalizedDescriptionKey: definiteLocalizedDescription]
+    }
     return NSError(
         domain: defaultErrorDomain,
         code: code.rawValue,
-        userInfo: nil)
+        userInfo: userInfo)
 }
 
 func errorWithUserInfo(code: ErrorCode, userInfo: [NSObject: AnyObject]) -> NSError {
@@ -31,4 +35,15 @@ func errorWithUserInfo(code: ErrorCode, userInfo: [NSObject: AnyObject]) -> NSEr
         domain: defaultErrorDomain,
         code: code.rawValue,
         userInfo: userInfo)
+}
+
+func errorFromDictionary(code: ErrorCode, error: [NSString: AnyObject]) -> NSError {
+    var userInfo = [NSLocalizedDescriptionKey: "Unknown error"]
+    if let errorMessage = error["message"] as? String {
+        userInfo[NSLocalizedDescriptionKey] = errorMessage
+    }
+    if let errorSlug = error["slug"] as? String {
+        userInfo[NSLocalizedFailureReasonErrorKey] = errorSlug
+    }
+    return errorWithUserInfo(code, userInfo)
 }

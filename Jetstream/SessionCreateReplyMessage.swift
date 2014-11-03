@@ -8,13 +8,13 @@
 
 import Foundation
 
-class SessionCreateResponseMessage: Message {
+class SessionCreateReplyMessage: Message {
     class var messageType: String {
-        return "SessionCreateResponse"
+        return "SessionCreateReply"
     }
     
     override var type: String {
-        return SessionCreateResponseMessage.messageType
+        return SessionCreateReplyMessage.messageType
     }
 
     let success: Bool
@@ -37,7 +37,7 @@ class SessionCreateResponseMessage: Message {
         if index == nil || success == nil || sessionToken == nil {
             return nil
         } else {
-            return SessionCreateResponseMessage(
+            return SessionCreateReplyMessage(
                 index: index!,
                 success: success!,
                 sessionToken: sessionToken!,

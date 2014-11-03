@@ -13,4 +13,6 @@ public enum ErrorCode: Int {
     case SessionBecameClosed
     case SessionDenied
     case SessionFetchFailed
+    case SyncFragmentApplyError
+    case ScopeFetchError
 }
