@@ -10,7 +10,7 @@ import Foundation
 
 class ScopeFetchReplyMessage: ReplyMessage {
     class var messageType: String {
-        return "ScopeFetchResponse"
+        return "ScopeFetchReply"
     }
     
     override var type: String {
