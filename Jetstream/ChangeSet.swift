@@ -86,11 +86,11 @@ public class ChangeSet: Equatable {
     /// with an optional error argument, which describes what went wrong applying the ChangeSet on the Jetstream server.
     /// :returns: A function that cancels the observation when invoked.
     public func observeCompletion(observer: AnyObject, callback: (error: NSError?) -> Void) -> CancelObserver {
-        let listener = onCompletion.listen(observer) { callback(error: nil) }
-        let listener2 = onError.listen(observer) { error in callback(error: error) }
+        let listener = onCompletion.listenOnce(observer) { callback(error: nil) }
+        let errorListener = onError.listenOnce(observer) { error in callback(error: error) }
         return {
             listener.cancel()
-            listener2.cancel()
+            errorListener.cancel()
         }
     }
     
@@ -132,9 +132,10 @@ public class ChangeSet: Equatable {
         return false
     }
     
-    func applyFragmentResponses(fragmentReplies: [FragmentSyncReply], scope: Scope) {
-        if (fragmentReplies.count != syncFragments.count) {
-            revert(scope)
+    func applyFragmentResponses(fragmentReplies: [SyncFragmentReply], scope: Scope) {
+        if fragmentReplies.count != syncFragments.count {
+            Logging.loggerFor("Sync").error("Fragment mismatch, reverting ChageSet")
+            revertOnScope(scope)
         } else {
             var error: NSError?
             var index = 0
@@ -149,18 +150,19 @@ public class ChangeSet: Equatable {
                             continue
                         }
                         for key in syncFragment.properties!.keys {
-                            if !pendingChangesTouchKeyOnModelObject(modelObject, key: key) {
-                                if let value: AnyObject = touches[modelObject]?[key] {
-                                    if value !== NSNull() {
-                                        modelObject.setValue(value, forKey: key)
-                                    } else {
-                                        modelObject.setValue(nil, forKey: key)
-                                    }
-                                }
+                            if let value: AnyObject = touches[modelObject]?[key] {
+                                setProperty(key, onModelObject: modelObject, toValue: value)
                             }
                         }
                     }
                     index++
+                }
+                if let modifications = reply.modifications {
+                    if let modelObject = scope.getObjectById(syncFragment.objectUUID) {
+                        for (key, value) in modifications {
+                            setProperty(key, onModelObject: modelObject, toValue: value)
+                        }
+                    }
                 }
             }
             if error == nil {
@@ -177,22 +179,10 @@ public class ChangeSet: Equatable {
         }
     }
     
-    func pendingChangesTouchKeyOnModelObject(modelObject: ModelObject, key: String) -> Bool {
-        return pendingChangeSets.reduce(false) { (touches, changeSet) -> Bool in
-            return touches || changeSet.touchesModelObject(modelObject, key: key)
-        }
-    }
-    
-    func revert(scope: Scope) {
+    func revertOnScope(scope: Scope) {
         for (modelObject, properties) in touches {
             for (key, value) in properties {
-                if !pendingChangesTouchKeyOnModelObject(modelObject, key: key) {
-                    if value !== NSNull() {
-                        modelObject.setValue(value, forKey: key)
-                    } else {
-                        modelObject.setValue(nil, forKey: key)
-                    }
-                }
+                setProperty(key, onModelObject: modelObject, toValue: value)
             }
         }
         state = .Reverted
@@ -200,6 +190,22 @@ public class ChangeSet: Equatable {
         onError.fire(errorWithUserInfo(
             .SyncFragmentApplyError,
             [NSLocalizedDescriptionKey: "Failed to apply change set"]))
+    }
+    
+    func setProperty(key: String, onModelObject modelObject: ModelObject, toValue value: AnyObject) {
+        if !pendingChangesTouchKeyOnModelObject(modelObject, key: key) {
+            if value !== NSNull() {
+                modelObject.setValue(value, forKey: key)
+            } else {
+                modelObject.setValue(nil, forKey: key)
+            }
+        }
+    }
+    
+    func pendingChangesTouchKeyOnModelObject(modelObject: ModelObject, key: String) -> Bool {
+        return pendingChangeSets.reduce(false) { (touches, changeSet) -> Bool in
+            return touches || changeSet.touchesModelObject(modelObject, key: key)
+        }
     }
     
     func completed() {

@@ -9,10 +9,10 @@
 import Foundation
 
 
-struct FragmentSyncReply {
+struct SyncFragmentReply {
     var accepted: Bool = true
     var error: NSError?
-    var augment: [NSString: AnyObject]?
+    var modifications: [NSString: AnyObject]?
 }
 
 class ScopeSyncReplyMessage: ReplyMessage {
@@ -24,9 +24,9 @@ class ScopeSyncReplyMessage: ReplyMessage {
         return ScopeSyncReplyMessage.messageType
     }
     
-    let fragmentReplies = [FragmentSyncReply]()
+    let fragmentReplies = [SyncFragmentReply]()
     
-    init(index: UInt, replyTo: UInt, fragmentReplies: [FragmentSyncReply]) {
+    init(index: UInt, replyTo: UInt, fragmentReplies: [SyncFragmentReply]) {
         self.fragmentReplies = fragmentReplies
         super.init(index: index, replyTo: replyTo)
     }
@@ -38,27 +38,27 @@ class ScopeSyncReplyMessage: ReplyMessage {
     override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index = dictionary["index"] as? UInt
         var replyTo = dictionary["replyTo"] as? UInt
-        var serializedFragmentResponses = dictionary["fragmentResponses"] as? [[String: AnyObject]]
+        var serializedFragmentReplies = dictionary["fragmentReplies"] as? [[String: AnyObject]]
         
-        if index == nil || replyTo == nil || serializedFragmentResponses == nil {
+        if index == nil || replyTo == nil || serializedFragmentReplies == nil {
             return nil
         } else {
-            var fragmentReplies = [FragmentSyncReply]()
-            for serializedFragmentResponse in serializedFragmentResponses! {
+            var fragmentReplies = [SyncFragmentReply]()
+            for serializedFragmentReply in serializedFragmentReplies! {
                 var accepted = true
                 var error: NSError?
-                var augment = [NSString: AnyObject]()
+                var modifications = [NSString: AnyObject]()
                 
-                if let serializedError = serializedFragmentResponse["error"] as? [String: AnyObject] {
+                if let serializedError = serializedFragmentReply["error"] as? [String: AnyObject] {
                     accepted = false
                     error = errorFromDictionary(.SyncFragmentApplyError, serializedError)
                 }
                 
-                if let serializedAugment = serializedFragmentResponse["augment"] as? [String: AnyObject] {
-                    augment = serializedAugment
+                if let serializedModifications = serializedFragmentReply["modifications"] as? [String: AnyObject] {
+                    modifications = serializedModifications
                 }
                 
-                var fragmentReply = FragmentSyncReply(accepted: accepted, error: error, augment: augment)
+                var fragmentReply = SyncFragmentReply(accepted: accepted, error: error, modifications: modifications)
                 fragmentReplies.append(fragmentReply)
             }
             

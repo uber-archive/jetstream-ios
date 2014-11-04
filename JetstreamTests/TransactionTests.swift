@@ -52,7 +52,7 @@ class TransactionTests: XCTestCase {
             "type": "ScopeSyncReply",
             "index": 2,
             "replyTo": 1,
-            "fragmentResponses": [
+            "fragmentReplies": [
                 [String: AnyObject](),
             ]
         ]
@@ -64,6 +64,40 @@ class TransactionTests: XCTestCase {
         XCTAssertEqual(self.root.int, 10, "No rollback")
         XCTAssert(self.root.float == 10.0, "No rollback")
         XCTAssertEqual(self.root.string!, "test", "No rollback")
+    }
+    
+    func testChangeSetSuccessfulCompletionWithModifications() {
+        var didCall = false
+        
+        let changeSet = root.scope!.createAtomicChangeSet {
+            self.root.int = 10
+            self.root.float = 10.0
+            self.root.string = "test"
+            }.observeCompletion(self) { error in
+                XCTAssertNil(error, "No error")
+                didCall = true
+        }
+        
+        var json: [String: AnyObject] = [
+            "type": "ScopeSyncReply",
+            "index": 2,
+            "replyTo": 1,
+            "fragmentReplies": [
+                ["modifications": [
+                    "int": 20,
+                    "double": 20.0
+                ]]
+            ]
+        ]
+        
+        var reply = ScopeSyncReplyMessage.unserialize(json)
+        client.transport.messageReceived(reply!)
+        
+        XCTAssertEqual(didCall, true, "Did invoke completion block")
+        XCTAssertEqual(self.root.int, 20, "Applied modification")
+        XCTAssert(self.root.float == 10.0, "No rollback")
+        XCTAssertEqual(self.root.string!, "test", "No rollback")
+        XCTAssert(self.root.double == 20.0, "Applied modification")
     }
     
     func testAtomicFragmentReplyMismatch() {
@@ -82,7 +116,7 @@ class TransactionTests: XCTestCase {
             "type": "ScopeSyncReply",
             "index": 2,
             "replyTo": 1,
-            "fragmentResponses": [[String: AnyObject]]()
+            "fragmentReplies": [[String: AnyObject]]()
         ]
 
         var reply = ScopeSyncReplyMessage.unserialize(json)
@@ -130,7 +164,7 @@ class TransactionTests: XCTestCase {
             "type": "ScopeSyncReply",
             "index": 2,
             "replyTo": 1,
-            "fragmentResponses": [
+            "fragmentReplies": [
                 [String: AnyObject](),
                 ["error": [
                     "code": 1,

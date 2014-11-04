@@ -138,7 +138,7 @@ public class Session {
                 if let syncReply = reply as? ScopeSyncReplyMessage {
                     changeSet.applyFragmentResponses(syncReply.fragmentReplies, scope: scope)
                 } else {
-                    changeSet.revert(scope)
+                    changeSet.revertOnScope(scope)
                 }
             }
         }

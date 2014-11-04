@@ -57,7 +57,7 @@ class ChangeSetQueueTests: XCTestCase {
         root.string = "test 2"
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet)
-        changeSet.revert(scope)
+        changeSet.revertOnScope(scope)
         
         XCTAssertEqual(root.int, 1, "Change set reverted")
         XCTAssertEqual(root.float, Float(1.0), "Change set reverted")
@@ -83,13 +83,13 @@ class ChangeSetQueueTests: XCTestCase {
         var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet2)
         
-        changeSet.revert(scope)
+        changeSet.revertOnScope(scope)
         XCTAssertEqual(queue.count, 1, "Queue contains one change set")
         XCTAssertEqual(root.int, 3, "Change set reverted")
         XCTAssertEqual(root.float, Float(3.0), "Change set reverted")
         XCTAssertEqual(root.string!, "test 3", "Change set reverted")
         
-        changeSet2.revert(scope)
+        changeSet2.revertOnScope(scope)
         
         XCTAssertEqual(root.int, 1, "Change set reverted")
         XCTAssertEqual(root.float, Float(1.0), "Change set reverted")
@@ -118,9 +118,9 @@ class ChangeSetQueueTests: XCTestCase {
         var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet3)
         
-        changeSet.revert(scope)
-        changeSet2.revert(scope)
-        changeSet3.revert(scope)
+        changeSet.revertOnScope(scope)
+        changeSet2.revertOnScope(scope)
+        changeSet3.revertOnScope(scope)
         
         XCTAssertEqual(root.int, 1, "Change set reverted")
         XCTAssertEqual(root.float, Float(1.0), "Change set reverted")
@@ -149,9 +149,9 @@ class ChangeSetQueueTests: XCTestCase {
         var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet3)
         
-        changeSet.revert(scope)
-        changeSet2.revert(scope)
-        changeSet3.revert(scope)
+        changeSet.revertOnScope(scope)
+        changeSet2.revertOnScope(scope)
+        changeSet3.revertOnScope(scope)
         
         XCTAssertEqual(root.int, 1, "Change set reverted")
         XCTAssertEqual(root.float, Float(1.0), "Change set reverted")
@@ -177,7 +177,7 @@ class ChangeSetQueueTests: XCTestCase {
         var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet2)
         
-        changeSet.revert(scope)
+        changeSet.revertOnScope(scope)
         changeSet2.completed()
         
         XCTAssertEqual(root.int, 3, "Change set reverted")
@@ -209,9 +209,9 @@ class ChangeSetQueueTests: XCTestCase {
         var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         queue.addChageSet(changeSet3)
         
-        changeSet.revert(scope)
-        changeSet2.revert(scope)
-        changeSet3.revert(scope)
+        changeSet.revertOnScope(scope)
+        changeSet2.revertOnScope(scope)
+        changeSet3.revertOnScope(scope)
         
         XCTAssertEqual(root.int, 1, "Change set reverted")
         XCTAssertEqual(root.float, Float(1.0), "Change set reverted")
