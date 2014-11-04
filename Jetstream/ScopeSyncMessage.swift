@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ScopeSyncMessage: Message {
+class ScopeSyncMessage: NetworkMessage {
     class var messageType: String {
         return "ScopeSync"
     }
@@ -44,7 +44,7 @@ class ScopeSyncMessage: Message {
         return dictionary
     }
     
-    override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
+    override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index: UInt?
         var scopeIndex: UInt?
         var syncFragments: [SyncFragment]?

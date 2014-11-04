@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 public class Session {
     /// The token of the session
@@ -40,8 +41,23 @@ public class Session {
         let scopeFetchMessage = ScopeFetchMessage(session: self, name: scope.name, params: params)
         client.transport.sendMessage(scopeFetchMessage) {
             [weak self] (response) in
-            if let this = self {
-                this.scopeFetchCompleted(scope, response: response, callback: callback)
+            if let definiteSelf = self {
+                if let scopeFetchReply = response as? ScopeFetchReplyMessage {
+                    if scopeFetchReply.error != nil {
+                        return callback(scopeFetchReply.error)
+                    }
+                    if scopeFetchReply.scopeIndex == nil {
+                        return callback(error(.ScopeFetchError, localizedDescription: "Undefined scope index"))
+                    }
+                    
+                    if definiteSelf.closed {
+                        return callback(error(.SessionBecameClosed, localizedDescription: "Session became closed"))
+                    }
+                    definiteSelf.scopeAttach(scope, scopeIndex: scopeFetchReply.scopeIndex!)
+                    callback(nil)
+                } else {
+                    callback(error(.ScopeFetchError, localizedDescription: "Invalid reply message"))
+                }
             }
         }
     }
@@ -51,7 +67,7 @@ public class Session {
         return nextMessageIndex++
     }
     
-    func receivedMessage(message: Message) {
+    func receivedMessage(message: NetworkMessage) {
         if closed {
             return
         }
@@ -103,50 +119,29 @@ public class Session {
         }
     }
     
-    func scopeFetchCompleted(scope: Scope, response: [String: AnyObject], callback: (NSError?) -> ()) {
-        if closed {
-            return callback(errorWithUserInfo(
-                .SessionBecameClosed,
-                [NSLocalizedDescriptionKey: "Session became closed"]))
-        }
-        
-        var result = response["result"] as? Bool
-        var scopeIndex = response["scopeIndex"] as? UInt
-        
-        if result != nil && scopeIndex != nil && result! == true {
-            scopeAttach(scope, scopeIndex: scopeIndex!)
-            callback(nil)
-        } else {
-            var error = response["error"] as? [String: AnyObject]
-            
-            var userInfo = [NSLocalizedDescriptionKey: "Fetch request failed"]
-            if let errorMessage = error?["message"] as? String {
-                userInfo[NSLocalizedFailureReasonErrorKey] = errorMessage
-            }
-            if let errorSlug = error?["slug"] as? String {
-                userInfo[NSLocalizedFailureReasonErrorKey] = errorSlug
-            }
-            
-            callback(errorWithUserInfo(.SessionFetchFailed, userInfo))
-        }
-    }
-    
     func scopeAttach(scope: Scope, scopeIndex: UInt) {
         scopes[scopeIndex] = scope
         scope.onChanges.listen(self) {
             [weak self] changeSet in
             if let definiteSelf = self {
-                definiteSelf.scopeChanges(scope, atIndex: scopeIndex, syncFragments: changeSet.syncFragments)
+                definiteSelf.scopeChanges(scope, atIndex: scopeIndex, changeSet: changeSet)
             }
         }
     }
     
-    func scopeChanges(scope: Scope, atIndex: UInt, syncFragments: [SyncFragment]) {
+    func scopeChanges(scope: Scope, atIndex: UInt, changeSet: ChangeSet) {
         if closed {
             return
         }
-        
-        client.transport.sendMessage(ScopeSyncMessage(session: self, scopeIndex: atIndex, syncFragments: syncFragments))
+        client.transport.sendMessage(ScopeSyncMessage(session: self, scopeIndex: atIndex, syncFragments: changeSet.syncFragments)) { [weak self] reply in
+            if let definiteSelf = self {
+                if let syncReply = reply as? ScopeSyncReplyMessage {
+                    changeSet.processFragmentReplies(syncReply.fragmentReplies, scope: scope)
+                } else {
+                    changeSet.revertOnScope(scope)
+                }
+            }
+        }
     }
     
     func close() {

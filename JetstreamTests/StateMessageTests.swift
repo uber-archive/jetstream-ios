@@ -24,7 +24,7 @@ class StateMessageTests: XCTestCase {
         XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope to start with")
         
         client = Client(transportAdapter: WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: NSURL(string: "localhost")!)))
-        var msg = SessionCreateResponseMessage(index: 1, success: true, sessionToken: "jeah", response: nil)
+        var msg = SessionCreateReplyMessage(index: 1, success: true, sessionToken: "jeah", response: nil)
         client.receivedMessage(msg)
         client.session!.scopeAttach(scope, scopeIndex: 1)
 
@@ -54,7 +54,7 @@ class StateMessageTests: XCTestCase {
             ]
         ]
         
-        firstMessage = Message.unserialize(json) as ScopeStateMessage
+        firstMessage = NetworkMessage.unserialize(json) as ScopeStateMessage
         client.receivedMessage(firstMessage)
         
         XCTAssertEqual(root.uuid, uuid, "Message applied")
@@ -98,7 +98,7 @@ class StateMessageTests: XCTestCase {
             "fragments": []
         ]
 
-        client.receivedMessage(Message.unserialize(json)!)
+        client.receivedMessage(NetworkMessage.unserialize(json)!)
 
         XCTAssertNil(root.childModel, "Removed child")
         XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope")
@@ -130,7 +130,7 @@ class StateMessageTests: XCTestCase {
         
         XCTAssert(root.childModel != nil, "Child model moved")
         
-        client.receivedMessage(Message.unserialize(json)!)
+        client.receivedMessage(NetworkMessage.unserialize(json)!)
         
         XCTAssert(root.childModel == nil, "Child model moved")
         XCTAssert(root.childModel2 != nil, "Child model moved")
@@ -173,7 +173,7 @@ class StateMessageTests: XCTestCase {
             ]
         ]
         
-        client.receivedMessage(Message.unserialize(json)!)
+        client.receivedMessage(NetworkMessage.unserialize(json)!)
         
         XCTAssertEqual(root.childModel2!.uuid, childUUID, "Child model added")
         XCTAssertEqual(root.childModel2!.childModel!.uuid, childUUID2, "Child model added")
@@ -201,7 +201,7 @@ class StateMessageTests: XCTestCase {
                 "clsName": "TestModel"
             ]
         ]
-        client.receivedMessage(Message.unserialize(json)!)
+        client.receivedMessage(NetworkMessage.unserialize(json)!)
         XCTAssertEqual(root.testType, TestType.Active, "Applied enum")
        
         var comp: [CGFloat] = Array(count: 4, repeatedValue: 0);

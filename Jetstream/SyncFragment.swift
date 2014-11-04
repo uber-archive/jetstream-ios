@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Jetstream
 
 /// Fragment types
 public enum SyncFragmentType: String {

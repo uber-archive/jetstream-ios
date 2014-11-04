@@ -100,6 +100,15 @@ import Signals
         }
         return nil
     }
+    
+    public func createAtomicChangeSet(changes: () -> Void) -> ChangeSet {
+        sendChanges()
+        changes()
+        var syncFragments = getAndClearSyncFragments()
+        let changeSet = ChangeSet(syncFragments: syncFragments, atomic: true, scope: self)
+        onChanges.fire(changeSet)
+        return changeSet
+    }
 
     // MARK: - Internal Interface
     func startApplyingRemote() {
@@ -213,11 +222,13 @@ import Signals
     }
 
     private func sendChanges() {
-        changesQueued = false
-        var syncFragments = getAndClearSyncFragments()
-        if syncFragments.count > 0 {
-            let changeSet = ChangeSet(syncFragments: syncFragments, scope: self)
-            onChanges.fire(changeSet)
+        if (changesQueued) {
+            changesQueued = false
+            var syncFragments = getAndClearSyncFragments()
+            if syncFragments.count > 0 {
+                let changeSet = ChangeSet(syncFragments: syncFragments, atomic: false, scope: self)
+                onChanges.fire(changeSet)
+            }
         }
     }
 }
