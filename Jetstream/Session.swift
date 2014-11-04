@@ -136,7 +136,7 @@ public class Session {
         client.transport.sendMessage(ScopeSyncMessage(session: self, scopeIndex: atIndex, syncFragments: changeSet.syncFragments)) { [weak self] reply in
             if let definiteSelf = self {
                 if let syncReply = reply as? ScopeSyncReplyMessage {
-                    changeSet.applyFragmentResponses(syncReply.fragmentReplies, scope: scope)
+                    changeSet.processFragmentReplies(syncReply.fragmentReplies, scope: scope)
                 } else {
                     changeSet.revertOnScope(scope)
                 }
