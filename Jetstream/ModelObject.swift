@@ -45,7 +45,7 @@ struct PropertyInfo {
     public let onRemovedParent = Signal<(parent: ModelObject, key: String)>()
     public let onTreeChange = Signal<()>()
     
-    private let className: String!
+    let className: String!
     
     struct Static {
         static var allTypes = [String: AnyClass]()
@@ -53,14 +53,19 @@ struct PropertyInfo {
         static var propertiesInitialzedForClasses = [String: Bool]()
         static var properties = [String: [String: PropertyInfo]]()
     }
-
-    override public class func initialize() {
-        let name = NSStringFromClass(self)
+    
+    class func classNameWithType(type: AnyClass) -> String {
+        let name = NSStringFromClass(type)
         
         // Warning: Just assuming that Swift will forever have a prefix followed by a dot and the classname
         let components = name.componentsSeparatedByString(".")
-        let lastComponent = components[components.count-1]
-        Static.allTypes[lastComponent] = self
+        return components[components.count-1]
+    }
+
+    override public class func initialize() {
+        Static.allTypes[classNameWithType(self)] = self
+        
+        let name = NSStringFromClass(self)
         
         var keyToDependencies = [String: [String]]()
         for (prop, dependencies) in getCompositeDependencies() {
@@ -191,14 +196,14 @@ struct PropertyInfo {
     public override init() {
         uuid = NSUUID()
         super.init()
-        className = NSStringFromClass(self.dynamicType)
+        className = ModelObject.classNameWithType(self.dynamicType)
         setupPropertyListeners()
     }
     
     required public init(uuid: NSUUID) {
         self.uuid = uuid
         super.init()
-        className = NSStringFromClass(self.dynamicType)
+        className = ModelObject.classNameWithType(self.dynamicType)
         setupPropertyListeners()
     }
     
