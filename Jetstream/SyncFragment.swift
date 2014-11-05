@@ -65,9 +65,7 @@ public class SyncFragment: Equatable {
         self.objectUUID = modelObject.uuid
         
         if (type == .Add) {
-            var fullyQualifiedClassName = NSStringFromClass(modelObject.dynamicType)
-            var qualifiers = fullyQualifiedClassName.componentsSeparatedByString(".")
-            self.clsName = qualifiers[qualifiers.count-1]
+            self.clsName = modelObject.className
             applyPropertiesFromModelObject(modelObject)
         }
     }
