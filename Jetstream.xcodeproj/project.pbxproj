@@ -8,11 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		7220026C1A08362B00C6DCDD /* ChangeSetQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7216634E19F83FD3007704D2 /* ChangeSetQueueTests.swift */; };
+		72226A7B1A0C0792008EE330 /* Jetstream-bridging-header.h in Headers */ = {isa = PBXBuildFile; fileRef = 72226A791A0C0748008EE330 /* Jetstream-bridging-header.h */; };
 		722555FC19F819D90016D8F8 /* Jetstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 722555FB19F819D90016D8F8 /* Jetstream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7225560219F819DA0016D8F8 /* Jetstream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 722555F619F819D90016D8F8 /* Jetstream.framework */; };
 		7225562819F81AA10016D8F8 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561C19F81AA10016D8F8 /* TestHelpers.swift */; };
 		7225562919F81AA10016D8F8 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561D19F81AA10016D8F8 /* TestModel.swift */; };
-		7225562C19F81ABF0016D8F8 /* Enumerations.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225561519F81AA10016D8F8 /* Enumerations.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7225562C19F81ABF0016D8F8 /* JetstreamTestEnumerations.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225561519F81AA10016D8F8 /* JetstreamTestEnumerations.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7225565D19F81B040016D8F8 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564619F81B040016D8F8 /* Client.swift */; };
 		7225565F19F81B040016D8F8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564819F81B040016D8F8 /* Constants.swift */; };
 		7225566119F81B040016D8F8 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564A19F81B040016D8F8 /* Functions.swift */; };
@@ -119,7 +120,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 7225562E19F81AE20016D8F8 /* Signals.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 729A2F23199FE332005D7617;
+			remoteGlobalIDString = 720D11711A085314003C4361;
 			remoteInfo = Signals;
 		};
 		72EFCC3519F9B5FE0054BC18 /* PBXContainerItemProxy */ = {
@@ -133,13 +134,14 @@
 
 /* Begin PBXFileReference section */
 		7216634E19F83FD3007704D2 /* ChangeSetQueueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeSetQueueTests.swift; sourceTree = "<group>"; };
+		72226A791A0C0748008EE330 /* Jetstream-bridging-header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Jetstream-bridging-header.h"; sourceTree = "<group>"; };
 		722555F619F819D90016D8F8 /* Jetstream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Jetstream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		722555FA19F819D90016D8F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		722555FB19F819D90016D8F8 /* Jetstream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Jetstream.h; sourceTree = "<group>"; };
 		7225560119F819DA0016D8F8 /* JetstreamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JetstreamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7225560719F819DA0016D8F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7225561419F81AA10016D8F8 /* DependencyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyTests.swift; sourceTree = "<group>"; };
-		7225561519F81AA10016D8F8 /* Enumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Enumerations.h; sourceTree = "<group>"; };
+		7225561519F81AA10016D8F8 /* JetstreamTestEnumerations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JetstreamTestEnumerations.h; sourceTree = "<group>"; };
 		7225561619F81AA10016D8F8 /* ImmediatePropertyListeners.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImmediatePropertyListeners.swift; sourceTree = "<group>"; };
 		7225561719F81AA10016D8F8 /* ModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelTests.swift; sourceTree = "<group>"; };
 		7225561819F81AA10016D8F8 /* PropertyListenerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListenerTests.swift; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 				7225561B19F81AA10016D8F8 /* SyncFragmentTests.swift */,
 				72C9AF401A00201300D3FA09 /* TransactionTests.swift */,
 				7225561F19F81AA10016D8F8 /* TreeChangeTests.swift */,
+				72226A791A0C0748008EE330 /* Jetstream-bridging-header.h */,
 				7225568D19F81BE20016D8F8 /* Helpers */,
 				7225568E19F81BF10016D8F8 /* Models */,
 				72EFCC3719F9B64D0054BC18 /* Resources */,
@@ -343,7 +346,7 @@
 		7225568E19F81BF10016D8F8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				7225561519F81AA10016D8F8 /* Enumerations.h */,
+				7225561519F81AA10016D8F8 /* JetstreamTestEnumerations.h */,
 				7225561D19F81AA10016D8F8 /* TestModel.swift */,
 			);
 			name = Models;
@@ -364,7 +367,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7225562C19F81ABF0016D8F8 /* Enumerations.h in Headers */,
+				72226A7B1A0C0792008EE330 /* Jetstream-bridging-header.h in Headers */,
+				7225562C19F81ABF0016D8F8 /* JetstreamTestEnumerations.h in Headers */,
 				722555FC19F819D90016D8F8 /* Jetstream.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -750,7 +754,7 @@
 				INFOPLIST_FILE = JetstreamTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "JetstreamTests/Jetstream-bridging-header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -766,7 +770,7 @@
 				INFOPLIST_FILE = JetstreamTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "JetstreamTests/Jetstream-bridging-header.h";
 			};
 			name = Release;
 		};
