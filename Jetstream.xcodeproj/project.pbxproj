@@ -13,7 +13,7 @@
 		7225560219F819DA0016D8F8 /* Jetstream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 722555F619F819D90016D8F8 /* Jetstream.framework */; };
 		7225562819F81AA10016D8F8 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561C19F81AA10016D8F8 /* TestHelpers.swift */; };
 		7225562919F81AA10016D8F8 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561D19F81AA10016D8F8 /* TestModel.swift */; };
-		7225562C19F81ABF0016D8F8 /* JetstreamTestEnumerations.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225561519F81AA10016D8F8 /* JetstreamTestEnumerations.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7225562C19F81ABF0016D8F8 /* JetstreamTestEnumerations.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225561519F81AA10016D8F8 /* JetstreamTestEnumerations.h */; };
 		7225565D19F81B040016D8F8 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564619F81B040016D8F8 /* Client.swift */; };
 		7225565F19F81B040016D8F8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564819F81B040016D8F8 /* Constants.swift */; };
 		7225566119F81B040016D8F8 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564A19F81B040016D8F8 /* Functions.swift */; };
