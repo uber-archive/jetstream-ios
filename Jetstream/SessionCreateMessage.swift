@@ -8,7 +8,7 @@
 
 import Foundation
 
-class SessionCreateMessage: Message {
+class SessionCreateMessage: NetworkMessage {
     class var messageType: String {
         return "SessionCreate"
     }
@@ -41,7 +41,7 @@ class SessionCreateMessage: Message {
         return dictionary
     }
     
-    override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
+    override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var params = dictionary["params"] as? [String: AnyObject]
         var version = dictionary["version"] as? String
         

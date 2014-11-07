@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Jetstream
 
 /// Fragment types
 public enum SyncFragmentType: String {
@@ -66,9 +65,7 @@ public class SyncFragment: Equatable {
         self.objectUUID = modelObject.uuid
         
         if (type == .Add) {
-            var fullyQualifiedClassName = NSStringFromClass(modelObject.dynamicType)
-            var qualifiers = fullyQualifiedClassName.componentsSeparatedByString(".")
-            self.clsName = qualifiers[qualifiers.count-1]
+            self.clsName = modelObject.className
             applyPropertiesFromModelObject(modelObject)
         }
     }
@@ -81,7 +78,7 @@ public class SyncFragment: Equatable {
         dictionary["type"] = type.rawValue
         dictionary["uuid"] = objectUUID.UUIDString
         if clsName != nil {
-            dictionary["cls"] = clsName!
+            dictionary["clsName"] = clsName!
         }
         if properties != nil {
             dictionary["properties"] = properties!
@@ -113,7 +110,7 @@ public class SyncFragment: Equatable {
                 if let valueAsString = value as? String {
                     objectUUID = NSUUID(UUIDString: valueAsString)
                 }
-            case "cls":
+            case "clsName":
                 if let valueAsString = value as? String {
                     clsName = valueAsString
                 }

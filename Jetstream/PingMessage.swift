@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class PingMessage: Message {
+public class PingMessage: NetworkMessage {
     class var messageType: String {
         return "Ping"
     }
@@ -41,7 +41,7 @@ public class PingMessage: Message {
         return dictionary
     }
 
-    public override class func unserialize(dictionary: [String: AnyObject]) -> Message? {
+    public override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index = dictionary["index"] as? UInt
         var ack = dictionary["ack"] as? UInt
         var resendMissing = dictionary["resendMissing"] as? Bool

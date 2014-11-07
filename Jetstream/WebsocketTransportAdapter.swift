@@ -34,7 +34,7 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
     }
     
     public let onStatusChanged = Signal<(TransportStatus)>()
-    public let onMessage = Signal<(Message)>()
+    public let onMessage = Signal<(NetworkMessage)>()
     public let adapterName = Static.className
     public let options: ConnectionOptions
     
@@ -49,7 +49,7 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
     var explicitlyClosed = false
     var session: Session?
     var pingTimer: NSTimer?
-    var nonAckedSends = [Message]()
+    var nonAckedSends = [NetworkMessage]()
 
     /// Constructor.
     ///
@@ -92,7 +92,7 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
         socket.disconnect()
     }
     
-    public func sendMessage(message: Message) {
+    public func sendMessage(message: NetworkMessage) {
         if session != nil {
             nonAckedSends.append(message)
         }
@@ -165,7 +165,7 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
     
     func tryReadSerializedMessage(object: AnyObject) {
         if let dictionary = object as? [String: AnyObject] {
-            let message = Message.unserialize(dictionary)
+            let message = NetworkMessage.unserialize(dictionary)
             if message != nil {
                 switch message! {
                 case let pingMessage as PingMessage:
@@ -197,7 +197,7 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
         }
     }
     
-    func transportMessage(message: Message) {
+    func transportMessage(message: NetworkMessage) {
         if status != .Connected {
             return
         }

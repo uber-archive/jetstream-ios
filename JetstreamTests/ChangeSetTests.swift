@@ -35,8 +35,8 @@ class ChangeSetTests: XCTestCase {
         root.int = 20
         root.float = 20.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
-        changeSet.revert(scope)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
+        changeSet.revertOnScope(scope)
         
         XCTAssertEqual(root.int, 10, "Change set reverted")
         XCTAssertEqual(root.float, Float(10.0), "Change set reverted")
@@ -45,9 +45,9 @@ class ChangeSetTests: XCTestCase {
     
     func testModelReversal() {
         root.childModel = child
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         
-        changeSet.revert(scope)
+        changeSet.revertOnScope(scope)
         
         XCTAssert(root.childModel == nil, "Change set reverted")
         XCTAssertEqual(scope.modelObjects.count, 1 , "Scope knows correct models")
@@ -58,9 +58,9 @@ class ChangeSetTests: XCTestCase {
         scope.getAndClearSyncFragments()
         
         root.childModel = nil
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
         
-        changeSet.revert(scope)
+        changeSet.revertOnScope(scope)
         
         XCTAssert(root.childModel == child, "Change set reverted")
         XCTAssertEqual(scope.modelObjects.count, 2 , "Scope knows correct models")

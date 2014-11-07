@@ -1,5 +1,5 @@
 //
-//  Enumerations.h
+//  JetstreamTestEnumerations.h
 //  Jetstream
 //
 //  Created by Tuomas Artman on 10/14/14.
