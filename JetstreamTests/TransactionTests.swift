@@ -14,7 +14,7 @@ class TransactionTests: XCTestCase {
     var root = TestModel()
     var child = TestModel()
     var scope = Scope(name: "Testing")
-    var client = Client(transportAdapter: WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: NSURL(string: "localhost")!)))
+    var client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
     var firstMessage: ScopeStateMessage!
     let uuid = NSUUID()
     
@@ -26,7 +26,7 @@ class TransactionTests: XCTestCase {
         root.setScopeAndMakeRootModel(scope)
         scope.getAndClearSyncFragments()
  
-        client = Client(transportAdapter: WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: NSURL(string: "localhost")!)))
+        client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
         var msg = SessionCreateReplyMessage(index: 1, success: true, sessionToken: "jeah", response: nil)
         client.receivedMessage(msg)
         client.session!.scopeAttach(scope, scopeIndex: 1)

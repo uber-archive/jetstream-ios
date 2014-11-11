@@ -40,7 +40,7 @@ typealias ReplyCallback = (ReplyMessage) -> Void
 
 class Transport {
     class func defaultTransportAdapter(options: ConnectionOptions) -> TransportAdapter {
-        return WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: options.url))
+        return WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: options.url))
     }
     
     let logger = Logging.loggerFor("Transport")
