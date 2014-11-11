@@ -3,4 +3,4 @@
 	url = https://github.com/artman/Signals.git
 [submodule "Jetstream/starscream"]
 	path = Jetstream/starscream
-	url = https://github.com/alanzeino/starscream.git
+url=https://github.com/daltoniam/starscream.git
