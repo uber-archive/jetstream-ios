@@ -70,6 +70,8 @@
 		724F58981A083725003A95A3 /* SyncFragmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561B19F81AA10016D8F8 /* SyncFragmentTests.swift */; };
 		724F58991A083725003A95A3 /* TransactionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C9AF401A00201300D3FA09 /* TransactionTests.swift */; };
 		724F589A1A083725003A95A3 /* TreeChangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561F19F81AA10016D8F8 /* TreeChangeTests.swift */; };
+		727E10E21A12921700AD3931 /* Signals.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7225563419F81AE20016D8F8 /* Signals.framework */; };
+		727E10E61A12922200AD3931 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7225563F19F81AE50016D8F8 /* Starscream.framework */; };
 		72EFCC3919F9B6700054BC18 /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72EFCC3819F9B6700054BC18 /* test.jpg */; };
 /* End PBXBuildFile section */
 
@@ -186,6 +188,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				727E10E61A12922200AD3931 /* Starscream.framework in Frameworks */,
+				727E10E21A12921700AD3931 /* Signals.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
