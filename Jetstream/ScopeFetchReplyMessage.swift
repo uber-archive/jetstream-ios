@@ -17,12 +17,16 @@ class ScopeFetchReplyMessage: ReplyMessage {
         return ScopeFetchReplyMessage.messageType
     }
     
+    let success: Bool
     let scopeIndex: UInt?
     let error: NSError?
+    let response: AnyObject?
     
-    init(index: UInt, replyTo: UInt, scopeIndex: UInt?, error: NSError? = nil) {
+    init(index: UInt, replyTo: UInt, success: Bool, scopeIndex: UInt?, error: NSError?, response: AnyObject?) {
+        self.success = success
         self.scopeIndex = scopeIndex
         self.error = error
+        self.response = response
         super.init(index: index, replyTo: replyTo)
     }
     
@@ -33,16 +37,26 @@ class ScopeFetchReplyMessage: ReplyMessage {
     override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index = dictionary["index"] as? UInt
         var replyTo = dictionary["replyTo"] as? UInt
+        var success = dictionary["success"] as? Bool
         var scopeIndex = dictionary["scopeIndex"] as? UInt
+        
         var error: NSError?
         if let serializedError = dictionary["error"] as? [String: AnyObject] {
             error = errorFromDictionary(.SyncFragmentApplyError, serializedError)
         }
         
-        if index == nil || replyTo == nil || (scopeIndex == nil && error == nil) {
+        var response: AnyObject? = dictionary["response"]
+        
+        if index == nil || replyTo == nil || success == nil || (scopeIndex == nil && error == nil) {
             return nil
         } else {
-            return ScopeFetchReplyMessage(index: index!, replyTo: replyTo!, scopeIndex: scopeIndex, error: error)
+            return ScopeFetchReplyMessage(
+                index: index!,
+                replyTo: replyTo!,
+                success: success!,
+                scopeIndex: scopeIndex,
+                error: error,
+                response: response)
         }
     }
 }

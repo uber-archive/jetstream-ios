@@ -235,15 +235,15 @@ public class SyncFragment: Equatable {
     }
     
     func applyChangesToScope(scope: Scope, applyDefaults: Bool = false) {
-        if (scope.rootModel == nil) {
+        if scope.root == nil {
             return
         }
         
         switch type {
         case .Root:
-            if let definiteRootModel = scope.rootModel {
-                applyPropertiesToModelObject(definiteRootModel, scope: scope, applyDefaults: applyDefaults)
-                scope.updateUUIDForModel(definiteRootModel, uuid: self.objectUUID)
+            if let definiteRootModelObject = scope.root {
+                applyPropertiesToModelObject(definiteRootModelObject, scope: scope, applyDefaults: applyDefaults)
+                scope.updateUUIDForModel(definiteRootModelObject, uuid: self.objectUUID)
             }
         case .Change:
             if let modelObject = scope.getObjectById(objectUUID) {

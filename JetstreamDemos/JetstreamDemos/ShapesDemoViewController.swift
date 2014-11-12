@@ -11,7 +11,7 @@ import UIKit
 import Jetstream
 
 class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
-    var scope = Scope(name: "ShapesDemo")
+    var scope = Scope(name: "Canvas")
     var canvas = Canvas()
 
     var client: Client?
@@ -23,8 +23,8 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
 
         let tapRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleTap:"))
         self.view.addGestureRecognizer(tapRecognizer)
-        
-        canvas.setScopeAndMakeRootModel(scope)
+
+        scope.root = canvas
         canvas.observeCollectionAdd(self, key: "shapes") { (element: Shape) in
             let shapeView = ShapeView(shape: element)
             self.view.addSubview(shapeView)
@@ -47,15 +47,20 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         let transportAdapter = WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: NSURL(string: "ws://" + host + ":3000")!))
         client = Client(transportAdapter: transportAdapter)
         client?.connect()
-        client?.onSession.listenOnce(self) { (session) in
-            self.session = session
-            let scope = self.scope
-            session.fetch(scope) { (error) in
-                if error != nil {
-                    self.alertError("Error fetching scope", message: "\(error)")
-                } else {
-                    self.hideLoader()
-                }
+        client?.onSession.listenOnce(self) { [weak self] session in
+            if let definiteSelf = self {
+                definiteSelf.sessionDidStart(session)
+            }
+        }
+    }
+    
+    func sessionDidStart(session: Session) {
+        self.session = session
+        session.fetch(scope) { (error) in
+            if error != nil {
+                self.alertError("Error fetching scope", message: "\(error)")
+            } else {
+                self.hideLoader()
             }
         }
     }

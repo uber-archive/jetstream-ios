@@ -20,11 +20,20 @@ import Signals
     public var name: String
     
     /// The root model associates with the scope
-    public var rootModel: ModelObject? {
-        if modelObjects.count > 0 {
-            return modelObjects[0]
+    public var root: ModelObject? {
+        get {
+            if modelObjects.count > 0 {
+                return modelObjects[0]
+            }
+            return nil
         }
-        return nil
+        set {
+            if modelObjects.count == 0 {
+                if let definiteNewValue = newValue {
+                    definiteNewValue.setScopeAndMakeRootModel(self)
+                }
+            }
+        }
     }
     
     var syncFragmentLookup = [NSUUID: SyncFragment]()

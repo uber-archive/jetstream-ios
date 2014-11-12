@@ -40,10 +40,14 @@ public class NetworkMessage {
                 return SessionCreateReplyMessage.unserialize(dictionary)
             case SessionCreateReplyMessage.messageType:
                 return SessionCreateReplyMessage.unserialize(dictionary)
+            case ScopeFetchReplyMessage.messageType:
+                return ScopeFetchReplyMessage.unserialize(dictionary)
             case ScopeStateMessage.messageType:
                 return ScopeStateMessage.unserialize(dictionary)
             case ScopeSyncMessage.messageType:
                 return ScopeSyncMessage.unserialize(dictionary)
+            case ScopeSyncReplyMessage.messageType:
+                return ScopeSyncReplyMessage.unserialize(dictionary)
             case PingMessage.messageType:
                 return PingMessage.unserialize(dictionary)
             default:
