@@ -17,27 +17,31 @@ class SessionCreateReplyMessage: NetworkMessage {
         return SessionCreateReplyMessage.messageType
     }
 
-    let success: Bool
-    let sessionToken: String
+    let sessionToken: String?
+    let error: NSError?
     
-    init(index: UInt, success: Bool, sessionToken: String) {
-        self.success = success
+    init(index: UInt, sessionToken: String?, error: NSError?) {
         self.sessionToken = sessionToken
         super.init(index: index)
     }
     
     override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index = dictionary["index"] as? UInt
-        var success = dictionary["success"] as? Bool
         var sessionToken = dictionary["sessionToken"] as? String
         
-        if index == nil || success == nil || sessionToken == nil {
+        
+        var error: NSError?
+        if let serializedError = dictionary["error"] as? [String: AnyObject] {
+            error = errorFromDictionary(.SyncFragmentApplyError, serializedError)
+        }
+        
+        if index == nil || (sessionToken == nil && error == nil) {
             return nil
         } else {
             return SessionCreateReplyMessage(
                 index: index!,
-                success: success!,
-                sessionToken: sessionToken!)
+                sessionToken: sessionToken,
+                error: error)
         }
     }
 }
