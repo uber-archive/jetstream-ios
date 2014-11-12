@@ -70,8 +70,8 @@
 		724F58981A083725003A95A3 /* SyncFragmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561B19F81AA10016D8F8 /* SyncFragmentTests.swift */; };
 		724F58991A083725003A95A3 /* TransactionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C9AF401A00201300D3FA09 /* TransactionTests.swift */; };
 		724F589A1A083725003A95A3 /* TreeChangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561F19F81AA10016D8F8 /* TreeChangeTests.swift */; };
-		727E10E21A12921700AD3931 /* Signals.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7225563419F81AE20016D8F8 /* Signals.framework */; };
-		727E10E61A12922200AD3931 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7225563F19F81AE50016D8F8 /* Starscream.framework */; };
+		727E11051A129C4100AD3931 /* Signals.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7225563419F81AE20016D8F8 /* Signals.framework */; };
+		727E11061A129C4600AD3931 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7225563F19F81AE50016D8F8 /* Starscream.framework */; };
 		72EFCC3919F9B6700054BC18 /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72EFCC3819F9B6700054BC18 /* test.jpg */; };
 /* End PBXBuildFile section */
 
@@ -188,8 +188,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				727E10E61A12922200AD3931 /* Starscream.framework in Frameworks */,
-				727E10E21A12921700AD3931 /* Signals.framework in Frameworks */,
+				727E11061A129C4600AD3931 /* Starscream.framework in Frameworks */,
+				727E11051A129C4100AD3931 /* Signals.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,7 +233,8 @@
 				7225564E19F81B040016D8F8 /* ModelValue.swift */,
 				7225565119F81B040016D8F8 /* Scope.swift */,
 				7225565819F81B040016D8F8 /* SyncFragment.swift */,
-				7225562D19F81AD40016D8F8 /* Frameworks */,
+				7225562E19F81AE20016D8F8 /* Signals.xcodeproj */,
+				7225563719F81AE50016D8F8 /* Starscream.xcodeproj */,
 				7225568C19F81BAF0016D8F8 /* Messages */,
 				722555F919F819D90016D8F8 /* Supporting Files */,
 				7225568B19F81B7F0016D8F8 /* Transport */,
@@ -278,15 +279,6 @@
 				7225560719F819DA0016D8F8 /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		7225562D19F81AD40016D8F8 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				7225562E19F81AE20016D8F8 /* Signals.xcodeproj */,
-				7225563719F81AE50016D8F8 /* Starscream.xcodeproj */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		7225562F19F81AE20016D8F8 /* Products */ = {
@@ -387,7 +379,6 @@
 				722555F119F819D90016D8F8 /* Sources */,
 				722555F219F819D90016D8F8 /* Frameworks */,
 				722555F319F819D90016D8F8 /* Headers */,
-				722555F419F819D90016D8F8 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -508,13 +499,6 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
-		722555F419F819D90016D8F8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		722555FF19F819DA0016D8F8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;

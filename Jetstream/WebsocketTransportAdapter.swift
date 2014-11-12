@@ -12,7 +12,7 @@ import Starscream
 import SystemConfiguration
 
 /// A set of connection options.
-public struct WebsocketConnectionOptions: ConnectionOptions {
+public struct WebSocketConnectionOptions: ConnectionOptions {
     /// Headers to connect with
     public var url: NSURL
     
@@ -26,7 +26,7 @@ public struct WebsocketConnectionOptions: ConnectionOptions {
 }
 
 /// A transport adapter that connects to the the jetstream service via a persistent Websocket.
-public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDelegate {
+public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDelegate {
     struct Static {
         static let className = "WebsocketTransportAdapter"
         static let inactivityPingIntervalSeconds: NSTimeInterval = 10
@@ -45,7 +45,7 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
     }
 
     let logger = Logging.loggerFor(Static.className)
-    let socket: Websocket
+    let socket: WebSocket
     var explicitlyClosed = false
     var session: Session?
     var pingTimer: NSTimer?
@@ -54,9 +54,9 @@ public class WebsocketTransportAdapter: NSObject, TransportAdapter, WebsocketDel
     /// Constructor.
     ///
     /// :param: options Options to connect to the service with.
-    public init(options: WebsocketConnectionOptions ) {
+    public init(options: WebSocketConnectionOptions ) {
         self.options = options
-        socket = Websocket(url: options.url)
+        socket = WebSocket(url: options.url)
         super.init()
         socket.delegate = self
         for (key, value) in options.headers {

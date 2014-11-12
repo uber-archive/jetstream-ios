@@ -13,7 +13,7 @@ import Jetstream
 class StateMessageTests: XCTestCase {
     var root = TestModel()
     var scope = Scope(name: "Testing")
-    var client = Client(transportAdapter: WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: NSURL(string: "localhost")!)))
+    var client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
     var firstMessage: ScopeStateMessage!
     let uuid = NSUUID()
 
@@ -23,7 +23,7 @@ class StateMessageTests: XCTestCase {
         root.setScopeAndMakeRootModel(scope)
         XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope to start with")
         
-        client = Client(transportAdapter: WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: NSURL(string: "localhost")!)))
+        client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
         var msg = SessionCreateReplyMessage(index: 1, sessionToken: "jeah", error: nil)
         client.receivedMessage(msg)
         client.session!.scopeAttach(scope, scopeIndex: 1)
