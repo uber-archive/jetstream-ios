@@ -109,7 +109,7 @@ struct PropertyInfo {
     }
     
     private var internalScope: Scope?
-    var scope: Scope? {
+    public internal(set) var scope: Scope? {
         get {
             return internalScope
         }

@@ -137,16 +137,15 @@ public enum ClientStatus {
     
     func receivedMessage(message: NetworkMessage) {
         switch message {
-        case let sessionCreateResponse as SessionCreateReplyMessage:
+        case let sessionCreateReply as SessionCreateReplyMessage:
             if session != nil {
                 logger.error("Received session create response with existing session")
-            } else if sessionCreateResponse.success == false {
-                logger.info("Denied starting session")
-                onSessionDenied.fire()
-            } else {
-                let token = sessionCreateResponse.sessionToken
+            } else if let token = sessionCreateReply.sessionToken  {
                 logger.info("Starting session with token: \(token)")
                 session = Session(client: self, token: token)
+            } else {
+                logger.info("Denied starting session, error: \(sessionCreateReply.error)")
+                onSessionDenied.fire()
             }
         default:
             session?.receivedMessage(message)

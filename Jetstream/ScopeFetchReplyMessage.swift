@@ -20,7 +20,7 @@ class ScopeFetchReplyMessage: ReplyMessage {
     let scopeIndex: UInt?
     let error: NSError?
     
-    init(index: UInt, replyTo: UInt, scopeIndex: UInt?, error: NSError? = nil) {
+    init(index: UInt, replyTo: UInt, scopeIndex: UInt?, error: NSError?) {
         self.scopeIndex = scopeIndex
         self.error = error
         super.init(index: index, replyTo: replyTo)
@@ -34,6 +34,7 @@ class ScopeFetchReplyMessage: ReplyMessage {
         var index = dictionary["index"] as? UInt
         var replyTo = dictionary["replyTo"] as? UInt
         var scopeIndex = dictionary["scopeIndex"] as? UInt
+        
         var error: NSError?
         if let serializedError = dictionary["error"] as? [String: AnyObject] {
             error = errorFromDictionary(.SyncFragmentApplyError, serializedError)
@@ -42,7 +43,11 @@ class ScopeFetchReplyMessage: ReplyMessage {
         if index == nil || replyTo == nil || (scopeIndex == nil && error == nil) {
             return nil
         } else {
-            return ScopeFetchReplyMessage(index: index!, replyTo: replyTo!, scopeIndex: scopeIndex, error: error)
+            return ScopeFetchReplyMessage(
+                index: index!,
+                replyTo: replyTo!,
+                scopeIndex: scopeIndex,
+                error: error)
         }
     }
 }
