@@ -241,9 +241,9 @@ public class SyncFragment: Equatable {
         
         switch type {
         case .Root:
-            if let definiteRootModelObject = scope.root {
-                applyPropertiesToModelObject(definiteRootModelObject, scope: scope, applyDefaults: applyDefaults)
-                scope.updateUUIDForModel(definiteRootModelObject, uuid: self.objectUUID)
+            if let rootModel = scope.root {
+                applyPropertiesToModelObject(rootModel, scope: scope, applyDefaults: applyDefaults)
+                scope.updateUUIDForModel(rootModel, uuid: self.objectUUID)
             }
         case .Change:
             if let modelObject = scope.getObjectById(objectUUID) {

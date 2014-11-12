@@ -44,19 +44,16 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         super.viewWillAppear(animated)
         showLoader()
         
-        let transportAdapter = WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: NSURL(string: "ws://" + host + ":3000")!))
+        let options = WebsocketConnectionOptions(url: NSURL(string: "ws://" + host + ":3000")!)
+        let transportAdapter = WebsocketTransportAdapter(options: options)
         client = Client(transportAdapter: transportAdapter)
         client?.connect()
-        client?.onSession.listenOnce(self) { [weak self] session in
-            if let definiteSelf = self {
-                definiteSelf.sessionDidStart(session)
-            }
-        }
+        client?.onSession.listenOnce(self) { [unowned self] in self.sessionDidStart($0) }
     }
     
     func sessionDidStart(session: Session) {
         self.session = session
-        session.fetch(scope) { (error) in
+        session.fetch(scope) { error in
             if error != nil {
                 self.alertError("Error fetching scope", message: "\(error)")
             } else {

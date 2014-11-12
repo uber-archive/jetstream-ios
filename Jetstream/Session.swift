@@ -92,7 +92,7 @@ public class Session {
         switch message {
         case let scopeStateMessage as ScopeStateMessage:
             if let scope = scopes[scopeStateMessage.scopeIndex] {
-                if let definiteRootModelObject = scope.root {
+                if scope.root != nil {
                     scope.startApplyingRemote()
                     scope.applyRootFragment(scopeStateMessage.rootFragment, additionalFragments: scopeStateMessage.syncFragments)
                     scope.endApplyingRemote()
@@ -104,7 +104,7 @@ public class Session {
             }
         case let scopeSyncMessage as ScopeSyncMessage:
             if let scope = scopes[scopeSyncMessage.scopeIndex] {
-                if let definiteRootModelObject = scope.root {
+                if scope.root != nil {
                     if scopeSyncMessage.syncFragments.count > 0 {
                         scope.startApplyingRemote()
                         scope.applySyncFragments(scopeSyncMessage.syncFragments)
