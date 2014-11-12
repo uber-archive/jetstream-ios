@@ -44,8 +44,8 @@ class ShapesDemoViewController: UIViewController, NSURLConnectionDataDelegate {
         super.viewWillAppear(animated)
         showLoader()
         
-        let options = WebsocketConnectionOptions(url: NSURL(string: "ws://" + host + ":3000")!)
-        let transportAdapter = WebsocketTransportAdapter(options: options)
+        let options = WebSocketConnectionOptions(url: NSURL(string: "ws://" + host + ":3000")!)
+        let transportAdapter = WebSocketTransportAdapter(options: options)
         client = Client(transportAdapter: transportAdapter)
         client?.connect()
         client?.onSession.listenOnce(self) { [unowned self] in self.sessionDidStart($0) }
