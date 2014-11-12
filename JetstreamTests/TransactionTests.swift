@@ -27,7 +27,7 @@ class TransactionTests: XCTestCase {
         scope.getAndClearSyncFragments()
  
         client = Client(transportAdapter: WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: NSURL(string: "localhost")!)))
-        var msg = SessionCreateReplyMessage(index: 1, success: true, sessionToken: "jeah", response: nil)
+        var msg = SessionCreateReplyMessage(index: 1, success: true, sessionToken: "jeah")
         client.receivedMessage(msg)
         client.session!.scopeAttach(scope, scopeIndex: 1)
     }

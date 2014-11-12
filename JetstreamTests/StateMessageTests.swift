@@ -24,7 +24,7 @@ class StateMessageTests: XCTestCase {
         XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope to start with")
         
         client = Client(transportAdapter: WebsocketTransportAdapter(options: WebsocketConnectionOptions(url: NSURL(string: "localhost")!)))
-        var msg = SessionCreateReplyMessage(index: 1, success: true, sessionToken: "jeah", response: nil)
+        var msg = SessionCreateReplyMessage(index: 1, success: true, sessionToken: "jeah")
         client.receivedMessage(msg)
         client.session!.scopeAttach(scope, scopeIndex: 1)
 

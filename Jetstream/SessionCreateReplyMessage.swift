@@ -19,12 +19,10 @@ class SessionCreateReplyMessage: NetworkMessage {
 
     let success: Bool
     let sessionToken: String
-    let response: AnyObject?
     
-    init(index: UInt, success: Bool, sessionToken: String, response: AnyObject?) {
+    init(index: UInt, success: Bool, sessionToken: String) {
         self.success = success
         self.sessionToken = sessionToken
-        self.response = response
         super.init(index: index)
     }
     
@@ -32,7 +30,6 @@ class SessionCreateReplyMessage: NetworkMessage {
         var index = dictionary["index"] as? UInt
         var success = dictionary["success"] as? Bool
         var sessionToken = dictionary["sessionToken"] as? String
-        var response: AnyObject? = dictionary["response"]
         
         if index == nil || success == nil || sessionToken == nil {
             return nil
@@ -40,8 +37,7 @@ class SessionCreateReplyMessage: NetworkMessage {
             return SessionCreateReplyMessage(
                 index: index!,
                 success: success!,
-                sessionToken: sessionToken!,
-                response: response)
+                sessionToken: sessionToken!)
         }
     }
 }
