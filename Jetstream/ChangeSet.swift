@@ -150,7 +150,7 @@ public class ChangeSet: Equatable {
     
     func processFragmentReplies(fragmentReplies: [SyncFragmentReply], scope: Scope) {
         if fragmentReplies.count != syncFragments.count {
-            Logging.loggerFor("Sync").error("Fragment mismatch, reverting ChageSet")
+            Logging.loggerFor("Sync").error("Fragment mismatch, reverting ChangeSet")
             revertOnScope(scope)
         } else {
             var error: NSError?
