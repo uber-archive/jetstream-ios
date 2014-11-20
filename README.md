@@ -223,4 +223,4 @@ Jetstream uses JSON-based messages to create sessions, fetch scopes and synchron
 
 ## License
 
-Jetstream is released under the MIT license. See LICENSE file for more info.
+Jetstream is available under the MIT license. See the LICENSE file for more info.
