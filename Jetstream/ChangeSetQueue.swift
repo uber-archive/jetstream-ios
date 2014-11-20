@@ -43,7 +43,7 @@ public class ChangeSetQueue {
     var changeSets = [ChangeSet]()
     
     // MARK: - Private interface
-    func addChageSet(changeSet: ChangeSet) {
+    func addChangeSet(changeSet: ChangeSet) {
         assert(find(changeSets, changeSet) == nil, "ChangeSet already in queue")
         
         changeSet.changeSetQueue = self
