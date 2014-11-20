@@ -1,6 +1,6 @@
 //
-//  MessageSerialization.swift
-//  JetstreamTests
+//  StateMessageTests.swift
+//  Jetstream
 //
 //  Copyright (c) 2014 Uber Technologies, Inc.
 //

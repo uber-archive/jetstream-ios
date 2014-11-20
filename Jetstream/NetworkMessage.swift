@@ -1,5 +1,5 @@
 //
-//  Message.swift
+//  NetworkMessage.swift
 //  Jetstream
 //
 //  Copyright (c) 2014 Uber Technologies, Inc.

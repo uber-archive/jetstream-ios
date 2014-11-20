@@ -1,5 +1,5 @@
 //
-//  WebSocketTransportAdapter.swift
+//  WebsocketTransportAdapter.swift
 //  Jetstream
 //
 //  Copyright (c) 2014 Uber Technologies, Inc.
