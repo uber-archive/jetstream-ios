@@ -149,7 +149,7 @@ public class Session {
         if closed {
             return
         }
-        client.transport.sendMessage(ScopeSyncMessage(session: self, scopeIndex: atIndex, syncFragments: changeSet.syncFragments)) { [weak self] reply in
+        client.transport.sendMessage(ScopeSyncMessage(session: self, scopeIndex: atIndex, atomic: changeSet.atomic, syncFragments: changeSet.syncFragments)) { [weak self] reply in
             if let definiteSelf = self {
                 if let syncReply = reply as? ScopeSyncReplyMessage {
                     changeSet.processFragmentReplies(syncReply.fragmentReplies, scope: scope)

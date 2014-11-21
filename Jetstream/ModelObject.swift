@@ -523,8 +523,8 @@ struct PropertyInfo {
                             valueType = .Array
                         } else if let definiteValueType = ModelValueType(rawValue: type) {
                             valueType = definiteValueType
-                        } else if type.containsString("@\"") {
-                            // Assuming that every custom type extends from ModelObject
+                        } else if type.rangeOfString("@\"").location != NSNotFound {
+                            // Assuming that every custom object type extends from ModelObject
                             valueType = .ModelObject
                         }
                         
