@@ -38,6 +38,8 @@ enum ModelValueType: String {
     case UInt16 = "S"
     case Int32 = "i"
     case UInt32 = "I"
+    case Long = "l"
+    case ULong = "L"
     case Int = "q"
     case UInt = "Q"
     case Float = "f"
@@ -60,6 +62,8 @@ func convertAnyObjectToModelValue(value: AnyObject, type: ModelValueType) -> Mod
     case .UInt16: return value as? Int
     case .Int32: return value as? Int
     case .UInt32: return value as? Int
+    case .Long: return value as? Int
+    case .ULong: return value as? UInt
     case .Int: return value as? Int
     case .UInt: return value as? UInt
     case .Float: return value as? Float
@@ -85,6 +89,8 @@ func unserializeModelValue(value: AnyObject, scope: Scope, type: ModelValueType)
     case .UInt16: return UInt16.unserialize(value, scope: scope)
     case .Int32: return Int32.unserialize(value, scope: scope)
     case .UInt32: return UInt32.unserialize(value, scope: scope)
+    case .Long: return Int.unserialize(value, scope: scope)
+    case .ULong: return UInt.unserialize(value, scope: scope)
     case .Int: return Int.unserialize(value, scope: scope)
     case .UInt: return UInt.unserialize(value, scope: scope)
     case .Float: return Float.unserialize(value, scope: scope)

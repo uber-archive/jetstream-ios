@@ -34,16 +34,18 @@ class ScopeSyncMessage: NetworkMessage {
     }
     
     let scopeIndex: UInt
+    let atomic: Bool
     let syncFragments: [SyncFragment]
     
-    init(index: UInt, scopeIndex: UInt, syncFragments: [SyncFragment]) {
+    init(index: UInt, scopeIndex: UInt, atomic: Bool, syncFragments: [SyncFragment]) {
         self.scopeIndex = scopeIndex
+        self.atomic = atomic
         self.syncFragments = syncFragments
         super.init(index: index)
     }
     
-    convenience init(session: Session, scopeIndex: UInt, syncFragments: [SyncFragment]) {
-        self.init(index: session.getNextMessageIndex(), scopeIndex: scopeIndex, syncFragments: syncFragments)
+    convenience init(session: Session, scopeIndex: UInt, atomic: Bool, syncFragments: [SyncFragment]) {
+        self.init(index: session.getNextMessageIndex(), scopeIndex: scopeIndex, atomic: atomic, syncFragments: syncFragments)
     }
     
     override func serialize() -> [String: AnyObject] {
@@ -55,6 +57,9 @@ class ScopeSyncMessage: NetworkMessage {
         }
         
         dictionary["scopeIndex"] = scopeIndex
+        if (atomic) {
+            dictionary["atomic"] = atomic
+        }
         dictionary["fragments"] = fragments
         
         return dictionary
@@ -64,7 +69,7 @@ class ScopeSyncMessage: NetworkMessage {
         var index: UInt?
         var scopeIndex: UInt?
         var syncFragments: [SyncFragment]?
-        var fullState = false
+        var atomic = false
         
         for (key, value) in dictionary {
             switch key {
@@ -75,6 +80,10 @@ class ScopeSyncMessage: NetworkMessage {
             case "scopeIndex":
                 if let definiteScopeIndex = value as? UInt {
                     scopeIndex = definiteScopeIndex
+                }
+            case "atomic":
+                if let definiteAtomic = value as? Bool {
+                    atomic = definiteAtomic
                 }
             case "fragments":
                 if let fragments = value as? [[String: AnyObject]] {
@@ -96,6 +105,7 @@ class ScopeSyncMessage: NetworkMessage {
             return ScopeSyncMessage(
                 index: index!,
                 scopeIndex: scopeIndex!,
+                atomic: atomic,
                 syncFragments: syncFragments!)
         }
     }
