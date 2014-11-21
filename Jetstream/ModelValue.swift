@@ -79,8 +79,8 @@ func convertAnyObjectToModelValue(value: AnyObject, type: ModelValueType) -> Mod
     }
 }
 
-// XCode 6.0 crashes when accessing modelValue.dynamicType.unserialize directly. We might be able to
-// removed this wrapper once migrating to 6.1
+// XCode 6.1 crashes when accessing modelValue.dynamicType.unserialize directly. We might be able to
+// removed this wrapper once migrating to 6.2
 func unserializeModelValue(value: AnyObject, scope: Scope, type: ModelValueType) -> AnyObject? {
     switch type {
     case .Int8: return Int8.unserialize(value, scope: scope)
@@ -106,77 +106,88 @@ func unserializeModelValue(value: AnyObject, scope: Scope, type: ModelValueType)
     }
 }
 
+func modelValueIsNillable(type: ModelValueType) -> Bool {
+    switch type {
+    case .Str, .Date, .Color, .Image, .ModelObject:
+        return true
+    default:
+        return false
+    }
+}
+
 extension String: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as String }
     func serialize() -> AnyObject { return self }
     func unserailizeFromTransport() -> ModelValue { return self}
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as String}
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
+        return value as? String
+    }
 }
 
 extension UInt: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as UInt }
     func serialize() -> AnyObject { return self }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as UInt }
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? UInt }
 }
 
 extension Int: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as Int }
     func serialize() -> AnyObject { return self }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as Int }
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension UInt8: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as UInt8 }
     func serialize() -> AnyObject { return UInt(self) }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as Int }
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension Int8: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as Int8 }
     func serialize() -> AnyObject { return Int(self) }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as Int }
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension UInt16: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as UInt16 }
     func serialize() -> AnyObject { return UInt(self) }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as Int }
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension Int16: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as Int16 }
     func serialize() -> AnyObject { return Int(self) }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as Int }
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension UInt32: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as UInt32 }
     func serialize() -> AnyObject { return UInt(self) }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as Int }
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension Int32: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as Int32 }
     func serialize() -> AnyObject { return Int(self) }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as Int }
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension Float: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as Float }
     func serialize() -> AnyObject { return self }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as Float}
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Float}
 }
 
 extension Double: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as Double }
     func serialize() -> AnyObject { return self }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as Double }
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Double }
 }
 
 extension Bool: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as Bool }
     func serialize() -> AnyObject { return self }
-    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as Bool }
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Bool }
 }
 
 extension UIColor: ModelValue {

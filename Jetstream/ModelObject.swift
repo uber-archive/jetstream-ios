@@ -49,6 +49,7 @@ struct PropertyInfo {
     let key: String
     let valueType: ModelValueType
     let defaultValue: AnyObject?
+    let acceptsNil: Bool
 }
 
 @objc public class ModelObject: NSObject {
@@ -531,7 +532,11 @@ struct PropertyInfo {
                         if let definiteValueType = valueType {
                             if writeable || definiteValueType == ModelValueType.Composite {
                                 let defaultValue: AnyObject? = valueForKey(propertyName)
-                                trackedProperties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue)
+                                
+                                // TODO: Check if property is an optional
+                                var acceptsNil = modelValueIsNillable(definiteValueType)
+                                
+                                trackedProperties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue, acceptsNil: acceptsNil)
                             }
                         }
                     }
