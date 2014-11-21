@@ -7,6 +7,7 @@ Jetstream for iOS is an elegant MVVM model framework written in Swift. It includ
 - [x] Synchronization protocol to create multi-user applications in minutes
 - [x] Modular architecture
 - [x] Comprehensive Unit Test Coverage
+- [x] Works well together with Objective-C
 
 ### Requirements
 
@@ -143,8 +144,11 @@ Related, but slightly different is observing changes in parenting. Each model ob
 
 ```swift
 // Observe scope attachments and detachments
-model.observeAddedToParent(self) { (parent: ModelObject, key: String) in ... } // Added to a parent
-model.observeRemovedFromParent(self) { (parent: ModelObject, key:String) in ... } // Removed from a parent
+
+// Added to a parent
+model.observeAddedToParent(self) { (parent: ModelObject, key: String) in ... }
+// Removed from a parent
+model.observeRemovedFromParent(self) { (parent: ModelObject, key:String) in ... }
 ```
 
 To unsubscribe from events you can either call `model.removeObserver(listener)` to remove all observations for a given listener, or you can use the function returned by all of the observer methods to cancel that specific observation:
@@ -158,11 +162,12 @@ cancelObservation() // Cancels the observation
 
 ### Scope
 #### Reading changes from a scope
-A scope wraps around a model tree and keeps tabs on what models have been added to the tree. It lets you access all models in the tree by UUID and lets you listen to changes that happen to all of your models as a digest of sync fragments. Sync fragments represent changes to the models in the scope and they come in three types:
+A scope wraps around a model tree and keeps tabs on what models have been added to the tree. It lets you access all models in the tree by UUID and lets you listen to changes that happen to all of your models as a digest of sync fragments. Sync fragments represent changes to the models in the scope and they come in two types:
 
 * **Add**: Adds a new model to the scope
-* **Remove**: Removes a model from the scope and all its parents
-* **Change**: Updates properties on an existing model
+* **Change**: Updates properties of an existing model
+
+There is no `remove` type as model objects are never removed explicitly, but they no longer have any parents.
 
 When you make changes to models in a scope, add new models by assigning them to properties or collections or remove models by removing them from collections by setting the property under which they are mounted to the tree to nil, the scope registers these changes and combines them to a number of sync fragments. You can listen to these changes by listening to the onChanges [signal](http://github.com/artman/Signals) on the scope:
 
