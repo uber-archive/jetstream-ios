@@ -179,6 +179,17 @@ scope.onChanges.listen(self) { fragments in
 ```
 The onChanges signal fires whenever changes have been made to models in the tree. It queues up changes for a fraction of a second and delivers them all at once. The scope is intelligent enough to combine subsequent changes and deliver only required fragments. For example, if you add a model to a tree (resulting in an Add fragment) and immediately remove it from the tree (resulting in a Remove fragment), both fragments will cancel themselves out and neither one will be delivered on the onChanges signal.
 
+#### Atomic ChangeSets
+The Scope provides a mechanism to apply a number of changes as a atomic operation. Atomic changes are either accepted in full by the server or rejected as a whole. This is useful if you for example add an item to a checkout cart and update the total price of your cart. You wouldn't either of these changes be applied to the model without the other one.
+
+```swift
+// Creating atomic transactions
+scope.createAtomicChangeSet() {
+    self.cart.items.append(newItem)
+    self.cart.totalPrice += newItem.price
+}
+```
+
 #### Applying changes to a scope
 With the onChanges signal you can easily detect changes that happen on your local model. But you can also apply sync fragments to update your local model:
 
