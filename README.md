@@ -218,7 +218,7 @@ This is all you need to do create a multi-user data model. When any remote clien
 
 ### Protocol
 
-Jetstream uses JSON-based messages to create sessions, fetch scopes and synchronize changes. In case you want to build your own client or server, refer to the [protocol documentation](https://github.com/uber/jetstream-ios/wiki/Protocol).
+Jetstream uses JSON-based messages to create sessions, fetch scopes and synchronize changes. In case you want to build your own client or server, refer to the [protocol documentation](https://github.com/uber/jetstream/wiki/Protocol).
 
 ## Communication
 
