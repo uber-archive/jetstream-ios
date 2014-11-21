@@ -35,6 +35,7 @@ public class Session {
     var serverIndex: UInt = 0
     var scopes = [UInt: Scope]()
     var closed = false
+    let changeSetQueue = ChangeSetQueue()
     
     init(client: Client, token: String) {
         self.client = client
@@ -149,6 +150,7 @@ public class Session {
         if closed {
             return
         }
+        changeSetQueue.addChangeSet(changeSet)
         client.transport.sendMessage(ScopeSyncMessage(session: self, scopeIndex: atIndex, atomic: changeSet.atomic, syncFragments: changeSet.syncFragments)) { [weak self] reply in
             if let definiteSelf = self {
                 if let syncReply = reply as? ScopeSyncReplyMessage {
