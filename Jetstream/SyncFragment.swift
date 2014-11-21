@@ -177,7 +177,9 @@ public class SyncFragment: Equatable {
                     if let convertedValue: AnyObject = unserializeModelValue(value, scope, propertyInfo.valueType) {
                         modelObject.setValue(convertedValue, forKey: key)
                     } else {
-                        modelObject.setValue(nil, forKey: key)
+                        if propertyInfo.acceptsNil {
+                            modelObject.setValue(nil, forKey: key)
+                        }
                     }
                 }
             }

@@ -171,4 +171,61 @@ class SyncFragmentTests: XCTestCase {
         XCTAssertEqual(testModel.string!, "set correctly" , "Properties set correctly")
         XCTAssertEqual(scope.modelObjects.count, 3 , "Scope knows of added model")
     }
+    
+    func testNullValues() {
+        var uuid = NSUUID()
+
+        var json: [String: AnyObject] = [
+            "type": "change",
+            "uuid": child.uuid.UUIDString,
+            "properties": [
+                "array": NSNull(),
+                "string": NSNull(),
+                "int": NSNull(),
+                "float": NSNull(),
+                "int32": NSNull()
+            ],
+        ]
+        var fragment = SyncFragment.unserialize(json)
+        
+        child.string = "test"
+        child.int = 10
+        child.float = 10.0
+        child.int32 = 10
+        
+        scope.applySyncFragments([fragment!])
+        
+        XCTAssertNil(child.string, "String was nilled out")
+        XCTAssertEqual(child.int, 10 , "Nill not applied")
+        XCTAssertEqual(child.float, Float(10.0) , "Nil not applied")
+        XCTAssertEqual(child.int32, Int32(10) , "Nil not applied")
+    }
+    
+    func testInvalidValues() {
+        var uuid = NSUUID()
+        
+        var json: [String: AnyObject] = [
+            "type": "change",
+            "uuid": child.uuid.UUIDString,
+            "properties": [
+                "string": 10,
+                "int": "5",
+                "float": "whatever",
+                "int32": 5.5
+            ],
+        ]
+        var fragment = SyncFragment.unserialize(json)
+        
+        child.string = "test"
+        child.int = 10
+        child.float = 10.0
+        child.int32 = 10
+        
+        scope.applySyncFragments([fragment!])
+        
+        XCTAssertNil(child.string, "String nilled out")
+        XCTAssertEqual(child.int, 10 , "Invalid property not applied")
+        XCTAssertEqual(child.float, Float(10.0) , "Invalid property not applied")
+        XCTAssertEqual(child.int32, Int32(5) , "Int32 converted")
+    }
 }
