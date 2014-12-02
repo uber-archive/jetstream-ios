@@ -600,6 +600,9 @@ struct PropertyInfo {
                 definiteListener.cancel()
             }
             parentRelationship.parent.removeChildAtKey(parentRelationship.key, child: self)
+
+            onRemovedParent.fire((parent: parentRelationship.parent, key: parentRelationship.key))
+
             if (parents.count == 0) {
                 scope = nil
             }

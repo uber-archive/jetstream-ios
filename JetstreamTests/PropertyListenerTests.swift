@@ -262,4 +262,19 @@ class PropertyListenerTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(2.0, handler: nil)
     }
+
+    func testRemoveParent() {
+        var parent = TestModel()
+        var child = TestModel()
+        var changedCount = 0
+
+        child.observeRemovedFromParent(self, callback: { (parent, key) -> Void in
+            changedCount += 1
+        })
+
+        parent.childModel = child
+        parent.childModel = nil
+
+        XCTAssertEqual(changedCount, 1, "correct change count")
+    }
 }
