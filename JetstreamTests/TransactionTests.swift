@@ -32,7 +32,6 @@ class TransactionTests: XCTestCase {
     var scope = Scope(name: "Testing")
     var client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
     var firstMessage: ScopeStateMessage!
-    let uuid = NSUUID()
     
     override func setUp() {
         root = TestModel()

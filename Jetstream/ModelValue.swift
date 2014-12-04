@@ -270,7 +270,7 @@ extension Array: ModelValue {
         var serialized = [String]()
         for i in 0..<self.count {
             if let modelObject = self[i] as? ModelObject {
-                serialized.append(modelObject.uuid.UUIDString)
+                serialized.append(modelObject.UUID.UUIDString)
             }
         }
         return serialized
@@ -278,10 +278,10 @@ extension Array: ModelValue {
     
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
         var models = [ModelObject]()
-        if let uuids = value as? [String] {
-            for uuid in uuids {
-                if let uuid = NSUUID(UUIDString: uuid) {
-                    if let modelObject = scope.getObjectById(uuid) {
+        if let UUIDs = value as? [String] {
+            for UUID in UUIDs {
+                if let UUID = NSUUID(UUIDString: UUID) {
+                    if let modelObject = scope.getObjectById(UUID) {
                         models.append(modelObject)
                     }
                 }
@@ -294,12 +294,12 @@ extension Array: ModelValue {
 extension ModelObject: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as ModelObject }
     
-    func serialize() -> AnyObject { return self.uuid.UUIDString }
+    func serialize() -> AnyObject { return self.UUID.UUIDString }
     
     class func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
-        if let uuidString = value as? String {
-            if let uuid = NSUUID(UUIDString: uuidString) {
-                return scope.getObjectById(uuid)
+        if let UUIDString = value as? String {
+            if let UUID = NSUUID(UUIDString: UUIDString) {
+                return scope.getObjectById(UUID)
             }
         }
         return nil

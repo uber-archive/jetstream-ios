@@ -72,7 +72,7 @@ public class SyncFragment: Equatable {
     /// from the model object.
     init(type: SyncFragmentType, modelObject: ModelObject) {
         self.type = type
-        self.objectUUID = modelObject.uuid
+        self.objectUUID = modelObject.UUID
         
         if type == .Add {
             self.clsName = modelObject.className
@@ -86,7 +86,7 @@ public class SyncFragment: Equatable {
     public func serialize() -> [String: AnyObject] {
         var dictionary = [String: AnyObject]()
         dictionary["type"] = type.rawValue
-        dictionary["uuid"] = objectUUID.UUIDString
+        dictionary["UUID"] = objectUUID.UUIDString
         if clsName != nil {
             dictionary["clsName"] = clsName!
         }
@@ -116,7 +116,7 @@ public class SyncFragment: Equatable {
                         type = definiteType
                     }
                 }
-            case "uuid":
+            case "UUID":
                 if let valueAsString = value as? String {
                     objectUUID = NSUUID(UUIDString: valueAsString)
                 }
@@ -239,21 +239,11 @@ public class SyncFragment: Equatable {
                 return existingModelObject
             } else if clsName != nil {
                 if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
-                    return cls(uuid: objectUUID)
+                    return cls(UUID: objectUUID)
                 }
             }
         }
         return nil
-    }
-    
-    func applyRootChangeToScope(scope: Scope, applyDefaults: Bool = false) {
-        if scope.root == nil || type != .Change {
-            return
-        }
-        if let rootModel = scope.root {
-            applyPropertiesToModelObject(rootModel, scope: scope, applyDefaults: applyDefaults)
-            scope.updateUUIDForModel(rootModel, uuid: self.objectUUID)
-        }
     }
     
     func applyChangesToScope(scope: Scope, applyDefaults: Bool = false) {
@@ -272,7 +262,7 @@ public class SyncFragment: Equatable {
                 modelObject = existingModelObject
             } else if clsName != nil {
                 if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
-                    modelObject = cls(uuid: objectUUID)
+                    modelObject = cls(UUID: objectUUID)
                 }
             }
             

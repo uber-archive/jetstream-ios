@@ -111,7 +111,7 @@ public class Session {
             if let scope = scopes[scopeStateMessage.scopeIndex] {
                 if scope.root != nil {
                     scope.startApplyingRemote()
-                    scope.applyRootFragment(scopeStateMessage.rootFragment, additionalFragments: scopeStateMessage.syncFragments)
+                    scope.applyRootFragments(scopeStateMessage.syncFragments, rootUUID: scopeStateMessage.rootUUID)
                     scope.endApplyingRemote()
                 } else {
                     logger.error("Received state message without having a root model")
