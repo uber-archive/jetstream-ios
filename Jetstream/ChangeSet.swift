@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 
 import Foundation
-import Signals
 
 public enum ChangeSetState {
     case Syncing

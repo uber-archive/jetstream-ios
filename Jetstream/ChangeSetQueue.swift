@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 
 import Foundation
-import Signals
 
 public class ChangeSetQueue {
     // A signal that fires whenever a change set is added to the queue

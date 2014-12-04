@@ -23,8 +23,6 @@
 //  THE SOFTWARE.
 
 import Foundation
-import Signals
-import Starscream
 import SystemConfiguration
 
 /// A set of connection options.
