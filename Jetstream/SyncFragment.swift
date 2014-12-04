@@ -72,7 +72,7 @@ public class SyncFragment: Equatable {
     /// from the model object.
     init(type: SyncFragmentType, modelObject: ModelObject) {
         self.type = type
-        self.objectUUID = modelObject.UUID
+        self.objectUUID = modelObject.uuid
         
         if type == .Add {
             self.clsName = modelObject.className
@@ -86,7 +86,7 @@ public class SyncFragment: Equatable {
     public func serialize() -> [String: AnyObject] {
         var dictionary = [String: AnyObject]()
         dictionary["type"] = type.rawValue
-        dictionary["UUID"] = objectUUID.UUIDString
+        dictionary["uuid"] = objectUUID.UUIDString
         if clsName != nil {
             dictionary["clsName"] = clsName!
         }
@@ -116,7 +116,7 @@ public class SyncFragment: Equatable {
                         type = definiteType
                     }
                 }
-            case "UUID":
+            case "uuid":
                 if let valueAsString = value as? String {
                     objectUUID = NSUUID(UUIDString: valueAsString)
                 }
@@ -139,7 +139,7 @@ public class SyncFragment: Equatable {
             return nil
         }
         if type == .Add && clsName == nil {
-            logger.error("Could not unserialize SyncFragment. clsName is required for fragments of type Root and Add")
+            logger.error("Could not unserialize SyncFragment. clsName is required for fragments of type Add")
             return nil
         }
 
@@ -239,7 +239,7 @@ public class SyncFragment: Equatable {
                 return existingModelObject
             } else if clsName != nil {
                 if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
-                    return cls(UUID: objectUUID)
+                    return cls(uuid: objectUUID)
                 }
             }
         }
@@ -262,7 +262,7 @@ public class SyncFragment: Equatable {
                 modelObject = existingModelObject
             } else if clsName != nil {
                 if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
-                    modelObject = cls(UUID: objectUUID)
+                    modelObject = cls(uuid: objectUUID)
                 }
             }
             

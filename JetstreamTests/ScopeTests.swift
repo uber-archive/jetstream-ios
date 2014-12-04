@@ -184,21 +184,21 @@ class ScopeTests: XCTestCase {
             var fragment = changeSet.syncFragments[0]
          
             XCTAssert(fragment.type == SyncFragmentType.Add, "Fragment is correct")
-            XCTAssertEqual(fragment.objectUUID, self.child.UUID, "Fragment is correct")
+            XCTAssertEqual(fragment.objectUUID, self.child.uuid, "Fragment is correct")
             XCTAssert(fragment.properties!.count > 2, "Sending up all default values")
             XCTAssertEqual(fragment.properties!["string"]! as String, "testing", "Fragment is correct")
-            XCTAssertEqual(fragment.properties!["childModel2"]! as String, self.child2.UUID.UUIDString, "Fragment is correct")
+            XCTAssertEqual(fragment.properties!["childModel2"]! as String, self.child2.uuid.UUIDString, "Fragment is correct")
             
             fragment = changeSet.syncFragments[1]
             XCTAssertEqual(fragment.type, SyncFragmentType.Change, "Fragment is correct")
-            XCTAssertEqual(fragment.objectUUID, self.parent.UUID, "Fragment is correct")
+            XCTAssertEqual(fragment.objectUUID, self.parent.uuid, "Fragment is correct")
             XCTAssertEqual(fragment.properties!.count, 2, "Fragment is correct")
             XCTAssertEqual(fragment.properties!["string"]! as String, "testing parent", "Fragment is correct")
-            XCTAssertEqual(fragment.properties!["childModel"]! as String, self.child.UUID.UUIDString, "Fragment is correct")
+            XCTAssertEqual(fragment.properties!["childModel"]! as String, self.child.uuid.UUIDString, "Fragment is correct")
             
             fragment = changeSet.syncFragments[2]
             XCTAssertEqual(fragment.type, SyncFragmentType.Add, "Fragment is correct")
-            XCTAssertEqual(fragment.objectUUID, self.child2.UUID, "Fragment is correct")
+            XCTAssertEqual(fragment.objectUUID, self.child2.uuid, "Fragment is correct")
             XCTAssert(fragment.properties!.count > 2, "Sending up all default values")
             XCTAssertEqual(fragment.properties!["string"]! as String, "testing2", "Fragment is correct")
             XCTAssertEqual(fragment.properties!["int"]! as Int, 10, "Fragment is correct")

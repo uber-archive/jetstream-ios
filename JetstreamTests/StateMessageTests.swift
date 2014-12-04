@@ -31,7 +31,7 @@ class StateMessageTests: XCTestCase {
     var scope = Scope(name: "Testing")
     var client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
     var firstMessage: ScopeStateMessage!
-    let UUID = NSUUID()
+    let uuid = NSUUID()
 
     override func setUp() {
         root = TestModel()
@@ -51,11 +51,11 @@ class StateMessageTests: XCTestCase {
             "type": "ScopeState",
             "index": 1,
             "scopeIndex": 1,
-            "rootUUID": UUID.UUIDString,
+            "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
                     "type": "change",
-                    "UUID": UUID.UUIDString,
+                    "uuid": uuid.UUIDString,
                     "properties": [
                         "string": "set correctly",
                         "childModel": childUUID.UUIDString
@@ -63,7 +63,7 @@ class StateMessageTests: XCTestCase {
                 ],
                 [
                     "type": "add",
-                    "UUID": childUUID.UUIDString,
+                    "uuid": childUUID.UUIDString,
                     "properties": ["string": "ok"],
                     "clsName": "TestModel"
                 ]
@@ -73,9 +73,9 @@ class StateMessageTests: XCTestCase {
         firstMessage = NetworkMessage.unserialize(json) as ScopeStateMessage
         client.receivedMessage(firstMessage)
         
-        XCTAssertEqual(root.UUID, UUID, "Message applied")
+        XCTAssertEqual(root.uuid, uuid, "Message applied")
         XCTAssertEqual(root.string!, "set correctly", "Message applied")
-        XCTAssertEqual(root.childModel!.UUID, childUUID, "Message applied")
+        XCTAssertEqual(root.childModel!.uuid, childUUID, "Message applied")
         XCTAssertEqual(root.childModel!.string!, "ok", "Message applied")
         XCTAssertEqual(scope.modelObjects.count, 2, "Correct number of objects in scope")
     }
@@ -91,7 +91,7 @@ class StateMessageTests: XCTestCase {
         
         client.receivedMessage(firstMessage)
         
-        XCTAssertEqual(root.UUID, firstMessage.rootUUID, "Message applied")
+        XCTAssertEqual(root.uuid, firstMessage.rootUUID, "Message applied")
         XCTAssertEqual(root.string!, "set correctly", "Message applied")
         XCTAssertEqual(root.childModel!.string!, "ok", "Message applied")
         XCTAssertEqual(scope.modelObjects.count, 2, "Correct number of objects in scope")
@@ -105,11 +105,11 @@ class StateMessageTests: XCTestCase {
             "type": "ScopeState",
             "index": 2,
             "scopeIndex": 1,
-            "rootUUID": UUID.UUIDString,
+            "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
                     "type": "change",
-                    "UUID": UUID.UUIDString,
+                    "uuid": uuid.UUIDString,
                     "properties": ["string": "set correctly"],
                 ]
             ]
@@ -126,19 +126,19 @@ class StateMessageTests: XCTestCase {
             "type": "ScopeState",
             "index": 2,
             "scopeIndex": 1,
-            "rootUUID": UUID.UUIDString,
+            "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
                     "type": "change",
-                    "UUID": UUID.UUIDString,
+                    "uuid": uuid.UUIDString,
                     "properties": [
                         "string": "set correctly",
-                        "childModel2": root.childModel!.UUID.UUIDString
+                        "childModel2": root.childModel!.uuid.UUIDString
                     ],
                 ],
                 [
                     "type": "add",
-                    "UUID": root.childModel!.UUID.UUIDString,
+                    "uuid": root.childModel!.uuid.UUIDString,
                     "properties": ["string": "ok"],
                     "clsName": "TestModel"
                 ]
@@ -162,17 +162,17 @@ class StateMessageTests: XCTestCase {
             "type": "ScopeState",
             "index": 2,
             "scopeIndex": 1,
-            "rootUUID": UUID.UUIDString,
+            "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
                     "type": "add",
-                    "UUID": childUUID2.UUIDString,
+                    "uuid": childUUID2.UUIDString,
                     "properties": ["string": "ok2"],
                     "clsName": "TestModel"
                 ],
                 [
                     "type": "add",
-                    "UUID": childUUID.UUIDString,
+                    "uuid": childUUID.UUIDString,
                     "properties": [
                         "string": "ok1",
                         "childModel": childUUID2.UUIDString
@@ -181,7 +181,7 @@ class StateMessageTests: XCTestCase {
                 ],
                 [
                     "type": "change",
-                    "UUID": UUID.UUIDString,
+                    "uuid": uuid.UUIDString,
                     "properties": [
                         "string": "set correctly",
                         "childModel2": childUUID.UUIDString
@@ -192,8 +192,8 @@ class StateMessageTests: XCTestCase {
         
         client.receivedMessage(NetworkMessage.unserialize(json)!)
         
-        XCTAssertEqual(root.childModel2!.UUID, childUUID, "Child model added")
-        XCTAssertEqual(root.childModel2!.childModel!.UUID, childUUID2, "Child model added")
+        XCTAssertEqual(root.childModel2!.uuid, childUUID, "Child model added")
+        XCTAssertEqual(root.childModel2!.childModel!.uuid, childUUID2, "Child model added")
         XCTAssertEqual(scope.modelObjects.count, 3, "Correct number of objects in scope")
     }
     
@@ -205,11 +205,11 @@ class StateMessageTests: XCTestCase {
             "type": "ScopeState",
             "index": 2,
             "scopeIndex": 1,
-            "rootUUID": UUID.UUIDString,
+            "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
                     "type": "change",
-                    "UUID": UUID.UUIDString,
+                    "uuid": uuid.UUIDString,
                     "properties": [
                         "string": "set correctly",
                         "testType": 1,

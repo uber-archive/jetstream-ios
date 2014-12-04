@@ -114,7 +114,7 @@ public class ChangeSet: Equatable {
     func rebaseOnChangeSet(changeSet: ChangeSet) {
         for (rebaseModelObject, rebaseProperties) in changeSet.touches {
             for (modelObject, properties) in touches {
-                if modelObject.UUID != rebaseModelObject.UUID {
+                if modelObject.uuid != rebaseModelObject.uuid {
                     continue
                 }
                 for (key, value) in rebaseProperties {
@@ -128,7 +128,7 @@ public class ChangeSet: Equatable {
     func removeTouchesFromChangeSet(changeSet: ChangeSet) {
         for (overrideModelObject, overrideProperties) in changeSet.touches {
             for (modelObject, properties) in touches {
-                if modelObject.UUID != overrideModelObject.UUID {
+                if modelObject.uuid != overrideModelObject.uuid {
                     continue
                 }
                 for (key, value) in overrideProperties {

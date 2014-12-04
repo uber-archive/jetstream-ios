@@ -102,7 +102,7 @@ struct PropertyInfo {
         return [String :[String]]()
     }
     
-    public internal(set) var UUID: NSUUID
+    public internal(set) var uuid: NSUUID
     
     var properties: [String: PropertyInfo] {
         return Static.properties[className]!
@@ -211,24 +211,24 @@ struct PropertyInfo {
     }
 
     public override init() {
-        UUID = NSUUID()
+        uuid = NSUUID()
         super.init()
         className = ModelObject.classNameWithType(self.dynamicType)
         setupPropertyListeners()
     }
     
-    required public init(UUID: NSUUID) {
-        self.UUID = UUID
+    required public init(uuid: NSUUID) {
+        self.uuid = uuid
         super.init()
         className = ModelObject.classNameWithType(self.dynamicType)
         setupPropertyListeners()
     }
     
-    convenience init(UUIDString: String) {
-        if let UUID = NSUUID(UUIDString: UUIDString) {
-            self.init(UUID: UUID)
+    convenience init(uuidString: String) {
+        if let uuid = NSUUID(UUIDString: uuidString) {
+            self.init(uuid: uuid)
         } else {
-            self.init(UUID: NSUUID())
+            self.init(uuid: NSUUID())
         }
     }
     

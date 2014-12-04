@@ -95,7 +95,7 @@ import Signals
     public func applySyncFragments(syncFragments: [SyncFragment], applyDefaults: Bool = false) {
         for fragment in syncFragments {
             if let modelObject = fragment.createObjectForScopeIfNecessary(self) {
-                tempModelHash[modelObject.UUID] = modelObject
+                tempModelHash[modelObject.uuid] = modelObject
             }
         }
         syncFragments.map { $0.applyChangesToScope(self, applyDefaults: applyDefaults) }
@@ -105,25 +105,24 @@ import Signals
         }
     }
     
-    
-    /// Retrieve an object by it's UUID.
+    /// Retrieve an object by it's uuid.
     ///
-    /// :param: The UUID of the object to get.
-    /// :returns: The model object with the given UUID.
-    public func getObjectById(UUID: NSUUID) -> ModelObject? {
-        if let modelObject = modelHash[UUID] {
+    /// :param: The uuid of the object to get.
+    /// :returns: The model object with the given uuid.
+    public func getObjectById(uuid: NSUUID) -> ModelObject? {
+        if let modelObject = modelHash[uuid] {
             return modelObject
         }
-        return tempModelHash[UUID]
+        return tempModelHash[uuid]
     }
     
-    /// Retrieve an object by it's UUID.
+    /// Retrieve an object by it's uuid.
     ///
-    /// :param: The string representing the UUID of the object to get.
-    /// :returns: The model object with the given UUID.
-    public func getObjectByIdString(UUIDString: String) -> ModelObject? {
-        if let UUID = NSUUID(UUIDString: UUIDString) {
-            return getObjectById(UUID)
+    /// :param: The string representing the uuid of the object to get.
+    /// :returns: The model object with the given uuid.
+    public func getObjectByIdString(uuidString: String) -> ModelObject? {
+        if let uuid = NSUUID(UUIDString: uuidString) {
+            return getObjectById(uuid)
         }
         return nil
     }
@@ -148,7 +147,7 @@ import Signals
     
     func addModelObject(modelObject: ModelObject) {
         modelObjects.append(modelObject)
-        modelHash[modelObject.UUID] = modelObject
+        modelHash[modelObject.uuid] = modelObject
         
         modelObject.onPropertyChange.listen(self) { [weak self] (key, oldValue, value) -> () in
             if let this = self {
@@ -177,20 +176,20 @@ import Signals
     
     func removeModelObject(modelObject: ModelObject) {
         modelObjects = modelObjects.filter { $0 != modelObject }
-        modelHash.removeValueForKey(modelObject.UUID)
+        modelHash.removeValueForKey(modelObject.uuid)
         modelObject.onPropertyChange.removeListener(self)
         modelObject.onDetachedFromScope.removeListener(self)
-        if let fragment = syncFragmentLookup[modelObject.UUID] {
+        if let fragment = syncFragmentLookup[modelObject.uuid] {
             removeFragment(fragment)
         }
     }
     
-    func applyRootFragments(fragments:[SyncFragment], rootUUID: NSUUID) {
+    func applyFullStateFromFragments(fragments:[SyncFragment], rootUUID: NSUUID) {
         if let definiteRoot = root {
-            updateUUIDForModel(definiteRoot, UUID: rootUUID)
+            updateUUIDForModel(definiteRoot, uuid: rootUUID)
             
-            let UUIDs = fragments.map { $0.objectUUID }
-            let removals = modelHash.keys.filter { !contains(UUIDs, $0) && $0 != rootUUID }
+            let uuids = fragments.map { $0.objectUUID }
+            let removals = modelHash.keys.filter { !contains(uuids, $0) && $0 != rootUUID }
             for removeUUID in removals {
                 if let model = modelHash[removeUUID] {
                     model.detach()
@@ -201,18 +200,18 @@ import Signals
     }
     
     func syncFragmentWithType(type: SyncFragmentType, modelObject: ModelObject) -> SyncFragment? {
-        if let fragment = syncFragmentLookup[modelObject.UUID] {
+        if let fragment = syncFragmentLookup[modelObject.uuid] {
             setChangeTimer()
             return fragment
         }
         return addFragment(SyncFragment(type: type, modelObject: modelObject))
     }
     
-    func updateUUIDForModel(modelObject: ModelObject, UUID: NSUUID) {
-        if modelHash[modelObject.UUID] != nil {
-            modelHash.removeValueForKey(modelObject.UUID)
-            modelHash[UUID] = modelObject
-            modelObject.UUID = UUID
+    func updateUUIDForModel(modelObject: ModelObject, uuid: NSUUID) {
+        if modelHash[modelObject.uuid] != nil {
+            modelHash.removeValueForKey(modelObject.uuid)
+            modelHash[uuid] = modelObject
+            modelObject.uuid = uuid
         }
     }
     
