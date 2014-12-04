@@ -91,13 +91,16 @@ import Signals
     /// Applies sync fragments to the model
     ///
     /// :param: syncFragments An array of sync fragments to apply
-    func applySyncFragments(syncFragments: [SyncFragment], applyDefaults: Bool = false) {
+    func applySyncFragments(syncFragments: [SyncFragment], rootFragment: SyncFragment? = nil, applyDefaults: Bool = false) {
         for fragment in syncFragments {
             if let modelObject = fragment.createObjectForScopeIfNecessary(self) {
                 tempModelHash[modelObject.uuid] = modelObject
             }
         }
         syncFragments.map { $0.applyChangesToScope(self, applyDefaults: applyDefaults) }
+        if let definiteRootFragment = rootFragment {
+            definiteRootFragment.applyRootChangeToScope(self, applyDefaults: applyDefaults)
+        }
         tempModelHash.removeAll(keepCapacity: false)
         if applyingRemote {
             onRemoteSync.fire()
@@ -150,11 +153,11 @@ import Signals
         
         modelObject.onPropertyChange.listen(self) { [weak self] (key, oldValue, value) -> () in
             if let this = self {
-                if (!this.applyingRemote) {
+                if !this.applyingRemote {
                     if let property = modelObject.properties[key] {
-                        if (property.valueType != .Composite) {
+                        if property.valueType != .Composite {
                             var modelValue: ModelValue?
-                            if (value != nil) {
+                            if value != nil {
                                 modelValue = convertAnyObjectToModelValue(value!, property.valueType)
                             }
                             if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
@@ -167,7 +170,7 @@ import Signals
         }
         
         if modelObject.parents.count > 0 {
-            if (!applyingRemote) {
+            if !applyingRemote {
                 self.syncFragmentWithType(.Add, modelObject: modelObject)
             }
         }
@@ -178,8 +181,8 @@ import Signals
         modelHash.removeValueForKey(modelObject.uuid)
         modelObject.onPropertyChange.removeListener(self)
         modelObject.onDetachedFromScope.removeListener(self)
-        if (!applyingRemote) {
-            self.syncFragmentWithType(.Remove, modelObject: modelObject)
+        if let fragment = syncFragmentLookup[modelObject.uuid] {
+            removeFragment(fragment)
         }
     }
     
@@ -192,21 +195,11 @@ import Signals
             }
         }
         var fragments = additionalFragments
-        fragments.append(rootFragment)
-        applySyncFragments(fragments, applyDefaults: true)
+        applySyncFragments(fragments, rootFragment: rootFragment, applyDefaults: true)
     }
     
     func syncFragmentWithType(type: SyncFragmentType, modelObject: ModelObject) -> SyncFragment? {
         if let fragment = syncFragmentLookup[modelObject.uuid] {
-            if (type == SyncFragmentType.Remove && fragment.type == SyncFragmentType.Add) {
-                // Previous add fragment was reverted by remove fragment
-                removeFragment(fragment)
-                return nil
-            } else if (type == SyncFragmentType.Add && fragment.type == SyncFragmentType.Remove) {
-                // Delete remove fragment and create new add fragment
-                removeFragment(fragment)
-                return addFragment(SyncFragment(type: type, modelObject: modelObject))
-            }
             setChangeTimer()
             return fragment
         }
@@ -247,7 +240,7 @@ import Signals
     }
 
     private func sendChanges() {
-        if (changesQueued) {
+        if changesQueued {
             changesQueued = false
             var syncFragments = getAndClearSyncFragments()
             if syncFragments.count > 0 {

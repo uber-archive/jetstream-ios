@@ -26,17 +26,11 @@ import Foundation
 
 /// Fragment types
 public enum SyncFragmentType: String {
-    /// Denotes a fragment that changes the properties of a root object of the scope.
-    case Root = "root"
-    
     /// Denotes a fragment that changes the properties of an object in the scope.
     case Change = "change"
     
     /// Denotes a fragment that adds a new ModelObject to the scope.
     case Add = "add"
-    
-    /// Denotes a fragment that removes an object from the scope.
-    case Remove = "remove"
 }
 
 private let OnlyTransmitNonDefaultValues = false
@@ -80,7 +74,7 @@ public class SyncFragment: Equatable {
         self.type = type
         self.objectUUID = modelObject.uuid
         
-        if (type == .Add) {
+        if type == .Add {
             self.clsName = modelObject.className
             applyPropertiesFromModelObject(modelObject)
         }
@@ -144,7 +138,7 @@ public class SyncFragment: Equatable {
             logger.error("Could not unserialize SyncFragment. Type and objectUUID are required")
             return nil
         }
-        if (type == .Root || type == .Add) && clsName == nil {
+        if type == .Add && clsName == nil {
             logger.error("Could not unserialize SyncFragment. clsName is required for fragments of type Root and Add")
             return nil
         }
@@ -158,13 +152,13 @@ public class SyncFragment: Equatable {
 
     func applyPropertiesToModelObject(modelObject: ModelObject, scope: Scope, applyDefaults: Bool = false) {
         if var definiteProperties = properties {
-            if (applyDefaults) {
+            if applyDefaults {
                 for (name, property) in modelObject.properties {
-                    if (property.valueType == ModelValueType.Composite) {
+                    if property.valueType == ModelValueType.Composite {
                         continue
                     }
                     if !contains(definiteProperties.keys, name) {
-                        if (property.defaultValue == nil) {
+                        if property.defaultValue == nil {
                             definiteProperties[name] = NSNull()
                         } else {
                             definiteProperties[name] = property.defaultValue
@@ -209,12 +203,12 @@ public class SyncFragment: Equatable {
     
     func applyPropertiesFromModelObject(modelObject: ModelObject) {
         for (name, property) in modelObject.properties {
-            if (property.valueType == .Composite) {
+            if property.valueType == .Composite {
                 continue
             }
             if let value: AnyObject = modelObject.valueForKey(property.key) {
                 if let modelValue = convertAnyObjectToModelValue(value, property.valueType) {
-                    if (properties == nil) {
+                    if properties == nil {
                         properties = [String: AnyObject]()
                     }
                     var apply: Bool = true
@@ -224,7 +218,7 @@ public class SyncFragment: Equatable {
                             let modelValue = convertAnyObjectToModelValue(value, property.valueType)
                             let defaultModelValue = convertAnyObjectToModelValue(definiteDefaultValue, property.valueType)
                             
-                            if (modelValue != nil && defaultModelValue != nil) {
+                            if modelValue != nil && defaultModelValue != nil {
                                 if modelValue!.equalTo(defaultModelValue!) {
                                     apply = false
                                 }
@@ -240,7 +234,7 @@ public class SyncFragment: Equatable {
     }
     
     func createObjectForScopeIfNecessary(scope: Scope) -> ModelObject? {
-        if (type == .Add) {
+        if type == .Add {
             if let existingModelObject = scope.getObjectById(objectUUID) {
                 return existingModelObject
             } else if clsName != nil {
@@ -252,17 +246,22 @@ public class SyncFragment: Equatable {
         return nil
     }
     
+    func applyRootChangeToScope(scope: Scope, applyDefaults: Bool = false) {
+        if scope.root == nil || type != .Change {
+            return
+        }
+        if let rootModel = scope.root {
+            applyPropertiesToModelObject(rootModel, scope: scope, applyDefaults: applyDefaults)
+            scope.updateUUIDForModel(rootModel, uuid: self.objectUUID)
+        }
+    }
+    
     func applyChangesToScope(scope: Scope, applyDefaults: Bool = false) {
         if scope.root == nil {
             return
         }
         
         switch type {
-        case .Root:
-            if let rootModel = scope.root {
-                applyPropertiesToModelObject(rootModel, scope: scope, applyDefaults: applyDefaults)
-                scope.updateUUIDForModel(rootModel, uuid: self.objectUUID)
-            }
         case .Change:
             if let modelObject = scope.getObjectById(objectUUID) {
                 applyPropertiesToModelObject(modelObject, scope: scope, applyDefaults: applyDefaults)
@@ -279,11 +278,6 @@ public class SyncFragment: Equatable {
             
             if let definiteModelObject = modelObject {
                 applyPropertiesToModelObject(definiteModelObject, scope: scope, applyDefaults: applyDefaults)
-            }
-            
-        case .Remove:
-            if let modelObject = scope.getObjectById(objectUUID) {
-                modelObject.detach()
             }
         }
     }

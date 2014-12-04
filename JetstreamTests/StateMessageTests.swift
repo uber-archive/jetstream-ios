@@ -52,7 +52,7 @@ class StateMessageTests: XCTestCase {
             "index": 1,
             "scopeIndex": 1,
             "rootFragment": [
-                "type": "root",
+                "type": "change",
                 "uuid": uuid.UUIDString,
                 "properties": [
                     "string": "set correctly",
@@ -106,7 +106,7 @@ class StateMessageTests: XCTestCase {
             "index": 2,
             "scopeIndex": 1,
             "rootFragment": [
-                "type": "root",
+                "type": "change",
                 "uuid": uuid.UUIDString,
                 "properties": ["string": "set correctly"],
                 "clsName": "TestModel"
@@ -126,7 +126,7 @@ class StateMessageTests: XCTestCase {
             "index": 2,
             "scopeIndex": 1,
             "rootFragment": [
-                "type": "root",
+                "type": "change",
                 "uuid": uuid.UUIDString,
                 "properties": [
                     "string": "set correctly",
@@ -162,7 +162,7 @@ class StateMessageTests: XCTestCase {
             "index": 2,
             "scopeIndex": 1,
             "rootFragment": [
-                "type": "root",
+                "type": "change",
                 "uuid": uuid.UUIDString,
                 "properties": [
                     "string": "set correctly",
@@ -205,7 +205,7 @@ class StateMessageTests: XCTestCase {
             "index": 2,
             "scopeIndex": 1,
             "rootFragment": [
-                "type": "root",
+                "type": "change",
                 "uuid": uuid.UUIDString,
                 "properties": [
                     "string": "set correctly",

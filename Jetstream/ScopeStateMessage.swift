@@ -87,7 +87,7 @@ class ScopeStateMessage: NetworkMessage {
             case "rootFragment":
                 if let fragment = value as? [String: AnyObject] {
                     if let syncFragment = SyncFragment.unserialize(fragment) {
-                        if (syncFragment.type == SyncFragmentType.Root) {
+                        if syncFragment.type == SyncFragmentType.Change {
                             rootFragment = syncFragment
                         } else {
                             return nil
