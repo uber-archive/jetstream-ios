@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7212FE1F1A1D846D0020E328 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 723CFB671A1D84240053A072 /* Starscream.framework */; };
+		72126CAC1A311F480006CD29 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAB1A311F480006CD29 /* Signal.swift */; };
+		72126CAE1A311F620006CD29 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAD1A311F620006CD29 /* WebSocket.swift */; };
+		72126CAF1A3121410006CD29 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAD1A311F620006CD29 /* WebSocket.swift */; };
+		72126CB01A3121410006CD29 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAB1A311F480006CD29 /* Signal.swift */; };
 		7220026C1A08362B00C6DCDD /* ChangeSetQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7216634E19F83FD3007704D2 /* ChangeSetQueueTests.swift */; };
 		72226A7B1A0C0792008EE330 /* Jetstream-bridging-header.h in Headers */ = {isa = PBXBuildFile; fileRef = 72226A791A0C0748008EE330 /* Jetstream-bridging-header.h */; };
 		722555FC19F819D90016D8F8 /* Jetstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 722555FB19F819D90016D8F8 /* Jetstream.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -71,70 +74,43 @@
 		724F58981A083725003A95A3 /* SyncFragmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561B19F81AA10016D8F8 /* SyncFragmentTests.swift */; };
 		724F58991A083725003A95A3 /* TransactionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C9AF401A00201300D3FA09 /* TransactionTests.swift */; };
 		724F589A1A083725003A95A3 /* TreeChangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561F19F81AA10016D8F8 /* TreeChangeTests.swift */; };
-		727E11051A129C4100AD3931 /* Signals.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7225563419F81AE20016D8F8 /* Signals.framework */; };
 		72EFCC3919F9B6700054BC18 /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72EFCC3819F9B6700054BC18 /* test.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		7212FE181A1D84620020E328 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 6B3E79E519D48B7F006071F7;
-			remoteInfo = Starscream;
-		};
-		7225563319F81AE20016D8F8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7225562E19F81AE20016D8F8 /* Signals.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 729A2F24199FE332005D7617;
-			remoteInfo = Signals;
-		};
-		7225563519F81AE20016D8F8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7225562E19F81AE20016D8F8 /* Signals.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 729A2F2F199FE332005D7617;
-			remoteInfo = SignalsTests;
-		};
-		723CFB661A1D84240053A072 /* PBXContainerItemProxy */ = {
+		72126CA11A311ED80006CD29 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 6B3E79E619D48B7F006071F7;
 			remoteInfo = Starscream;
 		};
-		723CFB681A1D84240053A072 /* PBXContainerItemProxy */ = {
+		72126CA31A311ED80006CD29 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 6B3E79F119D48B7F006071F7;
 			remoteInfo = StarscreamTests;
 		};
-		723CFB6A1A1D84240053A072 /* PBXContainerItemProxy */ = {
+		72126CA51A311ED80006CD29 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D9C3E35F19E48FF1009FC285;
 			remoteInfo = StarscreamOSX;
 		};
-		723CFB6C1A1D84240053A072 /* PBXContainerItemProxy */ = {
+		72126CA71A311ED80006CD29 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D9C3E36919E48FF1009FC285;
 			remoteInfo = StarscreamOSXTests;
 		};
-		72EFCC2B19F9B5D70054BC18 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7225562E19F81AE20016D8F8 /* Signals.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 720D11711A085314003C4361;
-			remoteInfo = Signals;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		72126CAB1A311F480006CD29 /* Signal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Signal.swift; path = Signals/Signals/Signal.swift; sourceTree = "<group>"; };
+		72126CAD1A311F620006CD29 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebSocket.swift; path = Starscream/WebSocket.swift; sourceTree = "<group>"; };
 		7216634E19F83FD3007704D2 /* ChangeSetQueueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeSetQueueTests.swift; sourceTree = "<group>"; };
 		72226A791A0C0748008EE330 /* Jetstream-bridging-header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Jetstream-bridging-header.h"; sourceTree = "<group>"; };
 		722555F619F819D90016D8F8 /* Jetstream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Jetstream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -154,7 +130,7 @@
 		7225561D19F81AA10016D8F8 /* TestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
 		7225561E19F81AA10016D8F8 /* ChangeSetTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeSetTests.swift; sourceTree = "<group>"; };
 		7225561F19F81AA10016D8F8 /* TreeChangeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeChangeTests.swift; sourceTree = "<group>"; };
-		7225562E19F81AE20016D8F8 /* Signals.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Signals.xcodeproj; path = Signals/Signals.xcodeproj; sourceTree = "<group>"; };
+		7225562E19F81AE20016D8F8 /* Signals.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Signals.xcodeproj; path = Jetstream/Signals/Signals.xcodeproj; sourceTree = "<group>"; };
 		7225564619F81B040016D8F8 /* Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		7225564819F81B040016D8F8 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		7225564A19F81B040016D8F8 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
@@ -178,7 +154,7 @@
 		7225565C19F81B040016D8F8 /* WebsocketTransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebsocketTransportAdapter.swift; sourceTree = "<group>"; };
 		723A39781A042A1E00FD47A0 /* ScopeSyncReplyMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeSyncReplyMessage.swift; sourceTree = "<group>"; };
 		723A397E1A0446CB00FD47A0 /* ScopeFetchReplyMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopeFetchReplyMessage.swift; sourceTree = "<group>"; };
-		723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Starscream.xcodeproj; path = Starscream/Starscream.xcodeproj; sourceTree = "<group>"; };
+		723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Starscream.xcodeproj; path = Jetstream/Starscream/Starscream.xcodeproj; sourceTree = "<group>"; };
 		72C9AF401A00201300D3FA09 /* TransactionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionTests.swift; sourceTree = "<group>"; };
 		72EFCC3819F9B6700054BC18 /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = test.jpg; path = Resources/test.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -188,8 +164,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7212FE1F1A1D846D0020E328 /* Starscream.framework in Frameworks */,
-				727E11051A129C4100AD3931 /* Signals.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,10 +178,40 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		72126C961A311ED10006CD29 /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				7225562E19F81AE20016D8F8 /* Signals.xcodeproj */,
+				723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */,
+			);
+			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		72126C9B1A311ED80006CD29 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				72126CA21A311ED80006CD29 /* Starscream.framework */,
+				72126CA41A311ED80006CD29 /* StarscreamTests.xctest */,
+				72126CA61A311ED80006CD29 /* StarscreamOSX.framework */,
+				72126CA81A311ED80006CD29 /* StarscreamOSXTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		72126CAA1A311F230006CD29 /* Third Party */ = {
+			isa = PBXGroup;
+			children = (
+				72126CAD1A311F620006CD29 /* WebSocket.swift */,
+				72126CAB1A311F480006CD29 /* Signal.swift */,
+			);
+			name = "Third Party";
+			sourceTree = "<group>";
+		};
 		722555EC19F819D90016D8F8 = {
 			isa = PBXGroup;
 			children = (
 				722555F819F819D90016D8F8 /* Jetstream */,
+				72126C961A311ED10006CD29 /* Dependencies */,
 				7225560519F819DA0016D8F8 /* JetstreamTests */,
 				722555F719F819D90016D8F8 /* Products */,
 			);
@@ -233,11 +237,10 @@
 				7225564E19F81B040016D8F8 /* ModelValue.swift */,
 				7225565119F81B040016D8F8 /* Scope.swift */,
 				7225565819F81B040016D8F8 /* SyncFragment.swift */,
-				7225562E19F81AE20016D8F8 /* Signals.xcodeproj */,
-				723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */,
 				7225568C19F81BAF0016D8F8 /* Messages */,
-				722555F919F819D90016D8F8 /* Supporting Files */,
 				7225568B19F81B7F0016D8F8 /* Transport */,
+				722555F919F819D90016D8F8 /* Supporting Files */,
+				72126CAA1A311F230006CD29 /* Third Party */,
 			);
 			path = Jetstream;
 			sourceTree = "<group>";
@@ -279,15 +282,6 @@
 				7225560719F819DA0016D8F8 /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		7225562F19F81AE20016D8F8 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				7225563419F81AE20016D8F8 /* Signals.framework */,
-				7225563619F81AE20016D8F8 /* SignalsTests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		7225568B19F81B7F0016D8F8 /* Transport */ = {
@@ -337,17 +331,6 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
-		723CFB601A1D84240053A072 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				723CFB671A1D84240053A072 /* Starscream.framework */,
-				723CFB691A1D84240053A072 /* StarscreamTests.xctest */,
-				723CFB6B1A1D84240053A072 /* StarscreamOSX.framework */,
-				723CFB6D1A1D84240053A072 /* StarscreamOSXTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		72EFCC3719F9B64D0054BC18 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -383,8 +366,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				7212FE191A1D84620020E328 /* PBXTargetDependency */,
-				72EFCC2C19F9B5D70054BC18 /* PBXTargetDependency */,
 			);
 			name = Jetstream;
 			productName = Jetstream;
@@ -437,11 +418,7 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 7225562F19F81AE20016D8F8 /* Products */;
-					ProjectRef = 7225562E19F81AE20016D8F8 /* Signals.xcodeproj */;
-				},
-				{
-					ProductGroup = 723CFB601A1D84240053A072 /* Products */;
+					ProductGroup = 72126C9B1A311ED80006CD29 /* Products */;
 					ProjectRef = 723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */;
 				},
 			);
@@ -454,46 +431,32 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		7225563419F81AE20016D8F8 /* Signals.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Signals.framework;
-			remoteRef = 7225563319F81AE20016D8F8 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7225563619F81AE20016D8F8 /* SignalsTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = SignalsTests.xctest;
-			remoteRef = 7225563519F81AE20016D8F8 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		723CFB671A1D84240053A072 /* Starscream.framework */ = {
+		72126CA21A311ED80006CD29 /* Starscream.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Starscream.framework;
-			remoteRef = 723CFB661A1D84240053A072 /* PBXContainerItemProxy */;
+			remoteRef = 72126CA11A311ED80006CD29 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		723CFB691A1D84240053A072 /* StarscreamTests.xctest */ = {
+		72126CA41A311ED80006CD29 /* StarscreamTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = StarscreamTests.xctest;
-			remoteRef = 723CFB681A1D84240053A072 /* PBXContainerItemProxy */;
+			remoteRef = 72126CA31A311ED80006CD29 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		723CFB6B1A1D84240053A072 /* StarscreamOSX.framework */ = {
+		72126CA61A311ED80006CD29 /* StarscreamOSX.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = StarscreamOSX.framework;
-			remoteRef = 723CFB6A1A1D84240053A072 /* PBXContainerItemProxy */;
+			remoteRef = 72126CA51A311ED80006CD29 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		723CFB6D1A1D84240053A072 /* StarscreamOSXTests.xctest */ = {
+		72126CA81A311ED80006CD29 /* StarscreamOSXTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = StarscreamOSXTests.xctest;
-			remoteRef = 723CFB6C1A1D84240053A072 /* PBXContainerItemProxy */;
+			remoteRef = 72126CA71A311ED80006CD29 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -518,6 +481,7 @@
 				7225566219F81B040016D8F8 /* Logging.swift in Sources */,
 				7225565D19F81B040016D8F8 /* Client.swift in Sources */,
 				7225566819F81B040016D8F8 /* Scope.swift in Sources */,
+				72126CAE1A311F620006CD29 /* WebSocket.swift in Sources */,
 				7225566E19F81B040016D8F8 /* SessionCreateReplyMessage.swift in Sources */,
 				7225566719F81B040016D8F8 /* ReplyMessage.swift in Sources */,
 				7225566B19F81B040016D8F8 /* ScopeSyncMessage.swift in Sources */,
@@ -527,6 +491,7 @@
 				7225566419F81B040016D8F8 /* ModelObject.swift in Sources */,
 				7225566919F81B040016D8F8 /* ScopeFetchMessage.swift in Sources */,
 				7225566D19F81B040016D8F8 /* SessionCreateMessage.swift in Sources */,
+				72126CAC1A311F480006CD29 /* Signal.swift in Sources */,
 				7225566119F81B040016D8F8 /* Functions.swift in Sources */,
 				7225566A19F81B040016D8F8 /* ScopeStateMessage.swift in Sources */,
 				7225567019F81B040016D8F8 /* ChangeSet.swift in Sources */,
@@ -547,6 +512,7 @@
 				7225568319F81B430016D8F8 /* Session.swift in Sources */,
 				724F589A1A083725003A95A3 /* TreeChangeTests.swift in Sources */,
 				7225568919F81B430016D8F8 /* Transport.swift in Sources */,
+				72126CB01A3121410006CD29 /* Signal.swift in Sources */,
 				724F58911A083725003A95A3 /* ChangeSetTests.swift in Sources */,
 				724F58941A083725003A95A3 /* ModelTests.swift in Sources */,
 				724F58991A083725003A95A3 /* TransactionTests.swift in Sources */,
@@ -556,6 +522,7 @@
 				7225568419F81B430016D8F8 /* SessionCreateMessage.swift in Sources */,
 				7225567619F81B430016D8F8 /* Constants.swift in Sources */,
 				7225567A19F81B430016D8F8 /* NetworkMessage.swift in Sources */,
+				72126CAF1A3121410006CD29 /* WebSocket.swift in Sources */,
 				7225567B19F81B430016D8F8 /* ModelObject.swift in Sources */,
 				7225568019F81B430016D8F8 /* ScopeFetchMessage.swift in Sources */,
 				7225567919F81B430016D8F8 /* Logging.swift in Sources */,
@@ -584,19 +551,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		7212FE191A1D84620020E328 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Starscream;
-			targetProxy = 7212FE181A1D84620020E328 /* PBXContainerItemProxy */;
-		};
-		72EFCC2C19F9B5D70054BC18 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Signals;
-			targetProxy = 72EFCC2B19F9B5D70054BC18 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		7225560A19F819DA0016D8F8 /* Debug */ = {

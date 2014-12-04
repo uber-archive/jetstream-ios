@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 
 import Foundation
-import Signals
 
 @objc public class Scope: NSObject {
     /// A signal that fires when changes have been made to the model. Provides a array of changes

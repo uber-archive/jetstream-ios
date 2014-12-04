@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 
 import Foundation
-import Signals
 
 /// A function that when invoked canceles the associated observer.
 public typealias CancelObserver = (() -> (Void))!

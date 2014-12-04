@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 
 import Foundation
-import Signals
 
 /// Transport adapters initialize themselves with options that conform to ConnectionOptions.
 public protocol ConnectionOptions {
