@@ -106,6 +106,20 @@
 			remoteGlobalIDString = D9C3E36919E48FF1009FC285;
 			remoteInfo = StarscreamOSXTests;
 		};
+		721345941A313DA100B82503 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7225562E19F81AE20016D8F8 /* Signals.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 720D11721A085314003C4361;
+			remoteInfo = Signals;
+		};
+		721345961A313DA100B82503 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7225562E19F81AE20016D8F8 /* Signals.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 720D117D1A085315003C4361;
+			remoteInfo = SignalsTests;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -205,6 +219,15 @@
 				72126CAB1A311F480006CD29 /* Signal.swift */,
 			);
 			name = "Third Party";
+			sourceTree = "<group>";
+		};
+		721345901A313DA100B82503 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				721345951A313DA100B82503 /* Signals.framework */,
+				721345971A313DA100B82503 /* SignalsTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		722555EC19F819D90016D8F8 = {
@@ -418,6 +441,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 721345901A313DA100B82503 /* Products */;
+					ProjectRef = 7225562E19F81AE20016D8F8 /* Signals.xcodeproj */;
+				},
+				{
 					ProductGroup = 72126C9B1A311ED80006CD29 /* Products */;
 					ProjectRef = 723CFB5F1A1D84240053A072 /* Starscream.xcodeproj */;
 				},
@@ -457,6 +484,20 @@
 			fileType = wrapper.cfbundle;
 			path = StarscreamOSXTests.xctest;
 			remoteRef = 72126CA71A311ED80006CD29 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		721345951A313DA100B82503 /* Signals.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Signals.framework;
+			remoteRef = 721345941A313DA100B82503 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		721345971A313DA100B82503 /* SignalsTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SignalsTests.xctest;
+			remoteRef = 721345961A313DA100B82503 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
