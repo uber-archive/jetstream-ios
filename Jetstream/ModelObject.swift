@@ -51,7 +51,25 @@ struct PropertyInfo {
     let acceptsNil: Bool
 }
 
-@objc public class ModelObject: NSObject {
+public protocol Observable {
+    func observeChange(observer: AnyObject, callback: () -> Void) -> CancelObserver
+    func observeChangeImmediately(observer: AnyObject, callback: () -> Void) -> CancelObserver
+    func observeChange(observer: AnyObject, key: String, callback: () -> Void) -> CancelObserver
+    func observeChangeImmediately(observer: AnyObject, key: String, callback: () -> Void) -> CancelObserver
+    func observeChange(observer: AnyObject, keys: [String], callback: () -> Void) -> CancelObserver
+    func observeChangeImmediately(observer: AnyObject, keys: [String], callback: () -> Void) -> CancelObserver
+    func observeTreeChange(observer: AnyObject, callback: () -> Void) -> CancelObserver
+    func observeCollectionAdd<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver
+    func observeCollectionRemove<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver
+    func observeAttach(listener: AnyObject, callback: (scope: Scope) -> Void) -> CancelObserver
+    func observeDetach(listener: AnyObject, callback: (scope: Scope) -> Void) -> CancelObserver
+    func observeAddedToParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) -> CancelObserver
+    func observeRemovedFromParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) -> CancelObserver
+    func removeObservers(listener: AnyObject)
+    func detach()
+}
+
+@objc public class ModelObject: NSObject, Observable {
     public let onPropertyChange = Signal<(key: String, oldValue: AnyObject?, value: AnyObject?)>()
     public let onModelAddedToCollection = Signal<(key: String, element: AnyObject, atIndex:Int)>()
     public let onModelRemovedFromCollection = Signal<(key: String, element: AnyObject, atIndex:Int)>()
