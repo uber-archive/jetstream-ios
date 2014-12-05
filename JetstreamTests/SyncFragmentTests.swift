@@ -83,38 +83,6 @@ class SyncFragmentTests: XCTestCase {
         XCTAssertEqual(parent.childModel!.int, 20 , "Properties applied")
     }
     
-    func testRemove() {
-        var json = [
-            "type": "remove",
-            "uuid": child.uuid.UUIDString
-        ]
-        var fragment = SyncFragment.unserialize(json)
-        
-        
-        fragment?.applyChangesToScope(scope)
-        XCTAssertEqual(child.parents.count, 0, "Child removed")
-        XCTAssert(parent.childModel == nil , "Parent's property set to nil")
-    }
-    
-    func testRoot() {
-        var uuid = NSUUID()
-        
-        var json: [String: AnyObject] = [
-            "type": "root",
-            "uuid": uuid.UUIDString,
-            "properties": ["string": "set correctly"],
-            "clsName": "TestModel"
-        ]
-        var fragment = SyncFragment.unserialize(json)
-        XCTAssertEqual(fragment!.objectUUID, uuid , "UUID unserialized")
-        XCTAssertEqual(fragment!.clsName!, "TestModel" , "Class name unserialized")
-        
-        fragment?.applyChangesToScope(scope)
-        XCTAssert(parent.uuid == uuid , "UUID updated")
-        XCTAssertEqual(parent.string!, "set correctly" , "Properties set correctly")
-        XCTAssertEqual(scope.modelObjects.count, 2 , "Scope knows of added model")
-    }
-    
     func testAdd() {
         var uuid = NSUUID()
 

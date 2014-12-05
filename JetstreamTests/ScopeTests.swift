@@ -106,13 +106,9 @@ class ScopeTests: XCTestCase {
         
         parent.childModel = nil
         fragments = scope.getAndClearSyncFragments()
-        XCTAssertEqual(fragments.count, 3 , "Child removals captured")
+        XCTAssertEqual(fragments.count, 1 , "Child removals captured")
         XCTAssertEqual(fragments[0].type, SyncFragmentType.Change , "Correct fragment type")
         XCTAssertEqual(fragments[0].properties!["childModel"] as NSNull, NSNull() , "Child model removed")
-        XCTAssertEqual(fragments[1].type, SyncFragmentType.Remove , "Correct fragment type")
-        XCTAssertEqual(fragments[1].objectUUID, child.uuid , "Correct uuid from remove fragment")
-        XCTAssertEqual(fragments[2].type, SyncFragmentType.Remove , "Correct fragment type")
-        XCTAssertEqual(fragments[2].objectUUID, child2.uuid , "Correct uuid from remove fragment")
         
         child.string = "Testing more"
         fragments = scope.getAndClearSyncFragments()
@@ -130,6 +126,51 @@ class ScopeTests: XCTestCase {
         var fragments = scope.getAndClearSyncFragments()
         
         XCTAssertEqual(fragments.count, 3 , "Changes don't create fragments when object have been added")
+    }
+    
+    func testScopeFragmentCountWhenChangingAndRemoving() {
+        parent.setScopeAndMakeRootModel(scope)
+        parent.childModel = child
+        child.childModel = child2
+        scope.getAndClearSyncFragments()
+        
+        child.string = "testing more"
+        child2.string = "testing more"
+        parent.childModel = nil
+
+        var fragments = scope.getAndClearSyncFragments()
+        
+        XCTAssertEqual(fragments.count, 1 , "Changes don't create fragments when object has been removed")
+        XCTAssertEqual(fragments[0].type, SyncFragmentType.Change , "Correct fragment type")
+    }
+    
+    func testScopeFragmentCountWhenRemovingAndChanging() {
+        parent.setScopeAndMakeRootModel(scope)
+        parent.childModel = child
+        child.childModel = child2
+        scope.getAndClearSyncFragments()
+        
+        parent.childModel = nil
+        child.string = "testing more"
+        child2.string = "testing more"
+        
+        var fragments = scope.getAndClearSyncFragments()
+        
+        XCTAssertEqual(fragments.count, 1 , "Changes don't create fragments when object has been removed")
+        XCTAssertEqual(fragments[0].type, SyncFragmentType.Change , "Correct fragment type")
+    }
+    
+    func testScopeFragmentCountWhenAddingAndRemoving() {
+        parent.setScopeAndMakeRootModel(scope)
+        scope.getAndClearSyncFragments()
+        
+        parent.childModel = child
+        child.childModel = child2
+        
+        parent.childModel = nil
+        
+        var fragments = scope.getAndClearSyncFragments()
+        XCTAssertEqual(fragments.count, 1, "Changes don't create fragments when adding and removing")
     }
     
     func testScopeFragmentListening() {

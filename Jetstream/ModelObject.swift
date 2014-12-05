@@ -113,9 +113,9 @@ struct PropertyInfo {
             return internalIsScopeRoot
         }
         set {
-            if (isScopeRoot != newValue) {
+            if isScopeRoot != newValue {
                 internalIsScopeRoot = newValue
-                if (newValue) {
+                if newValue {
                     setScopeAndMakeRootModel(Scope(name: object_getClass(self).description()))
                 } else {
                     scope = nil
@@ -130,11 +130,11 @@ struct PropertyInfo {
             return internalScope
         }
         set(value) {
-            if (internalScope !== value) {
+            if internalScope !== value {
                 let oldScope = internalScope
                 internalScope = value
                 
-                if (oldScope != nil) {
+                if oldScope != nil {
                     oldScope!.removeModelObject(self)
                 }
                 
@@ -147,7 +147,7 @@ struct PropertyInfo {
                 }
 
                 for child in childModelObjects {
-                    if (child != self) {
+                    if child != self {
                         child.scope = scope
                     }
                 }
@@ -192,7 +192,7 @@ struct PropertyInfo {
             return internalTreeInvalidated
         }
         set {
-            if (internalTreeInvalidated != newValue) {
+            if internalTreeInvalidated != newValue {
                 internalTreeInvalidated = newValue
                 if internalTreeInvalidated == true {
                     delay(0.0) { [weak self] () -> () in
@@ -565,7 +565,7 @@ struct PropertyInfo {
            
             relationship.listener = relationship.parent.onPropertyChange.listen(self) { [weak self] (key, oldValue, value) -> Void in
                 if let strongSelf = self {
-                    if (key == relationship.key) {
+                    if key == relationship.key {
                         if let definitePropertyInfo = strongSelf.properties[key] {
                             if definitePropertyInfo.valueType == ModelValueType.ModelObject {
                                 if value !== strongSelf {
@@ -586,7 +586,7 @@ struct PropertyInfo {
             
             onAddedParent.fire((parent: parentRelationship.parent, key: parentRelationship.key))
 
-            if (parents.count == 1) {
+            if parents.count == 1 {
                 scope = parentRelationship.parent.scope
             }
         }
@@ -602,7 +602,7 @@ struct PropertyInfo {
 
             onRemovedParent.fire((parent: parentRelationship.parent, key: parentRelationship.key))
 
-            if (parents.count == 0) {
+            if parents.count == 0 {
                 scope = nil
             }
         }
@@ -610,7 +610,7 @@ struct PropertyInfo {
 
     func removeChildAtKey(key: String, child: ModelObject) {
         if let definitePropertyInfo = properties[key] {
-            if (definitePropertyInfo.valueType == ModelValueType.Array) {
+            if definitePropertyInfo.valueType == ModelValueType.Array {
                 if var array = valueForKey(key) as? [ModelObject] {
                     if let index = find(array, child) {
                         array.removeAtIndex(index)
@@ -672,15 +672,15 @@ struct PropertyInfo {
                 var valueType = properties[keyPath]!.valueType
                 var oldModelValue = convertAnyObjectToModelValue(oldValue!, valueType)
                 var newModelValue = convertAnyObjectToModelValue(newValue!, valueType)
-                if (oldModelValue == nil && newModelValue == nil) {
+                if oldModelValue == nil && newModelValue == nil {
                     notify = false
-                } else if (oldModelValue != nil && newModelValue != nil) {
+                } else if oldModelValue != nil && newModelValue != nil {
                     if oldModelValue!.equalTo(newModelValue!) {
                         notify = false
                     }
                 }
             }
-            if (notify) {
+            if notify {
                 keyChanged(keyPath, oldValue: oldValue, newValue: newValue)
             }
         } else {

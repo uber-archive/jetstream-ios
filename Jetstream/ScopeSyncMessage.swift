@@ -57,7 +57,7 @@ class ScopeSyncMessage: NetworkMessage {
         }
         
         dictionary["scopeIndex"] = scopeIndex
-        if (atomic) {
+        if atomic {
             dictionary["atomic"] = atomic
         }
         dictionary["fragments"] = fragments

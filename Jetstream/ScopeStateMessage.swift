@@ -30,18 +30,18 @@ class ScopeStateMessage: NetworkMessage {
     }
     
     let scopeIndex: UInt
-    let rootFragment: SyncFragment
+    let rootUUID: NSUUID
     let syncFragments: [SyncFragment]
     
-    init(index: UInt, scopeIndex: UInt, rootFragment: SyncFragment, syncFragments: [SyncFragment]) {
+    init(index: UInt, scopeIndex: UInt, rootUUID: NSUUID, syncFragments: [SyncFragment]) {
         self.scopeIndex = scopeIndex
-        self.rootFragment = rootFragment
+        self.rootUUID = rootUUID
         self.syncFragments = syncFragments
         super.init(index: index)
     }
     
-    convenience init(session: Session, scopeIndex: UInt, rootFragment: SyncFragment, syncFragments: [SyncFragment]) {
-        self.init(index: session.getNextMessageIndex(), scopeIndex: scopeIndex, rootFragment: rootFragment, syncFragments: syncFragments)
+    convenience init(session: Session, scopeIndex: UInt, rootUUID: NSUUID, syncFragments: [SyncFragment]) {
+        self.init(index: session.getNextMessageIndex(), scopeIndex: scopeIndex, rootUUID: rootUUID, syncFragments: syncFragments)
     }
     
     override func serialize() -> [String: AnyObject] {
@@ -53,7 +53,7 @@ class ScopeStateMessage: NetworkMessage {
         }
         
         dictionary["scopeIndex"] = scopeIndex
-        dictionary["rootFragment"] = rootFragment.serialize()
+        dictionary["rootUUID"] = rootUUID.UUIDString
         dictionary["fragments"] = fragments
         
         return dictionary
@@ -62,7 +62,7 @@ class ScopeStateMessage: NetworkMessage {
     override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index: UInt?
         var scopeIndex: UInt?
-        var rootFragment: SyncFragment!
+        var rootUUID: NSUUID?
         var syncFragments = [SyncFragment]()
         
         for (key, value) in dictionary {
@@ -84,14 +84,10 @@ class ScopeStateMessage: NetworkMessage {
                         }
                     }
                 }
-            case "rootFragment":
-                if let fragment = value as? [String: AnyObject] {
-                    if let syncFragment = SyncFragment.unserialize(fragment) {
-                        if (syncFragment.type == SyncFragmentType.Root) {
-                            rootFragment = syncFragment
-                        } else {
-                            return nil
-                        }
+            case "rootUUID":
+                if let UUIDString = value as? String {
+                    if let UUID = NSUUID(UUIDString: UUIDString) {
+                        rootUUID = UUID
                     }
                 }
             default:
@@ -99,13 +95,13 @@ class ScopeStateMessage: NetworkMessage {
             }
         }
         
-        if index == nil || scopeIndex == nil || rootFragment == nil {
+        if index == nil || scopeIndex == nil || rootUUID == nil || syncFragments.count < 1 {
             return nil
         } else {
             return ScopeStateMessage(
                 index: index!,
                 scopeIndex: scopeIndex!,
-                rootFragment: rootFragment,
+                rootUUID: rootUUID!,
                 syncFragments: syncFragments)
         }
     }
