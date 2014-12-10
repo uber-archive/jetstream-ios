@@ -59,6 +59,10 @@ import Foundation
     var changesQueued = false
     var changeInterval: NSTimeInterval
     
+    var incomingPauseCount = 0
+    typealias incomingCallback = () -> Void
+    var incomingQueue = [incomingCallback]()
+    
     private var tempModelHash = [NSUUID: ModelObject]()
     
     public init(name: String, changeInterval: NSTimeInterval = 0.01) {
@@ -126,6 +130,23 @@ import Foundation
         return nil
     }
     
+    public func pauseIncomingMessages() {
+        incomingPauseCount++
+    }
+    
+    public func resumeIncomingMessages() {
+        assert(incomingPauseCount > 0, "Uneven distribution of pause vs. resume calls")
+        incomingPauseCount--
+        if (incomingPauseCount == 0) {
+            applyingRemote = true
+            for callback in incomingQueue {
+                callback()
+            }
+            applyingRemote = false
+            incomingQueue.removeAll(keepCapacity: false)
+        }
+    }
+    
     public func createAtomicChangeSet(changes: () -> Void) -> ChangeSet {
         sendChanges()
         changes()
@@ -136,12 +157,15 @@ import Foundation
     }
 
     // MARK: - Internal Interface
-    func startApplyingRemote() {
-        applyingRemote = true
-    }
     
-    func endApplyingRemote() {
-        applyingRemote = false
+    func startApplyingRemote(callback: incomingCallback) {
+        if incomingPauseCount == 0 {
+            applyingRemote = true
+            callback()
+            applyingRemote = false
+        } else {
+            incomingQueue.append(callback)
+        }
     }
     
     func addModelObject(modelObject: ModelObject) {

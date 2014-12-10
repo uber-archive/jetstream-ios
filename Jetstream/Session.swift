@@ -110,9 +110,9 @@ public class Session {
         case let scopeStateMessage as ScopeStateMessage:
             if let scope = scopes[scopeStateMessage.scopeIndex] {
                 if scope.root != nil {
-                    scope.startApplyingRemote()
-                    scope.applyFullStateFromFragments(scopeStateMessage.syncFragments, rootUUID: scopeStateMessage.rootUUID)
-                    scope.endApplyingRemote()
+                    scope.startApplyingRemote {
+                        scope.applyFullStateFromFragments(scopeStateMessage.syncFragments, rootUUID: scopeStateMessage.rootUUID)
+                    }
                 } else {
                     logger.error("Received state message without having a root model")
                 }
@@ -123,9 +123,9 @@ public class Session {
             if let scope = scopes[scopeSyncMessage.scopeIndex] {
                 if scope.root != nil {
                     if scopeSyncMessage.syncFragments.count > 0 {
-                        scope.startApplyingRemote()
-                        scope.applySyncFragments(scopeSyncMessage.syncFragments)
-                        scope.endApplyingRemote()
+                        scope.startApplyingRemote {
+                            scope.applySyncFragments(scopeSyncMessage.syncFragments)
+                        }
                     } else {
                         logger.error("Received sync message without fragments")
                     }
