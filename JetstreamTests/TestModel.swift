@@ -60,12 +60,11 @@ import Jetstream
         return "\(float) \(anotherArray.count)"
     }
     
-    override public class func getCompositeDependencies() -> [String: [String]] {
-        return ["compositeProperty": ["float", "anotherArray"]]
-    }
-    
     override public class func getPropertyAttributes() -> [String: [PropertyAttribute]] {
-        return ["localString": [.Local]]
+        return [
+            "localString": [.Local],
+            "compositeProperty": [.Composite(["float", "anotherArray"])]
+        ]
     }
 }
 
@@ -79,7 +78,9 @@ import Jetstream
         }
     }
     
-    override public class func getCompositeDependencies() -> [String: [String]] {
-        return ["anotherCompositeProperty": ["anotherString", "anotherInteger"]]
+    override public class func getPropertyAttributes() -> [String: [PropertyAttribute]] {
+        return [
+            "anotherCompositeProperty": [.Composite(["anotherString", "anotherInteger"])]
+        ]
     }
 }

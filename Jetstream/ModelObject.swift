@@ -74,6 +74,11 @@ public protocol Observable {
 public enum PropertyAttribute {
     /// Marks the property as local. Changes to local properties can be observed, but are never synchronized to a server.
     case Local
+    
+    /// Marks the property as as a composite property. A composite property is a read-only, computed property whose value
+    /// relies on a number of other properties. Whenever any of the dependent properties change, the composite property
+    /// internally also triggers a change event. The array of strings defines the dependent properties.
+    case Composite([String])
 }
 
 /// The base class for all of you model classes. The ModelObject provides a number of ways to listen to changes occuring
@@ -109,14 +114,21 @@ public class ModelObject: NSObject, Observable {
         Static.allTypes[classNameWithType(self)] = self
         
         let name = NSStringFromClass(self)
-        
+
         var keyToDependencies = [String: [String]]()
-        for (prop, dependencies) in getCompositeDependencies() {
-            for dependency in dependencies {
-                if var definiteDependecy = keyToDependencies[dependency] {
-                    definiteDependecy.append(prop)
-                } else {
-                    keyToDependencies[dependency] = [prop]
+        for (prop, attributes) in getPropertyAttributes() {
+            for attribute in attributes {
+                switch attribute {
+                case .Composite(let dependencies):
+                    for dependency in dependencies {
+                        if var definiteDependecy = keyToDependencies[dependency] {
+                            definiteDependecy.append(prop)
+                        } else {
+                            keyToDependencies[dependency] = [prop]
+                        }
+                    }
+                default:
+                    continue
                 }
             }
         }
@@ -261,18 +273,7 @@ public class ModelObject: NSObject, Observable {
     }
     
     // MARK: - Model attributes
-    
-    /// Override this class function in your subclasses to define composite properties. A composite property is a read-only,
-    /// computed property whose value relies on a number of other properties. Whenever any of the dependent properties
-    /// change, the composite property internally also triggers a change event. To declare composite properties,
-    /// return a Dictionary where the key is the name of the composite property and the value is an array of dependent
-    /// property names.
-    ///
-    /// :returns: A dictionary defining composite properties.
-    public class func getCompositeDependencies() -> [String: [String]] {
-        return [String :[String]]()
-    }
-    
+        
     /// Override this class function in yout subclasses to give additional information about the properties in your model.
     /// To declare attributes for properties, return a Dictionary where the key is the name of the property and the value 
     /// is an array of attributes.
@@ -543,7 +544,6 @@ public class ModelObject: NSObject, Observable {
             
             var trackedProperties = [String: PropertyInfo]()
             
-            let propertyDependencies = self.dynamicType.getCompositeDependencies()
             let additionalPropertyAttributes = self.dynamicType.getPropertyAttributes()
             
             var propertyCount: UInt32 = 0
@@ -565,10 +565,7 @@ public class ModelObject: NSObject, Observable {
                         var valueType: ModelValueType?
                         var dontSync = false
                         
-                        if propertyDependencies[propertyName] != nil {
-                            dontSync = true
-                            valueType = .Composite
-                        } else if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
+                        if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
                             valueType = .Array
                         } else if let definiteValueType = ModelValueType(rawValue: type) {
                             valueType = definiteValueType
@@ -582,8 +579,9 @@ public class ModelObject: NSObject, Observable {
                                 switch attribute {
                                 case .Local:
                                     dontSync = true
-                                default:
-                                    println("Attribute \(attribute) not yet supported")
+                                case .Composite:
+                                    dontSync = true
+                                    valueType = .Composite
                                 }
                             }
                         }
