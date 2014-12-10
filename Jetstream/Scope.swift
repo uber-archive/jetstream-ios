@@ -137,7 +137,7 @@ import Foundation
     public func resumeIncomingMessages() {
         assert(incomingPauseCount > 0, "Uneven distribution of pause vs. resume calls")
         incomingPauseCount--
-        if (incomingPauseCount == 0) {
+        if incomingPauseCount == 0 {
             applyingRemote = true
             for callback in incomingQueue {
                 callback()
