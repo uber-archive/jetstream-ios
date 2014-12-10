@@ -175,6 +175,10 @@ class PropertyListenerTests: XCTestCase {
         model.testType = .Active
         model.testType = .Active
         XCTAssertEqual(dispatchCount, 23 , "Dispatched once")
+        
+        model.localString = "new value"
+        model.localString = "new value"
+        XCTAssertEqual(dispatchCount, 24 , "Dispatched once")
     }
 
     func testArrayListeners() {

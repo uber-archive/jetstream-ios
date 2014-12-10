@@ -49,6 +49,7 @@ struct PropertyInfo {
     let valueType: ModelValueType
     let defaultValue: AnyObject?
     let acceptsNil: Bool
+    let dontSync: Bool
 }
 
 public protocol Observable {
@@ -69,7 +70,15 @@ public protocol Observable {
     func detach()
 }
 
-@objc public class ModelObject: NSObject, Observable {
+/// Used to define additional attributes for properties of your model.
+public enum PropertyAttribute {
+    /// Marks the property as local. Changes to local properties can be observed, but are never synchronized to a server.
+    case Local
+}
+
+/// The base class for all of you model classes. The ModelObject provides a number of ways to listen to changes occuring
+/// to it. For example, you can listen to property changes, collection changes and re-parenting.
+public class ModelObject: NSObject, Observable {
     public let onPropertyChange = Signal<(key: String, oldValue: AnyObject?, value: AnyObject?)>()
     public let onModelAddedToCollection = Signal<(key: String, element: AnyObject, atIndex:Int)>()
     public let onModelRemovedFromCollection = Signal<(key: String, element: AnyObject, atIndex:Int)>()
@@ -113,10 +122,6 @@ public protocol Observable {
         }
         Static.compositeDependencies[name] = keyToDependencies
         Static.properties[name] = [String: PropertyInfo]()
-    }
-    
-    public class func getCompositeDependencies() -> [String: [String]] {
-        return [String :[String]]()
     }
     
     public internal(set) var uuid: NSUUID
@@ -253,6 +258,28 @@ public protocol Observable {
         for property in properties.values {
             removeObserver(self, forKeyPath: property.key)
         }
+    }
+    
+    // MARK: - Model attributes
+    
+    /// Override this class function in your subclasses to define composite properties. A composite property is a read-only,
+    /// computed property whose value relies on a number of other properties. Whenever any of the dependent properties
+    /// change, the composite property internally also triggers a change event. To declare composite properties,
+    /// return a Dictionary where the key is the name of the composite property and the value is an array of dependent
+    /// property names.
+    ///
+    /// :returns: A dictionary defining composite properties.
+    public class func getCompositeDependencies() -> [String: [String]] {
+        return [String :[String]]()
+    }
+    
+    /// Override this class function in yout subclasses to give additional information about the properties in your model.
+    /// To declare attributes for properties, return a Dictionary where the key is the name of the property and the value 
+    /// is an array of attributes.
+    ///
+    /// :returns: A dictionary defining attributes for properties.
+    public class func getPropertyAttributes() -> [String: [PropertyAttribute]] {
+        return [String :[PropertyAttribute]]()
     }
     
     // MARK: - Public Interface
@@ -517,6 +544,8 @@ public protocol Observable {
             var trackedProperties = [String: PropertyInfo]()
             
             let propertyDependencies = self.dynamicType.getCompositeDependencies()
+            let additionalPropertyAttributes = self.dynamicType.getPropertyAttributes()
+            
             var propertyCount: UInt32 = 0
             let propertyList = class_copyPropertyList(self.dynamicType, &propertyCount)
             
@@ -534,8 +563,10 @@ public protocol Observable {
                         var writeable = (components[2] as String) != "R"
                         
                         var valueType: ModelValueType?
+                        var dontSync = false
                         
                         if propertyDependencies[propertyName] != nil {
+                            dontSync = true
                             valueType = .Composite
                         } else if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
                             valueType = .Array
@@ -546,6 +577,17 @@ public protocol Observable {
                             valueType = .ModelObject
                         }
                         
+                        if let attributes = additionalPropertyAttributes[propertyName] {
+                            for attribute in attributes {
+                                switch attribute {
+                                case .Local:
+                                    dontSync = true
+                                default:
+                                    println("Attribute \(attribute) not yet supported")
+                                }
+                            }
+                        }
+
                         if let definiteValueType = valueType {
                             if writeable || definiteValueType == ModelValueType.Composite {
                                 let defaultValue: AnyObject? = valueForKey(propertyName)
@@ -553,7 +595,7 @@ public protocol Observable {
                                 // TODO: Check if property is an optional
                                 var acceptsNil = modelValueIsNillable(definiteValueType)
                                 
-                                trackedProperties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue, acceptsNil: acceptsNil)
+                                trackedProperties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue, acceptsNil: acceptsNil, dontSync: dontSync)
                             }
                         }
                     }

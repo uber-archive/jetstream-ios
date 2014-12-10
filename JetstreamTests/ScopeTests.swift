@@ -320,4 +320,23 @@ class ScopeTests: XCTestCase {
         parent.float = 10.0 // Will invalidate composite property
         waitForExpectationsWithTimeout(1, handler: nil)
     }
+    
+    func testLocalProperties() {
+        let expectation = expectationWithDescription("onChange")
+        parent.setScopeAndMakeRootModel(scope)
+        scope.getAndClearSyncFragments()
+        
+        scope.onChanges.listen(self, callback: { changeSet in
+            XCTAssertEqual(changeSet.syncFragments.count, 1, "Created a fragment")
+            var fragment = changeSet.syncFragments[0]
+            XCTAssertEqual(fragment.properties!.count, 1, "Property count is correct")
+            XCTAssert(fragment.properties!["localString"] == nil, "Don't record localString")
+            
+            expectation.fulfill()
+        })
+        
+        parent.localString = "local change"
+        parent.string = "changed"
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
 }
