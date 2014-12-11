@@ -176,7 +176,7 @@ import Foundation
             if let this = self {
                 if !this.applyingRemote {
                     if let property = modelObject.properties[key] {
-                        if property.valueType != .Composite {
+                        if !property.dontSync {
                             var modelValue: ModelValue?
                             if value != nil {
                                 modelValue = convertAnyObjectToModelValue(value!, property.valueType)

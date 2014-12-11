@@ -43,6 +43,7 @@ import Jetstream
     dynamic var date: NSDate?
     dynamic var color: UIColor?
     dynamic var image: UIImage?
+    dynamic var localString: String?
     
     dynamic var array: [TestModel] = []
     dynamic var array2: [TestModel] = []
@@ -50,17 +51,20 @@ import Jetstream
     dynamic var childModel: TestModel?
     dynamic var childModel2: TestModel?
     
+    
+    
     private var nonDynamicInt: Int = 0
     private var nonDynamicString = ""
     
     var compositeProperty: String {
-        get {
-            return "\(float) \(anotherArray.count)"
-        }
+        return "\(float) \(anotherArray.count)"
     }
     
-    override public class func getCompositeDependencies() -> [String: [String]] {
-        return ["compositeProperty": ["float", "anotherArray"]]
+    override public class func getPropertyAttributes() -> [String: [PropertyAttribute]] {
+        return [
+            "localString": [.Local],
+            "compositeProperty": [.Composite(["float", "anotherArray"])]
+        ]
     }
 }
 
@@ -74,7 +78,9 @@ import Jetstream
         }
     }
     
-    override public class func getCompositeDependencies() -> [String: [String]] {
-        return ["anotherCompositeProperty": ["anotherString", "anotherInteger"]]
+    override public class func getPropertyAttributes() -> [String: [PropertyAttribute]] {
+        return [
+            "anotherCompositeProperty": [.Composite(["anotherString", "anotherInteger"])]
+        ]
     }
 }

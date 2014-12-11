@@ -154,7 +154,7 @@ public class SyncFragment: Equatable {
         if var definiteProperties = properties {
             if applyDefaults {
                 for (name, property) in modelObject.properties {
-                    if property.valueType == ModelValueType.Composite {
+                    if property.dontSync {
                         continue
                     }
                     if !contains(definiteProperties.keys, name) {
@@ -203,7 +203,7 @@ public class SyncFragment: Equatable {
     
     func applyPropertiesFromModelObject(modelObject: ModelObject) {
         for (name, property) in modelObject.properties {
-            if property.valueType == .Composite {
+            if property.dontSync {
                 continue
             }
             if let value: AnyObject = modelObject.valueForKey(property.key) {

@@ -49,6 +49,7 @@ struct PropertyInfo {
     let valueType: ModelValueType
     let defaultValue: AnyObject?
     let acceptsNil: Bool
+    let dontSync: Bool
 }
 
 public protocol Observable {
@@ -69,7 +70,20 @@ public protocol Observable {
     func detach()
 }
 
-@objc public class ModelObject: NSObject, Observable {
+/// Used to define additional attributes for properties of your model.
+public enum PropertyAttribute {
+    /// Marks the property as local. Changes to local properties can be observed, but are never synchronized to a server.
+    case Local
+    
+    /// Marks the property as as a composite property. A composite property is a read-only, computed property whose value
+    /// relies on a number of other properties. Whenever any of the dependent properties change, the composite property
+    /// internally also triggers a change event. The array of strings defines the dependent properties.
+    case Composite([String])
+}
+
+/// The base class for all of you model classes. The ModelObject provides a number of ways to listen to changes occuring
+/// to it. For example, you can listen to property changes, collection changes and re-parenting.
+public class ModelObject: NSObject, Observable {
     public let onPropertyChange = Signal<(key: String, oldValue: AnyObject?, value: AnyObject?)>()
     public let onModelAddedToCollection = Signal<(key: String, element: AnyObject, atIndex:Int)>()
     public let onModelRemovedFromCollection = Signal<(key: String, element: AnyObject, atIndex:Int)>()
@@ -100,23 +114,26 @@ public protocol Observable {
         Static.allTypes[classNameWithType(self)] = self
         
         let name = NSStringFromClass(self)
-        
+
         var keyToDependencies = [String: [String]]()
-        for (prop, dependencies) in getCompositeDependencies() {
-            for dependency in dependencies {
-                if var definiteDependecy = keyToDependencies[dependency] {
-                    definiteDependecy.append(prop)
-                } else {
-                    keyToDependencies[dependency] = [prop]
+        for (prop, attributes) in getPropertyAttributes() {
+            for attribute in attributes {
+                switch attribute {
+                case .Composite(let dependencies):
+                    for dependency in dependencies {
+                        if var definiteDependecy = keyToDependencies[dependency] {
+                            definiteDependecy.append(prop)
+                        } else {
+                            keyToDependencies[dependency] = [prop]
+                        }
+                    }
+                default:
+                    continue
                 }
             }
         }
         Static.compositeDependencies[name] = keyToDependencies
         Static.properties[name] = [String: PropertyInfo]()
-    }
-    
-    public class func getCompositeDependencies() -> [String: [String]] {
-        return [String :[String]]()
     }
     
     public internal(set) var uuid: NSUUID
@@ -253,6 +270,17 @@ public protocol Observable {
         for property in properties.values {
             removeObserver(self, forKeyPath: property.key)
         }
+    }
+    
+    // MARK: - Model attributes
+        
+    /// Override this class function in yout subclasses to give additional information about the properties in your model.
+    /// To declare attributes for properties, return a Dictionary where the key is the name of the property and the value 
+    /// is an array of attributes.
+    ///
+    /// :returns: A dictionary defining attributes for properties.
+    public class func getPropertyAttributes() -> [String: [PropertyAttribute]] {
+        return [String :[PropertyAttribute]]()
     }
     
     // MARK: - Public Interface
@@ -516,7 +544,8 @@ public protocol Observable {
             
             var trackedProperties = [String: PropertyInfo]()
             
-            let propertyDependencies = self.dynamicType.getCompositeDependencies()
+            let additionalPropertyAttributes = self.dynamicType.getPropertyAttributes()
+            
             var propertyCount: UInt32 = 0
             let propertyList = class_copyPropertyList(self.dynamicType, &propertyCount)
             
@@ -534,10 +563,9 @@ public protocol Observable {
                         var writeable = (components[2] as String) != "R"
                         
                         var valueType: ModelValueType?
+                        var dontSync = false
                         
-                        if propertyDependencies[propertyName] != nil {
-                            valueType = .Composite
-                        } else if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
+                        if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
                             valueType = .Array
                         } else if let definiteValueType = ModelValueType(rawValue: type) {
                             valueType = definiteValueType
@@ -546,6 +574,18 @@ public protocol Observable {
                             valueType = .ModelObject
                         }
                         
+                        if let attributes = additionalPropertyAttributes[propertyName] {
+                            for attribute in attributes {
+                                switch attribute {
+                                case .Local:
+                                    dontSync = true
+                                case .Composite:
+                                    dontSync = true
+                                    valueType = .Composite
+                                }
+                            }
+                        }
+
                         if let definiteValueType = valueType {
                             if writeable || definiteValueType == ModelValueType.Composite {
                                 let defaultValue: AnyObject? = valueForKey(propertyName)
@@ -553,7 +593,7 @@ public protocol Observable {
                                 // TODO: Check if property is an optional
                                 var acceptsNil = modelValueIsNillable(definiteValueType)
                                 
-                                trackedProperties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue, acceptsNil: acceptsNil)
+                                trackedProperties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue, acceptsNil: acceptsNil, dontSync: dontSync)
                             }
                         }
                     }
