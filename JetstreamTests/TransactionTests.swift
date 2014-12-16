@@ -182,8 +182,7 @@ class TransactionTests: XCTestCase {
             "fragmentReplies": [
                 [String: AnyObject](),
                 ["error": [
-                    "code": 1,
-                    "slug": "invalid-type",
+                    "type": "invalid-type",
                     "message": "Invalid type for property 'name'"
                     ]
                 ]
