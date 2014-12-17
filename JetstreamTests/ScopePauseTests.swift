@@ -54,6 +54,7 @@ class ScopePauseTest: XCTestCase {
                 [
                     "type": "change",
                     "uuid": uuid.UUIDString,
+                    "clsName": "TestModel",
                     "properties": [
                         "string": "set correctly",
                         "int": 10,
@@ -86,6 +87,7 @@ class ScopePauseTest: XCTestCase {
                 [
                     "type": "change",
                     "uuid": uuid.UUIDString,
+                    "clsName": "TestModel",
                     "properties": ["string": "changed"],
                 ]
             ]
@@ -110,6 +112,7 @@ class ScopePauseTest: XCTestCase {
                 [
                     "type": "change",
                     "uuid": uuid.UUIDString,
+                    "clsName": "TestModel",
                     "properties": ["string": "changed"],
                 ]
             ]
@@ -124,6 +127,7 @@ class ScopePauseTest: XCTestCase {
                 [
                     "type": "change",
                     "uuid": uuid.UUIDString,
+                    "clsName": "TestModel",
                     "properties": ["int": 20],
                 ]
             ]

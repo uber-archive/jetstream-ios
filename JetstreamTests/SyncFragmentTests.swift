@@ -70,6 +70,7 @@ class SyncFragmentTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "change",
             "uuid": child.uuid.UUIDString,
+            "clsName": "TestModel",
             "properties": ["string": "testing", "int": 20]
             
         ]
@@ -89,13 +90,14 @@ class SyncFragmentTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "add",
             "uuid": uuid.UUIDString,
-            "properties": ["string": "set correctly"],
-            "clsName": "TestModel"
+            "clsName": "TestModel",
+            "properties": ["string": "set correctly"]
         ]
         var fragment = SyncFragment.unserialize(json)
         var json2: [String: AnyObject] = [
             "type": "change",
             "uuid": child.uuid.UUIDString,
+            "clsName": "TestModel",
             "properties": ["childModel": uuid.UUIDString],
         ]
         var fragment2 = SyncFragment.unserialize(json2)
@@ -119,13 +121,14 @@ class SyncFragmentTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "add",
             "uuid": uuid.UUIDString,
-            "properties": ["string": "set correctly"],
-            "clsName": "TestModel"
+            "clsName": "TestModel",
+            "properties": ["string": "set correctly"]
         ]
         var fragment = SyncFragment.unserialize(json)
         var json2: [String: AnyObject] = [
             "type": "change",
             "uuid": child.uuid.UUIDString,
+            "clsName": "TestModel",
             "properties": ["array": [uuid.UUIDString]],
         ]
         var fragment2 = SyncFragment.unserialize(json2)
@@ -146,6 +149,7 @@ class SyncFragmentTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "change",
             "uuid": child.uuid.UUIDString,
+            "clsName": "TestModel",
             "properties": [
                 "array": NSNull(),
                 "string": NSNull(),
@@ -175,6 +179,7 @@ class SyncFragmentTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "change",
             "uuid": child.uuid.UUIDString,
+            "clsName": "TestModel",
             "properties": [
                 "string": 10,
                 "int": "5",
