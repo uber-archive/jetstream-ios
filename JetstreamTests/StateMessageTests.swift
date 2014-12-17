@@ -56,6 +56,7 @@ class StateMessageTests: XCTestCase {
                 [
                     "type": "change",
                     "uuid": uuid.UUIDString,
+                    "clsName": "TestModel",
                     "properties": [
                         "string": "set correctly",
                         "childModel": childUUID.UUIDString
@@ -110,6 +111,7 @@ class StateMessageTests: XCTestCase {
                 [
                     "type": "change",
                     "uuid": uuid.UUIDString,
+                    "clsName": "TestModel",
                     "properties": ["string": "set correctly"],
                 ]
             ]
@@ -131,6 +133,7 @@ class StateMessageTests: XCTestCase {
                 [
                     "type": "change",
                     "uuid": uuid.UUIDString,
+                    "clsName": "TestModel",
                     "properties": [
                         "string": "set correctly",
                         "childModel2": root.childModel!.uuid.UUIDString
@@ -167,12 +170,13 @@ class StateMessageTests: XCTestCase {
                 [
                     "type": "add",
                     "uuid": childUUID2.UUIDString,
-                    "properties": ["string": "ok2"],
-                    "clsName": "TestModel"
+                    "clsName": "TestModel",
+                    "properties": ["string": "ok2"]
                 ],
                 [
                     "type": "add",
                     "uuid": childUUID.UUIDString,
+                    "clsName": "TestModel",
                     "properties": [
                         "string": "ok1",
                         "childModel": childUUID2.UUIDString
@@ -182,6 +186,7 @@ class StateMessageTests: XCTestCase {
                 [
                     "type": "change",
                     "uuid": uuid.UUIDString,
+                    "clsName": "TestModel",
                     "properties": [
                         "string": "set correctly",
                         "childModel2": childUUID.UUIDString
@@ -210,6 +215,7 @@ class StateMessageTests: XCTestCase {
                 [
                     "type": "change",
                     "uuid": uuid.UUIDString,
+                    "clsName": "TestModel",
                     "properties": [
                         "string": "set correctly",
                         "testType": 1,

@@ -73,9 +73,9 @@ public class SyncFragment: Equatable {
     init(type: SyncFragmentType, modelObject: ModelObject) {
         self.type = type
         self.objectUUID = modelObject.uuid
+        self.clsName = modelObject.className
         
         if type == .Add {
-            self.clsName = modelObject.className
             applyPropertiesFromModelObject(modelObject)
         }
     }
@@ -134,12 +134,8 @@ public class SyncFragment: Equatable {
         }
         
         // Check validity of properties
-        if type == nil || objectUUID == nil {
-            logger.error("Could not unserialize SyncFragment. Type and objectUUID are required")
-            return nil
-        }
-        if type == .Add && clsName == nil {
-            logger.error("Could not unserialize SyncFragment. clsName is required for fragments of type Add")
+        if type == nil || objectUUID == nil || clsName == nil {
+            logger.error("Could not unserialize SyncFragment. Type, objectUUID and clsName are required")
             return nil
         }
 
