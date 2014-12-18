@@ -194,11 +194,9 @@ import Foundation
         
         if modelObject.parents.count > 0 {
             if let index = find(removedModelObjects, modelObject) {
-                var removedModelObjects = [ModelObject]()
-            } else {
-                if !applyingRemote {
-                    self.syncFragmentWithType(.Add, modelObject: modelObject)
-                }
+                removedModelObjects.removeAtIndex(index)
+            } else if !applyingRemote {
+                self.syncFragmentWithType(.Add, modelObject: modelObject)
             }
         }
     }
