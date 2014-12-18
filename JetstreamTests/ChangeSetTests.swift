@@ -81,4 +81,38 @@ class ChangeSetTests: XCTestCase {
         XCTAssert(root.childModel == child, "Change set reverted")
         XCTAssertEqual(scope.modelObjects.count, 2 , "Scope knows correct models")
     }
+    
+    func testArrayReversal() {
+        root.array.append(child)
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
+        XCTAssertEqual(changeSet.syncFragments.count, 2, "Correct number of sync fragments")
+        
+        
+        changeSet.revertOnScope(scope)
+        
+        XCTAssertEqual(root.array.count, 0, "Change set reverted")
+        XCTAssertEqual(scope.modelObjects.count, 1 , "Scope knows correct models")
+    }
+    
+    func testMovingChildModel() {
+        root.childModel = child
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
+        XCTAssertEqual(changeSet.syncFragments.count, 2, "Correct number of sync fragments")
+        
+        root.childModel = nil
+        root.childModel2 = child
+        
+        changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
+        XCTAssertEqual(changeSet.syncFragments.count, 1, "No add fragment created")
+        
+        root.childModel2 = nil
+        
+        changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
+        XCTAssertEqual(changeSet.syncFragments.count, 1, "No add fragment created")
+        
+        root.childModel = child
+        
+        changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), atomic: false, scope: scope)
+        XCTAssertEqual(changeSet.syncFragments.count, 2, "Add fragment created")
+    }
 }
