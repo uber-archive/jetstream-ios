@@ -436,11 +436,11 @@ public class ModelObject: NSObject, Observable {
     /// :param: callback The closure that gets executed every time the collection adds an element. Set the type of the element
     /// in the callback to the appropriate type of the collection.
     /// :returns: A function that cancels the observation when invoked.
-    public func observeCollectionAdd<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver {
+    public func observeCollectionAdd<T>(observer: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver {
         assert(properties[key] != nil, "no property found for key '\(key)'")
         assert(properties[key]!.valueType == ModelValueType.Array, "property '\(key)' is not an Array")
         
-        let listener = onModelAddedToCollection.listen(listener) { (key, element, atIndex) -> Void in
+        let listener = onModelAddedToCollection.listen(observer) { (key, element, atIndex) -> Void in
             if let definiteElement = element as? T {
                 callback(element: element as T)
             }
@@ -522,12 +522,14 @@ public class ModelObject: NSObject, Observable {
     ///
     /// :param: listener The listener to remove.
     public func removeObservers(listener: AnyObject) {
+        onPropertyChange.removeListener(listener)
         onModelAddedToCollection.removeListener(listener)
         onModelRemovedFromCollection.removeListener(listener)
         onDetachedFromScope.removeListener(listener)
         onAttachToScope.removeListener(listener)
         onAddedParent.removeListener(listener)
         onRemovedParent.removeListener(listener)
+        onTreeChange.removeListener(listener)
     }
     
     /// Removes the ModelObject from its scope.
