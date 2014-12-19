@@ -339,4 +339,18 @@ class ScopeTests: XCTestCase {
         parent.string = "changed"
         waitForExpectationsWithTimeout(1, handler: nil)
     }
+    
+    func testMinUpdateInterval() {
+        parent.setScopeAndMakeRootModel(scope)
+        scope.getAndClearSyncFragments()
+        
+        let date = NSDate()
+        var syncFragmentCount = 0
+        while NSDate().timeIntervalSinceDate(date) < 0.14 {
+            parent.throttledProperty++
+            let fragments = scope.getAndClearSyncFragments()
+            syncFragmentCount += fragments.count
+        }
+        XCTAssertEqual(syncFragmentCount, 3, "Only 3 fragments created")
+    }
 }

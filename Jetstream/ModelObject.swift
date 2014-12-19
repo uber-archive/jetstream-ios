@@ -50,6 +50,7 @@ struct PropertyInfo {
     let defaultValue: AnyObject?
     let acceptsNil: Bool
     let dontSync: Bool
+    let minUpdateInterval: NSTimeInterval
 }
 
 public protocol Observable {
@@ -79,6 +80,10 @@ public enum PropertyAttribute {
     /// relies on a number of other properties. Whenever any of the dependent properties change, the composite property
     /// internally also triggers a change event. The array of strings defines the dependent properties.
     case Composite([String])
+    
+    /// Marks the property to have a minimum update interval. Any updates to this property happening more frequently than
+    /// the minimum sync interval won't be send out.
+    case MinSyncInterval(NSTimeInterval)
 }
 
 /// The base class for all of you model classes. The ModelObject provides a number of ways to listen to changes occuring
@@ -576,6 +581,8 @@ public class ModelObject: NSObject, Observable {
                             valueType = .ModelObject
                         }
                         
+                        var minUpdateInterval = 0.0
+                        
                         if let attributes = additionalPropertyAttributes[propertyName] {
                             for attribute in attributes {
                                 switch attribute {
@@ -584,6 +591,8 @@ public class ModelObject: NSObject, Observable {
                                 case .Composite:
                                     dontSync = true
                                     valueType = .Composite
+                                case .MinSyncInterval(let updateInterval):
+                                    minUpdateInterval = updateInterval
                                 }
                             }
                         }
@@ -595,7 +604,7 @@ public class ModelObject: NSObject, Observable {
                                 // TODO: Check if property is an optional
                                 var acceptsNil = modelValueIsNillable(definiteValueType)
                                 
-                                trackedProperties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue, acceptsNil: acceptsNil, dontSync: dontSync)
+                                trackedProperties[propertyName] = PropertyInfo(key: propertyName, valueType: definiteValueType, defaultValue: defaultValue, acceptsNil: acceptsNil, dontSync: dontSync, minUpdateInterval: minUpdateInterval)
                             }
                         }
                     }
