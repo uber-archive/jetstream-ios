@@ -53,6 +53,7 @@ import Foundation
     
     var syncFragmentLookup = [NSUUID: SyncFragment]()
     var syncFragments = [SyncFragment]()
+    var removedModelObjects = [ModelObject]()
     var modelObjects = [ModelObject]()
     var modelHash = [NSUUID: ModelObject]()
     var applyingRemote = false
@@ -80,6 +81,7 @@ import Foundation
         let fragments = syncFragments
         syncFragments.removeAll(keepCapacity: false)
         syncFragmentLookup.removeAll(keepCapacity: false)
+        removedModelObjects.removeAll(keepCapacity: false)
         return fragments.filter { (fragment) -> Bool in
             // Filter out any empty change fragments
             if fragment.type == .Change &&
@@ -191,7 +193,9 @@ import Foundation
         }
         
         if modelObject.parents.count > 0 {
-            if !applyingRemote {
+            if let index = find(removedModelObjects, modelObject) {
+                removedModelObjects.removeAtIndex(index)
+            } else if !applyingRemote {
                 self.syncFragmentWithType(.Add, modelObject: modelObject)
             }
         }
@@ -200,6 +204,7 @@ import Foundation
     func removeModelObject(modelObject: ModelObject) {
         modelObjects = modelObjects.filter { $0 != modelObject }
         modelHash.removeValueForKey(modelObject.uuid)
+        removedModelObjects.append(modelObject)
         modelObject.onPropertyChange.removeListener(self)
         modelObject.onDetachedFromScope.removeListener(self)
         if let fragment = syncFragmentLookup[modelObject.uuid] {
