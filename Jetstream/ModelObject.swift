@@ -82,7 +82,7 @@ public enum PropertyAttribute {
     case Composite([String])
     
     /// Marks the property to have a minimum update interval. Any updates to this property happening more frequently than
-    /// the minimum sync interval won't be send out.
+    /// the minimum sync interval won't be sent out.
     case MinSyncInterval(NSTimeInterval)
 }
 
