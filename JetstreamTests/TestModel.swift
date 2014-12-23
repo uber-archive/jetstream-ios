@@ -51,7 +51,7 @@ import Jetstream
     dynamic var childModel: TestModel?
     dynamic var childModel2: TestModel?
     
-    
+    dynamic var throttledProperty: Int = 0
     
     private var nonDynamicInt: Int = 0
     private var nonDynamicString = ""
@@ -63,7 +63,8 @@ import Jetstream
     override public class func getPropertyAttributes() -> [String: [PropertyAttribute]] {
         return [
             "localString": [.Local],
-            "compositeProperty": [.Composite(["float", "anotherArray"])]
+            "compositeProperty": [.Composite(["float", "anotherArray"])],
+            "throttledProperty": [.MinSyncInterval(0.05)]
         ]
     }
 }

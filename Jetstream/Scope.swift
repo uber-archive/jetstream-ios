@@ -59,6 +59,7 @@ import Foundation
     var applyingRemote = false
     var changesQueued = false
     var changeInterval: NSTimeInterval
+    var propertyUpdateDates = [String: NSDate]()
     
     var incomingPauseCount = 0
     typealias incomingCallback = () -> Void
@@ -176,18 +177,32 @@ import Foundation
         
         modelObject.onPropertyChange.listen(self) { [weak self] (key, oldValue, value) -> () in
             if let this = self {
-                if !this.applyingRemote {
-                    if let property = modelObject.properties[key] {
-                        if !property.dontSync {
-                            var modelValue: ModelValue?
-                            if value != nil {
-                                modelValue = convertAnyObjectToModelValue(value!, property.valueType)
-                            }
-                            if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
-                                fragment.newValueForKeyFromModelObject(key, newValue: modelValue, oldValue: oldValue, modelObject: modelObject)
+                if this.applyingRemote {
+                    return
+                }
+                if let property = modelObject.properties[key] {
+                    if property.dontSync {
+                        return
+                    }
+                    if property.minUpdateInterval > 0 {
+                        let now = NSDate()
+                        let objectKeyIdentifier = "\(modelObject.uuid.UUIDString)_\(key)"
+                        if let date = this.propertyUpdateDates[objectKeyIdentifier] {
+                            if now.timeIntervalSinceDate(date) < property.minUpdateInterval {
+                                return
                             }
                         }
+                        this.propertyUpdateDates[objectKeyIdentifier] = now
                     }
+                    
+                    var modelValue: ModelValue?
+                    if value != nil {
+                        modelValue = convertAnyObjectToModelValue(value!, property.valueType)
+                    }
+                    if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
+                        fragment.newValueForKeyFromModelObject(key, newValue: modelValue, oldValue: oldValue, modelObject: modelObject)
+                    }
+                    
                 }
             }
         }
