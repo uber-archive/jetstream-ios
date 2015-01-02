@@ -151,10 +151,14 @@ import Foundation
     }
     
     public func createAtomicChangeSet(changes: () -> Void) -> ChangeSet {
+        return createAtomicChangeSet(nil, changes)
+    }
+    
+    public func createAtomicChangeSet(procedure: String?, changes: () -> Void) -> ChangeSet {
         sendChanges()
         changes()
         var syncFragments = getAndClearSyncFragments()
-        let changeSet = ChangeSet(syncFragments: syncFragments, atomic: true, scope: self)
+        let changeSet = ChangeSet(syncFragments: syncFragments, procedure: procedure, atomic: true, scope: self)
         onChanges.fire(changeSet)
         return changeSet
     }
@@ -288,7 +292,7 @@ import Foundation
             changesQueued = false
             var syncFragments = getAndClearSyncFragments()
             if syncFragments.count > 0 {
-                let changeSet = ChangeSet(syncFragments: syncFragments, atomic: false, scope: self)
+                let changeSet = ChangeSet(syncFragments: syncFragments, scope: self)
                 onChanges.fire(changeSet)
             }
         }

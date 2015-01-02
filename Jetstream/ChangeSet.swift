@@ -46,6 +46,9 @@ public class ChangeSet: Equatable {
         }
     }
     
+    /// Name of procedure if a ChangeSet is performing one.
+    public private(set) var procedure: String?
+    
     /// Whether the ChangeSet is atomic.
     public private(set) var atomic: Bool = false
     
@@ -67,10 +70,12 @@ public class ChangeSet: Equatable {
     /// Constructs the ChangeSet.
     ///
     /// :param: syncFragments An array of sync fragments that make up the ChangeSet.
+    /// :param: procedure Name of procedure if a ChangeSet is performing one.
     /// :param: atomic Whether the ChangeSet should be applied atomically (either all fragments are applied sucessfully or none are applied successfully).
     /// :param: scope The scope of the change set.
-    public init(syncFragments: [SyncFragment], atomic: Bool, scope: Scope) {
+    public init(syncFragments: [SyncFragment], procedure: String?, atomic: Bool, scope: Scope) {
         self.syncFragments = syncFragments
+        self.procedure = procedure
         self.atomic = atomic
         
         for syncFragment in syncFragments {
@@ -89,6 +94,10 @@ public class ChangeSet: Equatable {
                 }
             }
         }
+    }
+    
+    public convenience init(syncFragments: [SyncFragment], scope: Scope) {
+        self.init(syncFragments: syncFragments, procedure: nil, atomic: false, scope: scope)
     }
     
     // MARK: - Public Interface
