@@ -60,10 +60,10 @@ public class Constraint {
     public let properties: [String: AnyObject]
     public let allowAdditionalProperties: Bool
     
-    public init(type: SyncFragmentType, clsName: String, properties: [String: AnyObject] = [String: AnyObject](), allowAdditionalProperties: Bool = true) {
+    public init(type: SyncFragmentType, clsName: String, properties: [String: AnyObject]? = nil, allowAdditionalProperties: Bool = true) {
         self.type = type
         self.clsName = clsName
-        self.properties = properties
+        self.properties = properties == nil ? [String: AnyObject]() : properties!
         self.allowAdditionalProperties = allowAdditionalProperties
     }
     
