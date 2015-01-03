@@ -149,16 +149,18 @@ import Foundation
             incomingQueue.removeAll(keepCapacity: false)
         }
     }
-    
-    public func createAtomicChangeSet(changes: () -> Void) -> ChangeSet {
-        return createAtomicChangeSet(nil, changes)
-    }
-    
-    public func createAtomicChangeSet(procedure: String?, changes: () -> Void) -> ChangeSet {
+
+    public func createAtomicChangeSet(changes: () -> Void, procedure: String? = nil, constraints: [Constraint]? = nil) -> ChangeSet {
         sendChanges()
         changes()
         var syncFragments = getAndClearSyncFragments()
         let changeSet = ChangeSet(syncFragments: syncFragments, procedure: procedure, atomic: true, scope: self)
+        if let definiteConstraints = constraints {
+            if !Constraint.matchesAll(definiteConstraints, syncFragments: syncFragments) {
+                changeSet.revertOnScope(self)
+                return changeSet
+            }
+        }
         onChanges.fire(changeSet)
         return changeSet
     }

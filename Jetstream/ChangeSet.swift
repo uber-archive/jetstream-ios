@@ -57,6 +57,7 @@ public class ChangeSet: Equatable {
     
     var changeSetQueue: ChangeSetQueue?
     var touches = [ModelObject: [String: AnyObject]]()
+    var error: NSError?
     
     var pendingChangeSets: [ChangeSet] {
         if let definiteChangeSetQueue = changeSetQueue {
@@ -94,6 +95,12 @@ public class ChangeSet: Equatable {
                 }
             }
         }
+        
+        onError.listen(self) { [weak self] error in
+            if let definiteSelf = self {
+                definiteSelf.error = error
+            }
+        }
     }
     
     public convenience init(syncFragments: [SyncFragment], scope: Scope) {
@@ -110,11 +117,33 @@ public class ChangeSet: Equatable {
     /// with an optional error argument, which describes what went wrong applying the ChangeSet on the Jetstream server.
     /// :returns: A function that cancels the observation when invoked.
     public func observeCompletion(observer: AnyObject, callback: (error: NSError?) -> Void) -> CancelObserver {
-        let listener = onCompletion.listenOnce(observer) { callback(error: nil) }
-        let errorListener = onError.listenOnce(observer) { error in callback(error: error) }
+        // If already completed or failed then fire immediately
+        if state != .Syncing {
+            callback(error: error)
+            return {}
+        }
+        
+        var listener: SignalListener<Void>?
+        var errorListener: SignalListener<NSError>?
+        
+        listener = onCompletion.listenOnce(observer) {
+            callback(error: nil)
+            // Want to ensure we only fire one or the other just once
+            if let definiteErrorListener = errorListener {
+                definiteErrorListener.cancel()
+            }
+        }
+        errorListener = onError.listenOnce(observer) { error in
+            callback(error: error)
+            // Want to ensure we only fire one or the other just once
+            if let definiteListener = listener {
+                definiteListener.cancel()
+            }
+        }
+        
         return {
-            listener.cancel()
-            errorListener.cancel()
+            listener?.cancel()
+            errorListener?.cancel()
         }
     }
     
