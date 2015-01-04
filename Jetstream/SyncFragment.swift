@@ -36,9 +36,14 @@ public enum SyncFragmentType: String {
 private let OnlyTransmitNonDefaultValues = false
 private var classPrefix: String?
 
-public class SyncFragment: Equatable {
+@objc public class SyncFragment: Equatable {
     /// The type of the fragment.
     public let type: SyncFragmentType
+    
+    /// Type of the fragment as string for introspection.
+    public var typeRawValue: String {
+        return type.rawValue
+    }
     
     /// The UUID of the object that the fragment is associated with.
     public let objectUUID: NSUUID

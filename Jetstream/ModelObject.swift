@@ -436,7 +436,7 @@ public class ModelObject: NSObject, Observable {
     
     /// Fires a listener whenever a specific collection adds an element.
     ///
-    /// :param: listener The listener to attach to the event.
+    /// :param: observer The listener to attach to the event.
     /// :param: key The key of the the collection to listen to.
     /// :param: callback The closure that gets executed every time the collection adds an element. Set the type of the element
     /// in the callback to the appropriate type of the collection.
@@ -449,26 +449,26 @@ public class ModelObject: NSObject, Observable {
             if let definiteElement = element as? T {
                 callback(element: element as T)
             }
-            }.filter { $0.key == key}
+        }.filter { $0.key == key}
         return { listener.cancel() }
     }
     
     /// Fires a listener whenever a specific collection removes an element.
     ///
-    /// :param: listener The listener to attach to the event.
+    /// :param: observer The listener to attach to the event.
     /// :param: key The key of the the collection to listen to.
     /// :param: callback The closure that gets executed every time the collection removes an element. Set the type of the element
     /// in the callback to the appropriate type of the collection.
     /// :returns: A function that cancels the observation when invoked.
-    public func observeCollectionRemove<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver {
+    public func observeCollectionRemove<T>(observer: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver {
         assert(properties[key] != nil, "no property found for key '\(key)'")
         assert(properties[key]!.valueType == .Array, "property '\(key)' is not an Array")
         
-        let listener = onModelRemovedFromCollection.listen(listener) { (key, element, atIndex) -> Void in
+        let listener = onModelRemovedFromCollection.listen(observer) { (key, element, atIndex) -> Void in
             if let definiteElement = element as? T {
                 callback(element: element as T)
             }
-            }.filter { return $0.key == key }
+        }.filter { return $0.key == key }
         return { listener.cancel() }
     }
     

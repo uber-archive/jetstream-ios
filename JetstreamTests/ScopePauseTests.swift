@@ -57,7 +57,7 @@ class ScopePauseTest: XCTestCase {
                     "clsName": "TestModel",
                     "properties": [
                         "string": "set correctly",
-                        "int": 10,
+                        "integer": 10,
                         "childModel": childUUID.UUIDString
                     ]
                 ],
@@ -128,18 +128,18 @@ class ScopePauseTest: XCTestCase {
                     "type": "change",
                     "uuid": uuid.UUIDString,
                     "clsName": "TestModel",
-                    "properties": ["int": 20],
+                    "properties": ["integer": 20],
                 ]
             ]
         ]
         client.receivedMessage(NetworkMessage.unserialize(json)!)
         
         XCTAssertEqual(root.string!, "set correctly", "Property not yet changed")
-        XCTAssertEqual(root.int, 10, "Property not yet changed")
+        XCTAssertEqual(root.integer, 10, "Property not yet changed")
         
         root.scope?.resumeIncomingMessages()
         XCTAssertEqual(root.string!, "changed", "Property changed")
-        XCTAssertEqual(root.int, 20, "Property changed")
+        XCTAssertEqual(root.integer, 20, "Property changed")
     }
     
 }

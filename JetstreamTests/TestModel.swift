@@ -26,10 +26,10 @@ import Jetstream
 
 @objc public class TestModel: ModelObject {
     dynamic var string: String?
-    dynamic var int: Int = 0
+    dynamic var integer: Int = 0
     dynamic var testType: TestType = .Normal
     dynamic var uint: UInt = 0
-    dynamic var float: Float = 0.0
+    dynamic var float32: Float = 0.0
     dynamic var uint8: UInt8 = 0
     dynamic var int8: Int8 = 0
     dynamic var uint16: UInt16 = 0
@@ -38,8 +38,8 @@ import Jetstream
     dynamic var int32: Int32 = 0
     dynamic var uint64: UInt64 = 0
     dynamic var int64: UInt64 = 0
-    dynamic var double: Double = 0
-    dynamic var bool: Bool = false
+    dynamic var double64: Double = 0
+    dynamic var boolean: Bool = false
     dynamic var date: NSDate?
     dynamic var color: UIColor?
     dynamic var image: UIImage?
@@ -57,13 +57,13 @@ import Jetstream
     private var nonDynamicString = ""
     
     var compositeProperty: String {
-        return "\(float) \(anotherArray.count)"
+        return "\(float32) \(anotherArray.count)"
     }
     
     override public class func getPropertyAttributes() -> [String: [PropertyAttribute]] {
         return [
             "localString": [.Local],
-            "compositeProperty": [.Composite(["float", "anotherArray"])],
+            "compositeProperty": [.Composite(["float32", "anotherArray"])],
             "throttledProperty": [.MinSyncInterval(0.05)]
         ]
     }

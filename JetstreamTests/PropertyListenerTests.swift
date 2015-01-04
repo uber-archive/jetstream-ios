@@ -50,8 +50,8 @@ class PropertyListenerTests: XCTestCase {
         }
 
         model.string = "test"
-        model.int = 1
-        model.float = 2.5
+        model.integer = 1
+        model.float32 = 2.5
         
         XCTAssertEqual(dispatchCount, 1 , "Dispatched once")
         
@@ -71,8 +71,8 @@ class PropertyListenerTests: XCTestCase {
         cancel()
         
         model.string = "test"
-        model.int = 1
-        model.float = 2.5
+        model.integer = 1
+        model.float32 = 2.5
         model.string = nil
         
         XCTAssertEqual(dispatchCount, 0 , "Never dispatehced")
@@ -83,13 +83,13 @@ class PropertyListenerTests: XCTestCase {
         var lastValue: NSString? = ""
         var dispatchCount = 0
         
-        model.observeChangeImmediately(self, keys: ["string", "int"]) {
+        model.observeChangeImmediately(self, keys: ["string", "integer"]) {
             dispatchCount += 1
         }
         
         model.string = "test"
-        model.int = 1
-        model.float = 2.5
+        model.integer = 1
+        model.float32 = 2.5
         
         XCTAssertEqual(dispatchCount, 2 , "Dispatched twice")
     }
@@ -104,8 +104,8 @@ class PropertyListenerTests: XCTestCase {
         }
         XCTAssertEqual(dispatchCount, 0 , "Dispatched once")
         
-        model.int = 10
-        model.int = 10
+        model.integer = 10
+        model.integer = 10
         XCTAssertEqual(dispatchCount, 1 , "Dispatched once")
         
         model.uint = 10
@@ -144,8 +144,8 @@ class PropertyListenerTests: XCTestCase {
         model.int64 = 10
         XCTAssertEqual(dispatchCount, 10 , "Dispatched once")
         
-        model.bool = true
-        model.bool = true
+        model.boolean = true
+        model.boolean = true
         XCTAssertEqual(dispatchCount, 11 , "Dispatched once")
         
         model.string = "test"
@@ -156,20 +156,20 @@ class PropertyListenerTests: XCTestCase {
         model.string = "test 2"
         XCTAssertEqual(dispatchCount, 13 , "Dispatched once")
         
-        model.float = 10.0
-        model.float = 10.0
+        model.float32 = 10.0
+        model.float32 = 10.0
         XCTAssertEqual(dispatchCount, 15 , "Dispatched twice") // float is part of composite property
         
-        model.float = 10.1
-        model.float = 10.2
+        model.float32 = 10.1
+        model.float32 = 10.2
         XCTAssertEqual(dispatchCount, 19 , "Dispatched four times") // float is part of composite property
         
-        model.double = 10.0
-        model.double = 10.0
+        model.double64 = 10.0
+        model.double64 = 10.0
         XCTAssertEqual(dispatchCount, 20 , "Dispatched once")
         
-        model.double = 10.1
-        model.double = 10.2
+        model.double64 = 10.1
+        model.double64 = 10.2
         XCTAssertEqual(dispatchCount, 22 , "Dispatched twice")
         
         model.testType = .Active
@@ -245,7 +245,7 @@ class PropertyListenerTests: XCTestCase {
                 XCTAssertEqual(changedCount2, 1 , "Correct dispatch count")
                 XCTAssertEqual(changedCount3, 0 , "Correct dispatch count")
                 child.string = "changed this"
-                child.bool = true
+                child.boolean = true
                 
                 delay(0.001) {
                     XCTAssertEqual(changedCount1, 3 , "Correct dispatch count")
@@ -253,7 +253,7 @@ class PropertyListenerTests: XCTestCase {
                     XCTAssertEqual(changedCount3, 0 , "Correct dispatch count")
                     
                     child2.string = "changed this"
-                    child2.bool = true
+                    child2.boolean = true
                     
                     delay(0.001) {
                         XCTAssertEqual(changedCount1, 4 , "Correct dispatch count")

@@ -44,92 +44,92 @@ class ChangeSetQueueTests: XCTestCase {
     }
     
     func testCompleting() {
-        root.int = 1
-        root.float = 1.0
+        root.integer = 1
+        root.float32 = 1.0
         root.string = "test 1"
         scope.getAndClearSyncFragments()
         
-        root.int = 2
-        root.float = 2.0
+        root.integer = 2
+        root.float32 = 2.0
         root.string = "test 2"
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         changeSet.completed()
         
-        XCTAssertEqual(root.int, 2, "Change set not reverted")
-        XCTAssertEqual(root.float, Float(2.0), "Change set not reverted")
+        XCTAssertEqual(root.integer, 2, "Change set not reverted")
+        XCTAssertEqual(root.float32, Float(2.0), "Change set not reverted")
         XCTAssertEqual(root.string!, "test 2", "Change set not reverted")
         XCTAssertEqual(queue.count, 0, "Queue empty")
     }
     
     func testReverting() {
-        root.int = 1
-        root.float = 1.0
+        root.integer = 1
+        root.float32 = 1.0
         root.string = "test 1"
         scope.getAndClearSyncFragments()
         
-        root.int = 2
-        root.float = 2.0
+        root.integer = 2
+        root.float32 = 2.0
         root.string = "test 2"
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         changeSet.revertOnScope(scope)
         
-        XCTAssertEqual(root.int, 1, "Change set reverted")
-        XCTAssertEqual(root.float, Float(1.0), "Change set reverted")
+        XCTAssertEqual(root.integer, 1, "Change set reverted")
+        XCTAssertEqual(root.float32, Float(1.0), "Change set reverted")
         XCTAssertEqual(root.string!, "test 1", "Change set reverted")
         XCTAssertEqual(queue.count, 0, "Queue empty")
     }
     
     func testRebasing() {
-        root.int = 1
-        root.float = 1.0
+        root.integer = 1
+        root.float32 = 1.0
         root.string = "test 1"
         scope.getAndClearSyncFragments()
         
-        root.int = 2
-        root.float = 2.0
+        root.integer = 2
+        root.float32 = 2.0
         root.string = "test 2"
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         
-        root.int = 3
-        root.float = 3.0
+        root.integer = 3
+        root.float32 = 3.0
         root.string = "test 3"
         var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet2)
         
         changeSet.revertOnScope(scope)
         XCTAssertEqual(queue.count, 1, "Queue contains one change set")
-        XCTAssertEqual(root.int, 3, "Change set reverted")
-        XCTAssertEqual(root.float, Float(3.0), "Change set reverted")
+        XCTAssertEqual(root.integer, 3, "Change set reverted")
+        XCTAssertEqual(root.float32, Float(3.0), "Change set reverted")
         XCTAssertEqual(root.string!, "test 3", "Change set reverted")
         
         changeSet2.revertOnScope(scope)
         
-        XCTAssertEqual(root.int, 1, "Change set reverted")
-        XCTAssertEqual(root.float, Float(1.0), "Change set reverted")
+        XCTAssertEqual(root.integer, 1, "Change set reverted")
+        XCTAssertEqual(root.float32, Float(1.0), "Change set reverted")
         XCTAssertEqual(root.string!, "test 1", "Change set reverted")
         XCTAssertEqual(queue.count, 0, "Queue empty")
     }
     
     func testSubsetRebasing() {
-        root.int = 1
-        root.float = 1.0
+        root.integer = 1
+        root.float32 = 1.0
         root.string = "test 1"
         scope.getAndClearSyncFragments()
         
-        root.int = 2
+        root.integer = 2
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         
-        root.int = 3
-        root.float = 3.0
+        root.integer = 3
+        root.float32 = 3.0
         var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet2)
         
-        root.int = 4
-        root.float = 4.0
+        root.integer = 4
+        root.float32 = 4.0
         root.string = "test 4"
         var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet3)
@@ -138,30 +138,30 @@ class ChangeSetQueueTests: XCTestCase {
         changeSet2.revertOnScope(scope)
         changeSet3.revertOnScope(scope)
         
-        XCTAssertEqual(root.int, 1, "Change set reverted")
-        XCTAssertEqual(root.float, Float(1.0), "Change set reverted")
+        XCTAssertEqual(root.integer, 1, "Change set reverted")
+        XCTAssertEqual(root.float32, Float(1.0), "Change set reverted")
         XCTAssertEqual(root.string!, "test 1", "Change set reverted")
         XCTAssertEqual(queue.count, 0, "Queue empty")
     }
     
     func testSupersetRebasing() {
-        root.int = 1
-        root.float = 1.0
+        root.integer = 1
+        root.float32 = 1.0
         root.string = "test 1"
         scope.getAndClearSyncFragments()
         
-        root.int = 2
-        root.float = 2.0
+        root.integer = 2
+        root.float32 = 2.0
         root.string = "test 2"
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         
-        root.int = 3
-        root.float = 3.0
+        root.integer = 3
+        root.float32 = 3.0
         var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet2)
         
-        root.int = 4
+        root.integer = 4
         var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet3)
         
@@ -169,26 +169,26 @@ class ChangeSetQueueTests: XCTestCase {
         changeSet2.revertOnScope(scope)
         changeSet3.revertOnScope(scope)
         
-        XCTAssertEqual(root.int, 1, "Change set reverted")
-        XCTAssertEqual(root.float, Float(1.0), "Change set reverted")
+        XCTAssertEqual(root.integer, 1, "Change set reverted")
+        XCTAssertEqual(root.float32, Float(1.0), "Change set reverted")
         XCTAssertEqual(root.string!, "test 1", "Change set reverted")
         XCTAssertEqual(queue.count, 0, "Queue empty")
     }
     
     func testReverseInBetweenChangeSet() {
-        root.int = 1
-        root.float = 1.0
+        root.integer = 1
+        root.float32 = 1.0
         root.string = "test 1"
         scope.getAndClearSyncFragments()
         
-        root.int = 2
-        root.float = 2.0
+        root.integer = 2
+        root.float32 = 2.0
         root.string = "test 2"
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         
-        root.int = 3
-        root.float = 3.0
+        root.integer = 3
+        root.float32 = 3.0
         root.string = "test 3"
         var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet2)
@@ -196,31 +196,31 @@ class ChangeSetQueueTests: XCTestCase {
         changeSet.revertOnScope(scope)
         changeSet2.completed()
         
-        XCTAssertEqual(root.int, 3, "Change set reverted")
-        XCTAssertEqual(root.float, Float(3.0), "Change set reverted")
+        XCTAssertEqual(root.integer, 3, "Change set reverted")
+        XCTAssertEqual(root.float32, Float(3.0), "Change set reverted")
         XCTAssertEqual(root.string!, "test 3", "Change set reverted")
         XCTAssertEqual(queue.count, 0, "Queue empty")
     }
     
     func testRebasingOverChangeSets() {
-        root.int = 1
-        root.float = 1.0
+        root.integer = 1
+        root.float32 = 1.0
         root.string = "test 1"
         scope.getAndClearSyncFragments()
         
-        root.int = 2
-        root.float = 2.0
+        root.integer = 2
+        root.float32 = 2.0
         root.string = "test 2"
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         
-        root.int = 3
+        root.integer = 3
         root.string = "test 3"
         var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet2)
         
-        root.int = 4
-        root.float = 4.0
+        root.integer = 4
+        root.float32 = 4.0
         root.string = "test 4"
         var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet3)
@@ -229,8 +229,8 @@ class ChangeSetQueueTests: XCTestCase {
         changeSet2.revertOnScope(scope)
         changeSet3.revertOnScope(scope)
         
-        XCTAssertEqual(root.int, 1, "Change set reverted")
-        XCTAssertEqual(root.float, Float(1.0), "Change set reverted")
+        XCTAssertEqual(root.integer, 1, "Change set reverted")
+        XCTAssertEqual(root.float32, Float(1.0), "Change set reverted")
         XCTAssertEqual(root.string!, "test 1", "Change set reverted")
         XCTAssertEqual(queue.count, 0, "Queue empty")
     }

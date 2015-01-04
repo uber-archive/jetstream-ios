@@ -43,19 +43,19 @@ class ChangeSetTests: XCTestCase {
     }
     
     func testBasicReversal() {
-        root.int = 10
-        root.float = 10.0
+        root.integer = 10
+        root.float32 = 10.0
         root.string = "test"
         scope.getAndClearSyncFragments()
         
-        root.int = 20
-        root.float = 20.0
+        root.integer = 20
+        root.float32 = 20.0
         root.string = "test 2"
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         changeSet.revertOnScope(scope)
         
-        XCTAssertEqual(root.int, 10, "Change set reverted")
-        XCTAssertEqual(root.float, Float(10.0), "Change set reverted")
+        XCTAssertEqual(root.integer, 10, "Change set reverted")
+        XCTAssertEqual(root.float32, Float(10.0), "Change set reverted")
         XCTAssertEqual(root.string!, "test", "Change set reverted")
     }
     

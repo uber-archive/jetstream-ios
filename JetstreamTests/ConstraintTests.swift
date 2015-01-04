@@ -46,7 +46,7 @@ class ConstraintTests: XCTestCase {
                 "type": "change",
                 "uuid": NSUUID().UUIDString,
                 "clsName": "TestModel",
-                "properties": ["int": 3]
+                "properties": ["integer": 3]
             ]
         ]
         var fragments = json.map { SyncFragment.unserialize($0)! }
@@ -59,7 +59,7 @@ class ConstraintTests: XCTestCase {
             "anotherString": "set correctly"
         ]
         var constraints3: [String: AnyObject] = [
-            "int": 3
+            "integer": 3
         ]
         var constraints = [
             Constraint(type: .Add, clsName: "TestModel", properties: constraints1, allowAdditionalProperties: false),
@@ -101,7 +101,7 @@ class ConstraintTests: XCTestCase {
             "type": "add",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
-            "properties": ["string": "set correctly", "int": 3]
+            "properties": ["string": "set correctly", "integer": 3]
         ]
         var fragment = SyncFragment.unserialize(json)
         
@@ -114,7 +114,7 @@ class ConstraintTests: XCTestCase {
             "type": "add",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
-            "properties": ["string": "set correctly", "int": 3]
+            "properties": ["string": "set correctly", "integer": 3]
         ]
         var fragment = SyncFragment.unserialize(json)
         

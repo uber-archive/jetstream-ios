@@ -50,8 +50,8 @@ class DependencyTests: XCTestCase {
             fireCount2 += 1
         }
         
-        testModel.float = 2.0
-        testModel.float = 3.0
+        testModel.float32 = 2.0
+        testModel.float32 = 3.0
         testModel.anotherArray = [anotherTestModel]
         
         XCTAssertEqual(fireCount1, 3, "Dispatched three times")

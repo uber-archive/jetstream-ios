@@ -31,7 +31,7 @@ public enum ChangeSetState {
     case Reverted
 }
 
-public class ChangeSet: Equatable {
+@objc public class ChangeSet: Equatable {
     /// A signal that fires whenever the state of the change set changes.
     public let onStateChange = Signal<ChangeSetState>()
     public let onCompletion = Signal<Void>()

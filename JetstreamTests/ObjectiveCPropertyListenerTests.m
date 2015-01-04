@@ -1,5 +1,5 @@
 //
-//  ModelTests.swift
+//  ObjectiveCTests.m
 //  Jetstream
 //
 //  Copyright (c) 2014 Uber Technologies, Inc.
@@ -22,20 +22,48 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import UIKit
-import XCTest
+#import <XCTest/XCTest.h>
+#import <JetstreamTests-Swift.h>
 
-class ModelTests: XCTestCase {
-    func testModelProperties() {
-        var model = TestModel()
-        
-        var prop = model.properties["integer"]
-        XCTAssertEqual(prop!.key, "integer" , "Property recognized")
-        
-        prop = model.properties["nonDynamicInt"]
-        XCTAssert(prop == nil, "Non-dynamic property not recognized")
-        
-        prop = model.properties["nonDynamicString"]
-        XCTAssert(prop == nil, "Non-dynamic property not recognized")
-    }
+@interface ObjectiveCPropertyListenerTests : XCTestCase
+@end
+
+@implementation ObjectiveCPropertyListenerTests
+
+- (void)testSpecificPropertyListeners {
+    TestModel *test = [[TestModel alloc] init];
+    __block NSUInteger dispatchCount = 0;
+    
+    [test observeChangeImmediately:self key:@"string" callback:^{
+        dispatchCount++;
+    }];
+    
+    test.string = @"test";
+    test.int8 = 1;
+    test.int16 = 2;
+    
+    XCTAssertEqual(dispatchCount, 1, "Dispatched once");
+    
+    test.string = nil;
+    
+    XCTAssertEqual(dispatchCount, 2, "Dispatched once");
 }
+
+- (void)testArrayListeners {
+    TestModel *model = [[TestModel alloc] init];
+    __block NSUInteger changedCount = 0;
+    
+    [model observeChangeImmediately:self key:@"array" callback:^{
+        changedCount++;
+    }];
+    
+    model.array = [model.array arrayByAddingObject:[[TestModel alloc] init]];
+    model.array = @[[[TestModel alloc] init]];
+    model.array = @[];
+    model.array = @[[[TestModel alloc] init]];
+
+    XCTAssertEqual(changedCount, 4 , "Dispatched four times");
+}
+
+@end
+
