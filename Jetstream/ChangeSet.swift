@@ -126,14 +126,14 @@ public enum ChangeSetState {
         var listener: SignalListener<Void>?
         var errorListener: SignalListener<NSError>?
         
-        listener = onCompletion.listenOnce(observer) {
+        listener = onCompletion.listenOnce(observer) { [weak errorListener] in
             callback(error: nil)
             // Want to ensure we only fire one or the other just once
             if let definiteErrorListener = errorListener {
                 definiteErrorListener.cancel()
             }
         }
-        errorListener = onError.listenOnce(observer) { error in
+        errorListener = onError.listenOnce(observer) { [weak listener] error in
             callback(error: error)
             // Want to ensure we only fire one or the other just once
             if let definiteListener = listener {
@@ -141,7 +141,7 @@ public enum ChangeSetState {
             }
         }
         
-        return {
+        return { [weak listener, errorListener] in
             listener?.cancel()
             errorListener?.cancel()
         }
