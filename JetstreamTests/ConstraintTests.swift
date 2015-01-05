@@ -67,7 +67,23 @@ class ConstraintTests: XCTestCase {
             Constraint(type: .Change, clsName: "TestModel", properties: constraints3, allowAdditionalProperties: false),
         ]
         
-        XCTAssertTrue(Constraint.matchesAll(constraints, syncFragments: fragments), "Constraint should match fragment")
+        XCTAssertTrue(Constraint.matchesAllConstraints(constraints, syncFragments: fragments), "Constraint should match fragment")
+    }
+    
+    func testSimpleValueExistsChangeMatching() {
+        var json: [String: AnyObject] = [
+            "type": "change",
+            "uuid": NSUUID().UUIDString,
+            "clsName": "TestModel",
+            "properties": ["string": "set new value", "integer": NSNull()]
+        ]
+        var fragment = SyncFragment.unserialize(json)
+        
+        let constraint = Constraint(type: .Change, clsName: "TestModel", properties: [
+            "string": HasNewValuePropertyConstraint(),
+            "integer": HasNewValuePropertyConstraint()
+        ])
+        XCTAssertTrue(constraint.matches(fragment!), "Constraint should match fragment")
     }
     
     func testSimpleAddMatching() {
@@ -133,7 +149,7 @@ class ConstraintTests: XCTestCase {
         
         let constraint = Constraint(type: .Add, clsName: "TestModel", properties: [
             "string": "set correctly",
-            "array": ArrayConstraintOperation(type: .Insert)
+            "array": ArrayPropertyConstraint(type: .Insert)
         ], allowAdditionalProperties: false)
         XCTAssertTrue(constraint.matches(fragment!), "Constraint should match fragment")
     }
@@ -152,8 +168,8 @@ class ConstraintTests: XCTestCase {
         
         let constraint = Constraint(type: .Change, clsName: "TestModel", properties: [
             "string": "set correctly",
-            "array": ArrayConstraintOperation(type: .Insert)
-            ], allowAdditionalProperties: false)
+            "array": ArrayPropertyConstraint(type: .Insert)
+        ], allowAdditionalProperties: false)
         XCTAssertTrue(constraint.matches(fragment!), "Constraint should match fragment")
     }
     
@@ -171,8 +187,8 @@ class ConstraintTests: XCTestCase {
         
         let constraint = Constraint(type: .Change, clsName: "TestModel", properties: [
             "string": "set correctly",
-            "array": ArrayConstraintOperation(type: .Insert)
-            ], allowAdditionalProperties: false)
+            "array": ArrayPropertyConstraint(type: .Insert)
+        ], allowAdditionalProperties: false)
         XCTAssertFalse(constraint.matches(fragment!), "Constraint should match fragment")
     }
     
@@ -190,7 +206,7 @@ class ConstraintTests: XCTestCase {
         
         let constraint = Constraint(type: .Change, clsName: "TestModel", properties: [
             "string": "set correctly",
-            "array": ArrayConstraintOperation(type: .Remove)
+            "array": ArrayPropertyConstraint(type: .Remove)
         ], allowAdditionalProperties: false)
         XCTAssertTrue(constraint.matches(fragment!), "Constraint should match fragment")
     }
@@ -209,7 +225,7 @@ class ConstraintTests: XCTestCase {
         
         let constraint = Constraint(type: .Change, clsName: "TestModel", properties: [
             "string": "set correctly",
-            "array": ArrayConstraintOperation(type: .Remove)
+            "array": ArrayPropertyConstraint(type: .Remove)
         ], allowAdditionalProperties: false)
         XCTAssertFalse(constraint.matches(fragment!), "Constraint should match fragment")
     }

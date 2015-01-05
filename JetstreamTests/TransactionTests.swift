@@ -51,10 +51,10 @@ class TransactionTests: XCTestCase {
         super.tearDown()
     }
     
-    func testAtomicChangeSetSuccessfulCompletion() {
+    func testChangeSetSuccessfulCompletionWithoutModifications() {
         var didCall = false
         
-        let changeSet = root.scope!.createAtomicChangeSet {
+        let changeSet = root.scope!.modify {
             self.root.integer = 10
             self.root.float32 = 10.0
             self.root.string = "test"
@@ -84,13 +84,13 @@ class TransactionTests: XCTestCase {
     func testChangeSetSuccessfulCompletionWithModifications() {
         var didCall = false
         
-        let changeSet = root.scope!.createAtomicChangeSet {
+        let changeSet = root.scope!.modify {
             self.root.integer = 10
             self.root.float32 = 10.0
             self.root.string = "test"
-            }.observeCompletion(self) { error in
-                XCTAssertNil(error, "No error")
-                didCall = true
+        }.observeCompletion(self) { error in
+            XCTAssertNil(error, "No error")
+            didCall = true
         }
         
         var json: [String: AnyObject] = [
@@ -115,16 +115,16 @@ class TransactionTests: XCTestCase {
         XCTAssert(self.root.double64 == 20.0, "Applied modification")
     }
     
-    func testAtomicFragmentReplyMismatch() {
+    func testChangeSetFragmentReplyMismatch() {
         var didCall = false
         
-        let changeSet = root.scope!.createAtomicChangeSet {
+        let changeSet = root.scope!.modify {
             self.root.integer = 10
             self.root.float32 = 10.0
             self.root.string = "test"
-            }.observeCompletion(self) { error in
-                XCTAssertEqual(error!.localizedDescription, "Failed to apply change set", "Errored out")
-                didCall = true
+        }.observeCompletion(self) { error in
+            XCTAssertEqual(error!.localizedDescription, "Failed to apply change set", "Errored out")
+            didCall = true
         }
 
         var json: [String: AnyObject] = [
@@ -143,10 +143,10 @@ class TransactionTests: XCTestCase {
         XCTAssertNil(self.root.string, "Did rollback")
     }
     
-    func testAtomicChangeInvalidMessageTypeError() {
+    func testChangeInvalidMessageTypeError() {
         var didCall = false
         
-        let changeSet = root.scope!.createAtomicChangeSet {
+        let changeSet = root.scope!.modify {
             self.root.integer = 10
             self.root.float32 = 10.0
             self.root.string = "test"
@@ -166,7 +166,7 @@ class TransactionTests: XCTestCase {
     func testSpecificFragmentReversal() {
         var didCall = false
         
-        let changeSet = root.scope!.createAtomicChangeSet {
+        let changeSet = root.scope!.modify {
             self.root.integer = 20
             self.child.integer = 20
             }.observeCompletion(self) { error in

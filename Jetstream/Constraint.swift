@@ -25,27 +25,52 @@
 
 import Foundation
 
-public enum ArrayConstraintOperationType {
+/// The has new value property constraint is used to describe a property value has a new value.  That is that this
+/// property has a new value described by the change.
+public class HasNewValuePropertyConstraint {
+    
+}
+
+/// An array property constraint type is used to describe a type of constraint on a new array property value.
+public enum ArrayPropertyConstraintType {
     case Insert
     case Remove
 }
 
-public class ArrayConstraintOperation {
-    let type: ArrayConstraintOperationType
+/// An array property constraint is used to describe a constraint on a new array property value.  In future it should
+/// support actually specifying things like the insert or removal index, etc.
+public class ArrayPropertyConstraint {
+    let type: ArrayPropertyConstraintType
 
-    public init(type: ArrayConstraintOperationType) {
+    public init(type: ArrayPropertyConstraintType) {
         self.type = type
     }
 }
 
+/// A constraint is used to describe a change that must target a change or add of a certain model and can specify 
+/// that the change sets properties to certain values or transforms them in specified manner.
 public class Constraint {
-    /// Validates that a set of constraints matches a set of SyncFragments
+    /// The type of SyncFragment to target for constraint.
+    public let type: SyncFragmentType
+    
+    /// The model class name to target for constraint.
+    public let clsName: String
+    
+    /// The property values that must match for this constraint to pass. For simple checking of properties receiving 
+    /// new values you can use a HasNewValuePropertyConstraint as a value for the property name. For array properties 
+    /// you can use an ArrayPropertyConstraint as a value in place of the actual value to describe the transform the 
+    /// array should be applying as part of the constraint.
+    public let properties: [String: AnyObject]
+    
+    /// Whether to allow additional properties than specified to pass the constraint.
+    public let allowAdditionalProperties: Bool
+    
+    /// Validates that a set of constraints matches a set of SyncFragments.
     ///
-    /// :param: constraints The constraints to apply
-    /// :param: syncFragments The sync fragments to apply the constraints on
-    public class func matchesAll(constraints: [Constraint], syncFragments: [SyncFragment]) -> Bool {
-        // Take a shallow copy of the sync fragments
-        var unmatchedFragments = syncFragments.map { $0 }
+    /// :param: constraints The constraints to apply.
+    /// :param: syncFragments The sync fragments to apply the constraints on.
+    public class func matchesAllConstraints(constraints: [Constraint], syncFragments: [SyncFragment]) -> Bool {
+        var unmatchedFragments = syncFragments
         
         for constraint in constraints {
             // Remove fragments in batches so each fragment has an accounted for constraint
@@ -55,20 +80,24 @@ public class Constraint {
         return unmatchedFragments.count == 0
     }
     
-    public let type: SyncFragmentType
-    public let clsName: String
-    public let properties: [String: AnyObject]
-    public let allowAdditionalProperties: Bool
-    
-    public init(type: SyncFragmentType, clsName: String, properties: [String: AnyObject]? = nil, allowAdditionalProperties: Bool = true) {
+    /// Constructs the Constraint.
+    ///
+    /// :param: type The type of SyncFragment to target for constraint.
+    /// :param: clsName The model class name to target for constraint.
+    /// :param: properties The property values that must match for this constraint to pass.
+    /// :param: allowAdditionalProperties Whether to allow additional properties than specified to pass the constraint.
+    public init(type: SyncFragmentType, clsName: String, properties: [String: AnyObject] = [String: AnyObject](), allowAdditionalProperties: Bool = true) {
         self.type = type
         self.clsName = clsName
-        self.properties = properties == nil ? [String: AnyObject]() : properties!
+        self.properties = properties
         self.allowAdditionalProperties = allowAdditionalProperties
     }
     
+    /// Validates that the constraint matches a SyncFragment.
+    ///
+    /// :param: syncFragment The sync fragment to validate the constraint matches.
     public func matches(syncFragment: SyncFragment) -> Bool {
-        if type != syncFragment.type || clsName != syncFragment.clsName {
+        if type != syncFragment.type || syncFragment.clsName == nil || clsName != syncFragment.clsName! {
             // Does not match constraint type and class
             return false
         }
@@ -95,7 +124,13 @@ public class Constraint {
                         if let value: AnyObject = fragmentProperties[constraintKey] {
                             if let propertyInfo = propertyInfos[constraintKey] {
                                 // Check value matches constraint
-                                if let arrayConstraintValue = constraintValue as? ArrayConstraintOperation {
+                                if let hasNewValueConstraintValue = constraintValue as? HasNewValuePropertyConstraint {
+                                    // Apply a simple check to make sure this change has a new model value
+                                    let fragmentModelValue = convertAnyObjectToModelValue(value, propertyInfo.valueType)
+                                    if value !== NSNull() && fragmentModelValue == nil {
+                                        return false
+                                    }
+                                } else if let arrayConstraintValue = constraintValue as? ArrayPropertyConstraint {
                                     // Apply an array constraint value
                                     if let array = value as? [AnyObject] {
                                         switch type {
