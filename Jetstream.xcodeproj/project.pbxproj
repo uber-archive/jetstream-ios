@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		111B59E71A58D44E0017702B /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561D19F81AA10016D8F8 /* TestModel.swift */; };
+		111B59E81A58D47B0017702B /* ObjectiveCPropertyListenerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11EC72531A58CABB00C7D186 /* ObjectiveCPropertyListenerTests.m */; };
+		11372DDF1A573DD200FBA922 /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11372DDE1A573DD200FBA922 /* Constraint.swift */; };
+		11372DE71A575EF800FBA922 /* ConstraintTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11372DE61A575EF800FBA922 /* ConstraintTests.swift */; };
+		11A348441A5768C8009B2794 /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11372DDE1A573DD200FBA922 /* Constraint.swift */; };
+		11A629891A58DE4300A83ABA /* ObjectiveCScopeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A629881A58DE4300A83ABA /* ObjectiveCScopeTests.m */; };
 		72126CAC1A311F480006CD29 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAB1A311F480006CD29 /* Signal.swift */; };
 		72126CAE1A311F620006CD29 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAD1A311F620006CD29 /* WebSocket.swift */; };
 		72126CAF1A3121410006CD29 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAD1A311F620006CD29 /* WebSocket.swift */; };
@@ -15,7 +21,6 @@
 		722555FC19F819D90016D8F8 /* Jetstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 722555FB19F819D90016D8F8 /* Jetstream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7225560219F819DA0016D8F8 /* Jetstream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 722555F619F819D90016D8F8 /* Jetstream.framework */; };
 		7225562819F81AA10016D8F8 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561C19F81AA10016D8F8 /* TestHelpers.swift */; };
-		7225562919F81AA10016D8F8 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561D19F81AA10016D8F8 /* TestModel.swift */; };
 		7225562C19F81ABF0016D8F8 /* JetstreamTestEnumerations.h in Headers */ = {isa = PBXBuildFile; fileRef = 7225561519F81AA10016D8F8 /* JetstreamTestEnumerations.h */; };
 		7225565D19F81B040016D8F8 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564619F81B040016D8F8 /* Client.swift */; };
 		7225565F19F81B040016D8F8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564819F81B040016D8F8 /* Constants.swift */; };
@@ -124,6 +129,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		11372DDE1A573DD200FBA922 /* Constraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constraint.swift; sourceTree = "<group>"; };
+		11372DE61A575EF800FBA922 /* ConstraintTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintTests.swift; sourceTree = "<group>"; };
+		11A629881A58DE4300A83ABA /* ObjectiveCScopeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCScopeTests.m; sourceTree = "<group>"; };
+		11EC72531A58CABB00C7D186 /* ObjectiveCPropertyListenerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCPropertyListenerTests.m; sourceTree = "<group>"; };
 		72126CAB1A311F480006CD29 /* Signal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Signal.swift; path = Signals/Signals/Signal.swift; sourceTree = "<group>"; };
 		72126CAD1A311F620006CD29 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebSocket.swift; path = Starscream/WebSocket.swift; sourceTree = "<group>"; };
 		7216634E19F83FD3007704D2 /* ChangeSetQueueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeSetQueueTests.swift; sourceTree = "<group>"; };
@@ -284,9 +293,12 @@
 				72226A791A0C0748008EE330 /* Jetstream-bridging-header.h */,
 				7216634E19F83FD3007704D2 /* ChangeSetQueueTests.swift */,
 				7225561E19F81AA10016D8F8 /* ChangeSetTests.swift */,
+				11372DE61A575EF800FBA922 /* ConstraintTests.swift */,
 				7225561419F81AA10016D8F8 /* DependencyTests.swift */,
 				7225561619F81AA10016D8F8 /* ImmediatePropertyListeners.swift */,
 				7225561719F81AA10016D8F8 /* ModelTests.swift */,
+				11EC72531A58CABB00C7D186 /* ObjectiveCPropertyListenerTests.m */,
+				11A629881A58DE4300A83ABA /* ObjectiveCScopeTests.m */,
 				7225561819F81AA10016D8F8 /* PropertyListenerTests.swift */,
 				72A10BF11A38B9CC00FE7CEE /* ScopePauseTests.swift */,
 				7225561919F81AA10016D8F8 /* ScopeTests.swift */,
@@ -313,6 +325,7 @@
 		7225568B19F81B7F0016D8F8 /* Transport */ = {
 			isa = PBXGroup;
 			children = (
+				11372DDE1A573DD200FBA922 /* Constraint.swift */,
 				7225565919F81B040016D8F8 /* ChangeSet.swift */,
 				7225565A19F81B040016D8F8 /* ChangeSetQueue.swift */,
 				7225564619F81B040016D8F8 /* Client.swift */,
@@ -525,6 +538,7 @@
 				7225566219F81B040016D8F8 /* Logging.swift in Sources */,
 				7225565D19F81B040016D8F8 /* Client.swift in Sources */,
 				7225566819F81B040016D8F8 /* Scope.swift in Sources */,
+				11372DDF1A573DD200FBA922 /* Constraint.swift in Sources */,
 				72126CAE1A311F620006CD29 /* WebSocket.swift in Sources */,
 				7225566E19F81B040016D8F8 /* SessionCreateReplyMessage.swift in Sources */,
 				7225566719F81B040016D8F8 /* ReplyMessage.swift in Sources */,
@@ -553,11 +567,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11372DE71A575EF800FBA922 /* ConstraintTests.swift in Sources */,
 				7225568319F81B430016D8F8 /* Session.swift in Sources */,
 				722F9ACD1A4394F300A2369A /* ScopeTests.swift in Sources */,
+				111B59E71A58D44E0017702B /* TestModel.swift in Sources */,
 				7225568919F81B430016D8F8 /* Transport.swift in Sources */,
 				72126CB01A3121410006CD29 /* Signal.swift in Sources */,
 				7225568219F81B430016D8F8 /* ScopeSyncMessage.swift in Sources */,
+				11A629891A58DE4300A83ABA /* ObjectiveCScopeTests.m in Sources */,
 				7225568119F81B430016D8F8 /* ScopeStateMessage.swift in Sources */,
 				722F9ACF1A4394F300A2369A /* SyncFragmentTests.swift in Sources */,
 				723A39801A07F8E900FD47A0 /* ScopeFetchReplyMessage.swift in Sources */,
@@ -566,6 +583,7 @@
 				7225567619F81B430016D8F8 /* Constants.swift in Sources */,
 				7225567A19F81B430016D8F8 /* NetworkMessage.swift in Sources */,
 				722F9ACB1A4394F300A2369A /* PropertyListenerTests.swift in Sources */,
+				111B59E81A58D47B0017702B /* ObjectiveCPropertyListenerTests.m in Sources */,
 				72126CAF1A3121410006CD29 /* WebSocket.swift in Sources */,
 				7225567B19F81B430016D8F8 /* ModelObject.swift in Sources */,
 				7225568019F81B430016D8F8 /* ScopeFetchMessage.swift in Sources */,
@@ -574,6 +592,7 @@
 				7225567419F81B430016D8F8 /* Client.swift in Sources */,
 				7225568519F81B430016D8F8 /* SessionCreateReplyMessage.swift in Sources */,
 				722F9ACA1A4394F300A2369A /* ModelTests.swift in Sources */,
+				11A348441A5768C8009B2794 /* Constraint.swift in Sources */,
 				723A39811A07F8E900FD47A0 /* ScopeSyncReplyMessage.swift in Sources */,
 				722F9AD11A4394F300A2369A /* TreeChangeTests.swift in Sources */,
 				722F9AC41A43893A00A2369A /* ChangeSetTests.swift in Sources */,
@@ -585,7 +604,6 @@
 				7225567F19F81B430016D8F8 /* Scope.swift in Sources */,
 				7225567819F81B430016D8F8 /* Functions.swift in Sources */,
 				7225567C19F81B430016D8F8 /* ModelValue.swift in Sources */,
-				7225562919F81AA10016D8F8 /* TestModel.swift in Sources */,
 				7225562819F81AA10016D8F8 /* TestHelpers.swift in Sources */,
 				722F9ACE1A4394F300A2369A /* StateMessageTests.swift in Sources */,
 				722F9AC71A4394F300A2369A /* ChangeSetQueueTests.swift in Sources */,
@@ -730,6 +748,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				DEFINES_MODULE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -750,6 +769,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				DEFINES_MODULE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

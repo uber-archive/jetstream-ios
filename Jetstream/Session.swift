@@ -151,7 +151,7 @@ public class Session {
             return
         }
         changeSetQueue.addChangeSet(changeSet)
-        client.transport.sendMessage(ScopeSyncMessage(session: self, scopeIndex: atIndex, atomic: changeSet.atomic, syncFragments: changeSet.syncFragments)) { [weak self] reply in
+        client.transport.sendMessage(ScopeSyncMessage(session: self, scopeIndex: atIndex, procedure: changeSet.procedure, atomic: changeSet.atomic, syncFragments: changeSet.syncFragments)) { [weak self] reply in
             if let definiteSelf = self {
                 if let syncReply = reply as? ScopeSyncReplyMessage {
                     changeSet.processFragmentReplies(syncReply.fragmentReplies, scope: scope)

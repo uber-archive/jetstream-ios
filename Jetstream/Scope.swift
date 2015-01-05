@@ -32,9 +32,10 @@ import Foundation
     /// A signal that fires when changes have been made to the model from a remote source.
     public let onRemoteSync = Signal<Void>()
     
-    public var name: String
+    /// The name of the scope.
+    public private(set) var name: String
     
-    /// The root model associates with the scope
+    /// The root model associates with the scope.
     public var root: ModelObject? {
         get {
             if modelObjects.count > 0 {
@@ -67,6 +68,10 @@ import Foundation
     
     private var tempModelHash = [NSUUID: ModelObject]()
     
+    /// Constructs a scope.
+    ///
+    /// :param: name The name of the scope.
+    /// :param: changeInterval Time interval between which to capture and fire changes without explict modifications.
     public init(name: String, changeInterval: NSTimeInterval = 0.01) {
         self.name = name
         self.changeInterval = changeInterval
@@ -150,16 +155,45 @@ import Foundation
         }
     }
     
-    public func createAtomicChangeSet(changes: () -> Void) -> ChangeSet {
-        sendChanges()
-        changes()
-        var syncFragments = getAndClearSyncFragments()
-        let changeSet = ChangeSet(syncFragments: syncFragments, atomic: true, scope: self)
-        onChanges.fire(changeSet)
-        return changeSet
+    /// Modify the scope with an explict set of changes.
+    ///
+    /// :param: changes The set of changes to send together.
+    public func modify(changes: () -> Void) -> ChangeSet {
+        return createChangeSet(false, procedure: nil, constraints: nil, changes: changes)
+    }
+
+    /// Modify the scope with an explict set of changes and request it be applied atomically.
+    ///
+    /// :param: changes The set of changes to send together.
+    public func modifyAtomically(changes: () -> Void) -> ChangeSet {
+        return createChangeSet(true, procedure: nil, constraints: nil, changes: changes)
+    }
+
+    /// Modify the scope with an explict set of changes and procedure, it will also request to be applied atomically.
+    ///
+    /// :param: procedure The name of the procedure to call with the changes.
+    /// :param: constraints Optionally the constraints the changes should adhere to perform validation.
+    /// :param: changes The set of changes to send together.
+    public func modifyWithProcedure(procedure: String, constraints: [Constraint]?, changes: () -> Void) -> ChangeSet {
+        return createChangeSet(true, procedure: procedure, constraints: constraints, changes: changes)
     }
 
     // MARK: - Internal Interface
+    
+    func createChangeSet(atomic: Bool, procedure: String?, constraints: [Constraint]?, changes: () -> Void) -> ChangeSet {
+        sendChanges()
+        changes()
+        var syncFragments = getAndClearSyncFragments()
+        let changeSet = ChangeSet(syncFragments: syncFragments, procedure: procedure, atomic: atomic, scope: self)
+        if let definiteConstraints = constraints {
+            if !Constraint.matchesAllConstraints(definiteConstraints, syncFragments: syncFragments) {
+                changeSet.revertOnScope(self)
+                return changeSet
+            }
+        }
+        onChanges.fire(changeSet)
+        return changeSet
+    }
     
     func startApplyingRemote(callback: incomingCallback) {
         if incomingPauseCount == 0 {
@@ -288,7 +322,7 @@ import Foundation
             changesQueued = false
             var syncFragments = getAndClearSyncFragments()
             if syncFragments.count > 0 {
-                let changeSet = ChangeSet(syncFragments: syncFragments, atomic: false, scope: self)
+                let changeSet = ChangeSet(syncFragments: syncFragments, scope: self)
                 onChanges.fire(changeSet)
             }
         }

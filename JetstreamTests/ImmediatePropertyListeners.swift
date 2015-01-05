@@ -36,8 +36,8 @@ class ImmediatePropertyListenerTests: XCTestCase {
         
         model.string = "test"
         model.string = "test 2"
-        model.int = 1
-        model.float = 2.5
+        model.integer = 1
+        model.float32 = 2.5
         
         delayTest(self, 0.01) {
             XCTAssertEqual(dispatchCount, 1 , "Dispatched once")
@@ -49,15 +49,15 @@ class ImmediatePropertyListenerTests: XCTestCase {
         var lastValue: NSString? = ""
         var dispatchCount = 0
         
-        model.observeChange(self, keys: ["string", "int"]) {
+        model.observeChange(self, keys: ["string", "integer"]) {
             dispatchCount += 1
         }
         
         model.string = "test"
-        model.int = 1
+        model.integer = 1
         model.string = "test"
-        model.int = 1
-        model.float = 2.5
+        model.integer = 1
+        model.float32 = 2.5
         
         delayTest(self, 0.01) {
             XCTAssertEqual(dispatchCount, 1 , "Dispatched once")
@@ -73,8 +73,8 @@ class ImmediatePropertyListenerTests: XCTestCase {
             dispatchCount += 1
         }
     
-        model.int = 10
-        model.int = 10
+        model.integer = 10
+        model.integer = 10
         
         model.uint = 10
         model.uint = 10
@@ -103,8 +103,8 @@ class ImmediatePropertyListenerTests: XCTestCase {
         model.int64 = 10
         model.int64 = 10
    
-        model.bool = true
-        model.bool = true
+        model.boolean = true
+        model.boolean = true
  
         model.string = "test"
         model.string = "test"
@@ -112,17 +112,17 @@ class ImmediatePropertyListenerTests: XCTestCase {
         model.string = "test 2"
         model.string = "test 2"
  
-        model.float = 10.0
-        model.float = 10.0
+        model.float32 = 10.0
+        model.float32 = 10.0
  
-        model.float = 10.1
-        model.float = 10.2
+        model.float32 = 10.1
+        model.float32 = 10.2
   
-        model.double = 10.0
-        model.double = 10.0
+        model.double64 = 10.0
+        model.double64 = 10.0
    
-        model.double = 10.1
-        model.double = 10.2
+        model.double64 = 10.1
+        model.double64 = 10.2
     
         model.testType = .Active
         model.testType = .Active

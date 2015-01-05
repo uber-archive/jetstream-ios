@@ -201,7 +201,7 @@ class ScopeTests: XCTestCase {
             XCTAssertEqual(fragment.objectUUID, self.child2.uuid, "Fragment is correct")
             XCTAssert(fragment.properties!.count > 2, "Sending up all default values")
             XCTAssertEqual(fragment.properties!["string"]! as String, "testing2", "Fragment is correct")
-            XCTAssertEqual(fragment.properties!["int"]! as Int, 10, "Fragment is correct")
+            XCTAssertEqual(fragment.properties!["integer"]! as Int, 10, "Fragment is correct")
 
             expectation.fulfill()
         }
@@ -211,7 +211,7 @@ class ScopeTests: XCTestCase {
         parent.string = "testing parent"
         child.string = "testing"
         child2.string = "testing2"
-        child2.int = 10
+        child2.integer = 10
 
         waitForExpectationsWithTimeout(1, handler: nil)
     }
@@ -317,7 +317,7 @@ class ScopeTests: XCTestCase {
             expectation.fulfill()
         })
         
-        parent.float = 10.0 // Will invalidate composite property
+        parent.float32 = 10.0 // Will invalidate composite property
         waitForExpectationsWithTimeout(1, handler: nil)
     }
     

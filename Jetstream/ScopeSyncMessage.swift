@@ -34,18 +34,20 @@ class ScopeSyncMessage: NetworkMessage {
     }
     
     let scopeIndex: UInt
+    let procedure: String?
     let atomic: Bool
     let syncFragments: [SyncFragment]
     
-    init(index: UInt, scopeIndex: UInt, atomic: Bool, syncFragments: [SyncFragment]) {
+    init(index: UInt, scopeIndex: UInt, procedure: String?, atomic: Bool, syncFragments: [SyncFragment]) {
         self.scopeIndex = scopeIndex
+        self.procedure = procedure
         self.atomic = atomic
         self.syncFragments = syncFragments
         super.init(index: index)
     }
     
-    convenience init(session: Session, scopeIndex: UInt, atomic: Bool, syncFragments: [SyncFragment]) {
-        self.init(index: session.getNextMessageIndex(), scopeIndex: scopeIndex, atomic: atomic, syncFragments: syncFragments)
+    convenience init(session: Session, scopeIndex: UInt, procedure: String?, atomic: Bool, syncFragments: [SyncFragment]) {
+        self.init(index: session.getNextMessageIndex(), scopeIndex: scopeIndex, procedure: procedure, atomic: atomic, syncFragments: syncFragments)
     }
     
     override func serialize() -> [String: AnyObject] {
@@ -57,6 +59,9 @@ class ScopeSyncMessage: NetworkMessage {
         }
         
         dictionary["scopeIndex"] = scopeIndex
+        if let definiteProcedure = procedure {
+            dictionary["procedure"] = definiteProcedure
+        }
         if atomic {
             dictionary["atomic"] = atomic
         }
@@ -69,6 +74,7 @@ class ScopeSyncMessage: NetworkMessage {
         var index: UInt?
         var scopeIndex: UInt?
         var syncFragments: [SyncFragment]?
+        var procedure: String?
         var atomic = false
         
         for (key, value) in dictionary {
@@ -80,6 +86,10 @@ class ScopeSyncMessage: NetworkMessage {
             case "scopeIndex":
                 if let definiteScopeIndex = value as? UInt {
                     scopeIndex = definiteScopeIndex
+                }
+            case "procedure":
+                if let definiteProcedure = value as? String {
+                    procedure = definiteProcedure
                 }
             case "atomic":
                 if let definiteAtomic = value as? Bool {
@@ -105,6 +115,7 @@ class ScopeSyncMessage: NetworkMessage {
             return ScopeSyncMessage(
                 index: index!,
                 scopeIndex: scopeIndex!,
+                procedure: procedure,
                 atomic: atomic,
                 syncFragments: syncFragments!)
         }

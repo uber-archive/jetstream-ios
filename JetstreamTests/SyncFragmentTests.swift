@@ -71,7 +71,7 @@ class SyncFragmentTests: XCTestCase {
             "type": "change",
             "uuid": child.uuid.UUIDString,
             "clsName": "TestModel",
-            "properties": ["string": "testing", "int": 20]
+            "properties": ["string": "testing", "integer": 20]
             
         ]
         var fragment = SyncFragment.unserialize(json)
@@ -81,7 +81,7 @@ class SyncFragmentTests: XCTestCase {
         
         fragment?.applyChangesToScope(scope)
         XCTAssertEqual(parent.childModel!.string!, "testing" , "Properties applied")
-        XCTAssertEqual(parent.childModel!.int, 20 , "Properties applied")
+        XCTAssertEqual(parent.childModel!.integer, 20 , "Properties applied")
     }
     
     func testAdd() {
@@ -153,23 +153,23 @@ class SyncFragmentTests: XCTestCase {
             "properties": [
                 "array": NSNull(),
                 "string": NSNull(),
-                "int": NSNull(),
-                "float": NSNull(),
+                "integer": NSNull(),
+                "float32": NSNull(),
                 "int32": NSNull()
             ],
         ]
         var fragment = SyncFragment.unserialize(json)
         
         child.string = "test"
-        child.int = 10
-        child.float = 10.0
+        child.integer = 10
+        child.float32 = 10.0
         child.int32 = 10
         
         scope.applySyncFragments([fragment!])
         
         XCTAssertNil(child.string, "String was nilled out")
-        XCTAssertEqual(child.int, 10 , "Nill not applied")
-        XCTAssertEqual(child.float, Float(10.0) , "Nil not applied")
+        XCTAssertEqual(child.integer, 10 , "Nill not applied")
+        XCTAssertEqual(child.float32, Float(10.0) , "Nil not applied")
         XCTAssertEqual(child.int32, Int32(10) , "Nil not applied")
     }
     
@@ -182,23 +182,23 @@ class SyncFragmentTests: XCTestCase {
             "clsName": "TestModel",
             "properties": [
                 "string": 10,
-                "int": "5",
-                "float": "whatever",
+                "integer": "5",
+                "float32": "whatever",
                 "int32": 5.5
             ],
         ]
         var fragment = SyncFragment.unserialize(json)
         
         child.string = "test"
-        child.int = 10
-        child.float = 10.0
+        child.integer = 10
+        child.float32 = 10.0
         child.int32 = 10
         
         scope.applySyncFragments([fragment!])
         
         XCTAssertNil(child.string, "String nilled out")
-        XCTAssertEqual(child.int, 10 , "Invalid property not applied")
-        XCTAssertEqual(child.float, Float(10.0) , "Invalid property not applied")
+        XCTAssertEqual(child.integer, 10 , "Invalid property not applied")
+        XCTAssertEqual(child.float32, Float(10.0) , "Invalid property not applied")
         XCTAssertEqual(child.int32, Int32(5) , "Int32 converted")
     }
 }

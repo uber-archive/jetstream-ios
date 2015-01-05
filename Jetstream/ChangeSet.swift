@@ -31,7 +31,7 @@ public enum ChangeSetState {
     case Reverted
 }
 
-public class ChangeSet: Equatable {
+@objc public class ChangeSet: Equatable {
     /// A signal that fires whenever the state of the change set changes.
     public let onStateChange = Signal<ChangeSetState>()
     public let onCompletion = Signal<Void>()
@@ -46,6 +46,9 @@ public class ChangeSet: Equatable {
         }
     }
     
+    /// Name of procedure if a ChangeSet is performing one.
+    public private(set) var procedure: String?
+    
     /// Whether the ChangeSet is atomic.
     public private(set) var atomic: Bool = false
     
@@ -54,6 +57,7 @@ public class ChangeSet: Equatable {
     
     var changeSetQueue: ChangeSetQueue?
     var touches = [ModelObject: [String: AnyObject]]()
+    var error: NSError?
     
     var pendingChangeSets: [ChangeSet] {
         if let definiteChangeSetQueue = changeSetQueue {
@@ -67,10 +71,12 @@ public class ChangeSet: Equatable {
     /// Constructs the ChangeSet.
     ///
     /// :param: syncFragments An array of sync fragments that make up the ChangeSet.
+    /// :param: procedure Name of procedure if a ChangeSet is performing one.
     /// :param: atomic Whether the ChangeSet should be applied atomically (either all fragments are applied sucessfully or none are applied successfully).
     /// :param: scope The scope of the change set.
-    public init(syncFragments: [SyncFragment], atomic: Bool, scope: Scope) {
+    public init(syncFragments: [SyncFragment], procedure: String?, atomic: Bool, scope: Scope) {
         self.syncFragments = syncFragments
+        self.procedure = procedure
         self.atomic = atomic
         
         for syncFragment in syncFragments {
@@ -89,6 +95,16 @@ public class ChangeSet: Equatable {
                 }
             }
         }
+        
+        onError.listen(self) { [weak self] error in
+            if let definiteSelf = self {
+                definiteSelf.error = error
+            }
+        }
+    }
+    
+    public convenience init(syncFragments: [SyncFragment], scope: Scope) {
+        self.init(syncFragments: syncFragments, procedure: nil, atomic: false, scope: scope)
     }
     
     // MARK: - Public Interface
@@ -101,11 +117,33 @@ public class ChangeSet: Equatable {
     /// with an optional error argument, which describes what went wrong applying the ChangeSet on the Jetstream server.
     /// :returns: A function that cancels the observation when invoked.
     public func observeCompletion(observer: AnyObject, callback: (error: NSError?) -> Void) -> CancelObserver {
-        let listener = onCompletion.listenOnce(observer) { callback(error: nil) }
-        let errorListener = onError.listenOnce(observer) { error in callback(error: error) }
-        return {
-            listener.cancel()
-            errorListener.cancel()
+        // If already completed or failed then fire immediately
+        if state != .Syncing {
+            callback(error: error)
+            return {}
+        }
+        
+        var listener: SignalListener<Void>?
+        var errorListener: SignalListener<NSError>?
+        
+        listener = onCompletion.listenOnce(observer) { [weak errorListener] in
+            callback(error: nil)
+            // Want to ensure we only fire one or the other just once
+            if let definiteErrorListener = errorListener {
+                definiteErrorListener.cancel()
+            }
+        }
+        errorListener = onError.listenOnce(observer) { [weak listener] error in
+            callback(error: error)
+            // Want to ensure we only fire one or the other just once
+            if let definiteListener = listener {
+                definiteListener.cancel()
+            }
+        }
+        
+        return { [weak listener, errorListener] in
+            listener?.cancel()
+            errorListener?.cancel()
         }
     }
     

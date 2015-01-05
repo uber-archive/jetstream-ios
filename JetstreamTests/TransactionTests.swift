@@ -51,12 +51,12 @@ class TransactionTests: XCTestCase {
         super.tearDown()
     }
     
-    func testAtomicChangeSetSuccessfulCompletion() {
+    func testChangeSetSuccessfulCompletionWithoutModifications() {
         var didCall = false
         
-        let changeSet = root.scope!.createAtomicChangeSet {
-            self.root.int = 10
-            self.root.float = 10.0
+        let changeSet = root.scope!.modify {
+            self.root.integer = 10
+            self.root.float32 = 10.0
             self.root.string = "test"
         }.observeCompletion(self) { error in
             XCTAssertNil(error, "No error")
@@ -76,21 +76,21 @@ class TransactionTests: XCTestCase {
         client.transport.messageReceived(reply!)
 
         XCTAssertEqual(didCall, true, "Did invoke completion block")
-        XCTAssertEqual(self.root.int, 10, "No rollback")
-        XCTAssert(self.root.float == 10.0, "No rollback")
+        XCTAssertEqual(self.root.integer, 10, "No rollback")
+        XCTAssert(self.root.float32 == 10.0, "No rollback")
         XCTAssertEqual(self.root.string!, "test", "No rollback")
     }
     
     func testChangeSetSuccessfulCompletionWithModifications() {
         var didCall = false
         
-        let changeSet = root.scope!.createAtomicChangeSet {
-            self.root.int = 10
-            self.root.float = 10.0
+        let changeSet = root.scope!.modify {
+            self.root.integer = 10
+            self.root.float32 = 10.0
             self.root.string = "test"
-            }.observeCompletion(self) { error in
-                XCTAssertNil(error, "No error")
-                didCall = true
+        }.observeCompletion(self) { error in
+            XCTAssertNil(error, "No error")
+            didCall = true
         }
         
         var json: [String: AnyObject] = [
@@ -99,8 +99,8 @@ class TransactionTests: XCTestCase {
             "replyTo": 1,
             "fragmentReplies": [
                 ["modifications": [
-                    "int": 20,
-                    "double": 20.0
+                    "integer": 20,
+                    "double64": 20.0
                 ]]
             ]
         ]
@@ -109,22 +109,22 @@ class TransactionTests: XCTestCase {
         client.transport.messageReceived(reply!)
         
         XCTAssertEqual(didCall, true, "Did invoke completion block")
-        XCTAssertEqual(self.root.int, 20, "Applied modification")
-        XCTAssert(self.root.float == 10.0, "No rollback")
+        XCTAssertEqual(self.root.integer, 20, "Applied modification")
+        XCTAssert(self.root.float32 == 10.0, "No rollback")
         XCTAssertEqual(self.root.string!, "test", "No rollback")
-        XCTAssert(self.root.double == 20.0, "Applied modification")
+        XCTAssert(self.root.double64 == 20.0, "Applied modification")
     }
     
-    func testAtomicFragmentReplyMismatch() {
+    func testChangeSetFragmentReplyMismatch() {
         var didCall = false
         
-        let changeSet = root.scope!.createAtomicChangeSet {
-            self.root.int = 10
-            self.root.float = 10.0
+        let changeSet = root.scope!.modify {
+            self.root.integer = 10
+            self.root.float32 = 10.0
             self.root.string = "test"
-            }.observeCompletion(self) { error in
-                XCTAssertEqual(error!.localizedDescription, "Failed to apply change set", "Errored out")
-                didCall = true
+        }.observeCompletion(self) { error in
+            XCTAssertEqual(error!.localizedDescription, "Failed to apply change set", "Errored out")
+            didCall = true
         }
 
         var json: [String: AnyObject] = [
@@ -138,17 +138,17 @@ class TransactionTests: XCTestCase {
         client.transport.messageReceived(reply!)
         
         XCTAssertEqual(didCall, true, "Did invoke completion block")
-        XCTAssertEqual(self.root.int, 0, "Did rollback")
-        XCTAssert(self.root.float == 0.0, "Did rollback")
+        XCTAssertEqual(self.root.integer, 0, "Did rollback")
+        XCTAssert(self.root.float32 == 0.0, "Did rollback")
         XCTAssertNil(self.root.string, "Did rollback")
     }
     
-    func testAtomicChangeInvalidMessageTypeError() {
+    func testChangeInvalidMessageTypeError() {
         var didCall = false
         
-        let changeSet = root.scope!.createAtomicChangeSet {
-            self.root.int = 10
-            self.root.float = 10.0
+        let changeSet = root.scope!.modify {
+            self.root.integer = 10
+            self.root.float32 = 10.0
             self.root.string = "test"
         }.observeCompletion(self) { error in
             XCTAssertEqual(error!.localizedDescription, "Failed to apply change set", "Errored out")
@@ -158,20 +158,20 @@ class TransactionTests: XCTestCase {
         client.transport.messageReceived(ReplyMessage(index: 2, replyTo: 1))
 
         XCTAssertEqual(didCall, true, "Did invoke completion block")
-        XCTAssertEqual(self.root.int, 0, "Did rollback")
-        XCTAssert(self.root.float == 0.0, "Did rollback")
+        XCTAssertEqual(self.root.integer, 0, "Did rollback")
+        XCTAssert(self.root.float32 == 0.0, "Did rollback")
         XCTAssertNil(self.root.string, "Did rollback")
     }
     
     func testSpecificFragmentReversal() {
         var didCall = false
         
-        let changeSet = root.scope!.createAtomicChangeSet {
-            self.root.int = 20
-            self.child.int = 20
+        let changeSet = root.scope!.modify {
+            self.root.integer = 20
+            self.child.integer = 20
             }.observeCompletion(self) { error in
-                XCTAssertEqual(self.root.int, 0, "Kept change")
-                XCTAssertEqual(self.child.int, 20, "Reverted change")
+                XCTAssertEqual(self.root.integer, 0, "Kept change")
+                XCTAssertEqual(self.child.integer, 20, "Reverted change")
                 didCall = true
         }
         
