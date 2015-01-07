@@ -54,11 +54,11 @@ This will create a new scope and assign `canvas` as the root of the scope. The r
 
 ```swift
 class CanvasViewController: UIViewController {
-  …
-  var model: Canvas
-  
-  func init() {
-      canvas.observeCollectionAdd(self, key: "shapes") { (element: Shape) in
+    …
+    var model: Canvas
+
+    func init() {
+        canvas.observeCollectionAdd(self, key: "shapes") { (element: Shape) in
             // A new shape was just added to our shapes-collection.
             view.addChild(ShapeView(shape: element))        
         }
@@ -66,14 +66,14 @@ class CanvasViewController: UIViewController {
 }
 
 class ShapeView: UIView {
-  …
-  init(shape: Shape) {
-    self.shape = shape
-      shape.observeChange(self, keys: ["x", "y", "width", "height"]) {
-             self.frame = {{shape.x, shape.y}, {shape.width, shape.height}}
+    …
+    init(shape: Shape) {
+        self.shape = shape
+        shape.observeChange(self, keys: ["x", "y", "width", "height"]) {
+            self.frame = {{shape.x, shape.y}, {shape.width, shape.height}}
         }
         shape.observeChange(self, key: "color") {
-             self.backgroundColor = shape.color
+            self.backgroundColor = shape.color
         }
         shape.observeDetach(self) {
             // The shape model instance has been removed from the scope
