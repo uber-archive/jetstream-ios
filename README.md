@@ -53,23 +53,23 @@ scope.root = canvas
 This will create a new scope and assign `canvas` as the root of the scope. The root object or any branches or leafs attached now belong to the scope. This lets you start observing changes happening to any models that have been attached to the tree:
 
 ```swift
-Class CanvasViewController: UIViewController {
-	…
-	var model: Canvas
-	
-	func init() {
-	    canvas.observeCollectionAdd(self, key: "shapes") { (element: Shape) in
+class CanvasViewController: UIViewController {
+  …
+  var model: Canvas
+  
+  func init() {
+      canvas.observeCollectionAdd(self, key: "shapes") { (element: Shape) in
             // A new shape was just added to our shapes-collection.
             view.addChild(ShapeView(shape: element))        
         }
     }
 }
 
-Class ShapeView: UIView {
-	…
-	init(shape: Shape) {
-		self.shape = shape
-	    shape.observeChange(self, keys: ["x", "y", "width", "height"]) {
+class ShapeView: UIView {
+  …
+  init(shape: Shape) {
+    self.shape = shape
+      shape.observeChange(self, keys: ["x", "y", "width", "height"]) {
              self.frame = {{shape.x, shape.y}, {shape.width, shape.height}}
         }
         shape.observeChange(self, key: "color") {
@@ -219,8 +219,8 @@ if let client = Client(options: WebsocketConnectionOptions(url: "ws://localhost"
                 // Registered to receive updates to the scope from the Jetstream server
             }
         }
-    }   	
-}    
+    }
+}
 ```
 
 This creates a scope and a client, using the built-in Websocket transport adapter. Once successfully connected to the Jetstream server running on localhost, we ask our session to fetch the initial state of our scope. This will have the Jetstream server send us the full model tree for the scope and start keeping us in sync with remote changes as well as transmit changes that we make locally to our model up to the remote scope.
