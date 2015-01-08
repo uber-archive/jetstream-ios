@@ -62,7 +62,9 @@ public protocol Observable {
     func observeChangeImmediately(observer: AnyObject, keys: [String], callback: () -> Void) -> CancelObserver
     func observeTreeChange(observer: AnyObject, callback: () -> Void) -> CancelObserver
     func observeCollectionAdd<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver
+    func observeCollectionAdd(listener: AnyObject, key: String, callback: (element: ModelObject) -> Void) -> CancelObserver
     func observeCollectionRemove<T>(listener: AnyObject, key: String, callback: (element: T) -> Void) -> CancelObserver
+    func observeCollectionRemove(listener: AnyObject, key: String, callback: (element: ModelObject) -> Void) -> CancelObserver
     func observeAttach(listener: AnyObject, callback: (scope: Scope) -> Void) -> CancelObserver
     func observeDetach(listener: AnyObject, callback: (scope: Scope) -> Void) -> CancelObserver
     func observeAddedToParent(listener: AnyObject, callback: (parent: ModelObject, key: String) -> Void) -> CancelObserver
@@ -447,7 +449,26 @@ public class ModelObject: NSObject, Observable {
         
         let listener = onModelAddedToCollection.listen(observer) { (key, element, atIndex) -> Void in
             if let definiteElement = element as? T {
-                callback(element: element as T)
+                callback(element: definiteElement)
+            }
+        }.filter { $0.key == key}
+        return { listener.cancel() }
+    }
+    
+    /// Fires a listener whenever a specific collection adds an element. This is a ObjC-compatible version of the generic function.
+    ///
+    /// :param: observer The listener to attach to the event.
+    /// :param: key The key of the the collection to listen to.
+    /// :param: callback The closure that gets executed every time the collection adds an element. The callback expectes a ModelObject
+    /// as one argument.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeCollectionAdd(observer: AnyObject, key: String, callback: (element: ModelObject) -> Void) -> CancelObserver {
+        assert(properties[key] != nil, "no property found for key '\(key)'")
+        assert(properties[key]!.valueType == ModelValueType.Array, "property '\(key)' is not an Array")
+        
+        let listener = onModelAddedToCollection.listen(observer) { (key, element, atIndex) -> Void in
+            if let definiteElement = element as? ModelObject {
+                callback(element: definiteElement)
             }
         }.filter { $0.key == key}
         return { listener.cancel() }
@@ -466,7 +487,26 @@ public class ModelObject: NSObject, Observable {
         
         let listener = onModelRemovedFromCollection.listen(observer) { (key, element, atIndex) -> Void in
             if let definiteElement = element as? T {
-                callback(element: element as T)
+                callback(element: definiteElement)
+            }
+        }.filter { return $0.key == key }
+        return { listener.cancel() }
+    }
+    
+    /// Fires a listener whenever a specific collection removes an element. This is a ObjC-compatible version of the generic function.
+    ///
+    /// :param: observer The listener to attach to the event.
+    /// :param: key The key of the the collection to listen to.
+    /// :param: callback The closure that gets executed every time the collection removes an element. Set the type of the element
+    /// in the callback to the appropriate type of the collection.
+    /// :returns: A function that cancels the observation when invoked.
+    public func observeCollectionRemove(observer: AnyObject, key: String, callback: (element: ModelObject) -> Void) -> CancelObserver {
+        assert(properties[key] != nil, "no property found for key '\(key)'")
+        assert(properties[key]!.valueType == .Array, "property '\(key)' is not an Array")
+        
+        let listener = onModelRemovedFromCollection.listen(observer) { (key, element, atIndex) -> Void in
+            if let definiteElement = element as? ModelObject {
+                callback(element: definiteElement)
             }
         }.filter { return $0.key == key }
         return { listener.cancel() }

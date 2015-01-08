@@ -190,11 +190,11 @@ class PropertyListenerTests: XCTestCase {
         model.observeChangeImmediately(self, key: "array") {
             changedCount += 1
         }
-        model.observeCollectionAdd(self, key: "array") { (element: ModelObject) in
+        model.observeCollectionAdd(self, key: "array") { (element: TestModel) in
             addedCount += 1
         }
         
-        model.observeCollectionRemove(self, key: "array") { (element: ModelObject) in
+        model.observeCollectionRemove(self, key: "array") { (element: TestModel) in
             removedCount += 1
         }
         

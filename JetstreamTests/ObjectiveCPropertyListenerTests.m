@@ -52,9 +52,19 @@
 - (void)testArrayListeners {
     TestModel *model = [[TestModel alloc] init];
     __block NSUInteger changedCount = 0;
+    __block NSUInteger addCount = 0;
+    __block NSUInteger removeCount = 0;
     
     [model observeChangeImmediately:self key:@"array" callback:^{
         changedCount++;
+    }];
+    
+    [model observeCollectionAdd:self key:@"array" callback:^(ModelObject *model) {
+        addCount++;
+    }];
+    
+    [model observeCollectionRemove:self key:@"array" callback:^(ModelObject *model) {
+        removeCount++;
     }];
     
     model.array = [model.array arrayByAddingObject:[[TestModel alloc] init]];
@@ -63,6 +73,8 @@
     model.array = @[[[TestModel alloc] init]];
 
     XCTAssertEqual(changedCount, 4 , "Dispatched four times");
+    XCTAssertEqual(addCount, 3 , "Dispatched three times");
+    XCTAssertEqual(removeCount, 2 , "Dispatched two times");
 }
 
 @end
