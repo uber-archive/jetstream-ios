@@ -470,7 +470,7 @@ public class ModelObject: NSObject, Observable {
             if let definiteElement = element as? ModelObject {
                 callback(element: definiteElement)
             }
-            }.filter { $0.key == key}
+        }.filter { $0.key == key}
         return { listener.cancel() }
     }
     
@@ -489,7 +489,7 @@ public class ModelObject: NSObject, Observable {
             if let definiteElement = element as? T {
                 callback(element: definiteElement)
             }
-            }.filter { return $0.key == key }
+        }.filter { return $0.key == key }
         return { listener.cancel() }
     }
     
