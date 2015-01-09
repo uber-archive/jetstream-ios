@@ -28,7 +28,11 @@ import Foundation
 /// The has new value property constraint is used to describe a property value has a new value.  That is that this
 /// property has a new value described by the change.
 public class HasNewValuePropertyConstraint {
-    
+    public class HasNewValuePropertyConstraint {
+        public init() {
+            // No-op
+        }
+    }
 }
 
 /// An array property constraint type is used to describe a type of constraint on a new array property value.
