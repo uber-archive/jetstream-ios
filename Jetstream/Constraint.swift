@@ -116,6 +116,12 @@ public class Constraint {
         if let clsName = syncFragment.clsName {
             if let propertyInfos = ModelObject.Static.properties[clsName] {
                 if let fragmentProperties = syncFragment.properties {
+                    // Ensure count matches if not allowing additional properties
+                    if !allowAdditionalProperties && self.properties.count != fragmentProperties.count {
+                        // Not allowing additional properties, needs to match count.  If other mismatch a property 
+                        // will be missing from fragment properties and it will be caught by the checking below.
+                        return false
+                    }
                     
                     // Iterate over constraints
                     for (constraintKey, constraintValue) in self.properties {
@@ -179,13 +185,7 @@ public class Constraint {
                     }
                     
                     // All constraint values passed
-                    if !allowAdditionalProperties && self.properties.count != fragmentProperties.count {
-                        // Not allowing additional properties and after successful checks remaining properties
-                        return false
-                    } else {
-                        // Either allow additional properties or the count was the same and all checked
-                        return true
-                    }
+                    return true
                 } else {
                     // Had constraints we couldn't compare because fragment has no properties
                     return false
