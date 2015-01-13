@@ -75,16 +75,19 @@ class ConstraintTests: XCTestCase {
             "type": "change",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
-            "properties": ["string": "set new value", "integer": NSNull()]
+            "properties": ["string": "set new value", "integer": NSNull(), "childModel":"11111-11111-11111-11111-1111"]
         ]
         var fragment = SyncFragment.unserialize(json)
         
         let constraint = Constraint(type: .Change, clsName: "TestModel", properties: [
             "string": HasNewValuePropertyConstraint(),
-            "integer": HasNewValuePropertyConstraint()
+            "integer": HasNewValuePropertyConstraint(),
+            "childModel": HasNewValuePropertyConstraint()
         ])
         XCTAssertTrue(constraint.matches(fragment!), "Constraint should match fragment")
     }
+    
+
     
     func testSimpleAddMatching() {
         var json: [String: AnyObject] = [

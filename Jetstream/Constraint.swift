@@ -133,11 +133,7 @@ public class Constraint {
                             if let propertyInfo = propertyInfos[constraintKey] {
                                 // Check value matches constraint
                                 if let hasNewValueConstraintValue = constraintValue as? HasNewValuePropertyConstraint {
-                                    // Apply a simple check to make sure this change has a new model value
-                                    let fragmentModelValue = convertAnyObjectToModelValue(value, propertyInfo.valueType)
-                                    if value !== NSNull() && fragmentModelValue == nil {
-                                        return false
-                                    }
+                                    // Allow all cases where constraintValue is HasNewValuePropertyConstraint
                                 } else if let arrayConstraintValue = constraintValue as? ArrayPropertyConstraint {
                                     // Apply an array constraint value
                                     if let array = value as? [AnyObject] {
