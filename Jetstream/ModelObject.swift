@@ -203,8 +203,14 @@ public class ModelObject: NSObject, Observable {
         get {
             var objects = Array<ModelObject>()
             for property in properties.values {
-                if let modelObject = self.valueForKey(property.key) as? ModelObject {
-                    objects.append(modelObject)
+                if let value: AnyObject = self.valueForKey(property.key) {
+                    if let modelObject = value as? ModelObject {
+                        objects.append(modelObject)
+                    } else if let modelObjects = value as? [ModelObject] {
+                        for modelObject in modelObjects {
+                            objects.append(modelObject)
+                        }
+                    }
                 }
             }
             return objects

@@ -261,12 +261,23 @@ class TreeChangeTests: XCTestCase {
         XCTAssert(child.scope == nil,  "scope removed")
     }
     
+    func testArrayScopePropagation() {
+        parent.isScopeRoot = true
+        child.array.append(child2)
+        child.array.append(child3)
+        
+        parent.childModel = child
+        
+        XCTAssert(child.scope == parent.scope, "Child got scope from root")
+        XCTAssert(child2.scope == parent.scope, "Child got scope from root")
+        XCTAssert(child3.scope == parent.scope, "Child got scope from root")
+    }
+    
     func testMultiParrentAssigments() {
         parent.isScopeRoot = true
         parent.childModel = child
         parent.childModel2 = child
         child.childModel = child2
-        
 
         XCTAssertEqual(child.parents.count, 2 , "Correct number of parents")
         XCTAssertEqual(attachCount[1], 1 , "Correct amount of attaches observed for child")

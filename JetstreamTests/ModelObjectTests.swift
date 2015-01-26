@@ -1,5 +1,5 @@
 //
-//  ModelTests.swift
+//  ModelObjectTests.swift
 //  Jetstream
 //
 //  Copyright (c) 2014 Uber Technologies, Inc.
@@ -25,7 +25,7 @@
 import UIKit
 import XCTest
 
-class ModelTests: XCTestCase {
+class ModelObjectTests: XCTestCase {
     func testModelProperties() {
         var model = TestModel()
         
@@ -37,5 +37,23 @@ class ModelTests: XCTestCase {
         
         prop = model.properties["nonDynamicString"]
         XCTAssert(prop == nil, "Non-dynamic property not recognized")
+    }
+    
+    func testChildModelObjectsAccessor() {
+        var model = TestModel()
+        var model2 = TestModel()
+        var model3 = TestModel()
+        var model4 = TestModel()
+        var model5 = TestModel()
+        
+        model.childModel = model2
+        model.childModel2 = model3
+        model.array = [model4, model5]
+        
+        XCTAssertEqual(model.childModelObjects.count, 4 , "All child models should be returned")
+        XCTAssertNotNil(find(model.childModelObjects, model2), "Model should be found")
+        XCTAssertNotNil(find(model.childModelObjects, model3), "Model should be found")
+        XCTAssertNotNil(find(model.childModelObjects, model4), "Model should be found")
+        XCTAssertNotNil(find(model.childModelObjects, model5), "Model should be found")
     }
 }
