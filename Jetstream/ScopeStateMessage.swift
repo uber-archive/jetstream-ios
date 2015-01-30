@@ -53,7 +53,7 @@ class ScopeStateMessage: NetworkMessage {
         }
         
         dictionary["scopeIndex"] = scopeIndex
-        dictionary["rootUUID"] = rootUUID.UUIDString
+        dictionary["rootUUID"] = rootUUID.UUIDString.lowercaseString
         dictionary["fragments"] = fragments
         
         return dictionary

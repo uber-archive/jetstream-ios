@@ -270,7 +270,7 @@ extension Array: ModelValue {
         var serialized = [String]()
         for i in 0..<self.count {
             if let modelObject = self[i] as? ModelObject {
-                serialized.append(modelObject.uuid.UUIDString)
+                serialized.append(modelObject.uuid.UUIDString.lowercaseString)
             }
         }
         return serialized
