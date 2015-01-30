@@ -294,7 +294,7 @@ extension Array: ModelValue {
 extension ModelObject: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as ModelObject }
     
-    func serialize() -> AnyObject { return self.uuid.UUIDString }
+    func serialize() -> AnyObject { return self.uuid.UUIDString.lowercaseString }
     
     class func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
         if let uuidString = value as? String {
