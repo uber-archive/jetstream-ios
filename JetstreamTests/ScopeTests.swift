@@ -187,14 +187,14 @@ class ScopeTests: XCTestCase {
             XCTAssertEqual(fragment.objectUUID, self.child.uuid, "Fragment is correct")
             XCTAssert(fragment.properties!.count > 2, "Sending up all default values")
             XCTAssertEqual(fragment.properties!["string"]! as String, "testing", "Fragment is correct")
-            XCTAssertEqual(fragment.properties!["childModel2"]! as String, self.child2.uuid.UUIDString, "Fragment is correct")
+            XCTAssertEqual(fragment.properties!["childModel2"]! as String, self.child2.uuid.UUIDString.lowercaseString, "Fragment is correct")
             
             fragment = changeSet.syncFragments[1]
             XCTAssertEqual(fragment.type, SyncFragmentType.Change, "Fragment is correct")
             XCTAssertEqual(fragment.objectUUID, self.parent.uuid, "Fragment is correct")
             XCTAssertEqual(fragment.properties!.count, 2, "Fragment is correct")
             XCTAssertEqual(fragment.properties!["string"]! as String, "testing parent", "Fragment is correct")
-            XCTAssertEqual(fragment.properties!["childModel"]! as String, self.child.uuid.UUIDString, "Fragment is correct")
+            XCTAssertEqual(fragment.properties!["childModel"]! as String, self.child.uuid.UUIDString.lowercaseString, "Fragment is correct")
             
             fragment = changeSet.syncFragments[2]
             XCTAssertEqual(fragment.type, SyncFragmentType.Add, "Fragment is correct")

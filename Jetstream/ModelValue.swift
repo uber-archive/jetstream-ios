@@ -270,7 +270,7 @@ extension Array: ModelValue {
         var serialized = [String]()
         for i in 0..<self.count {
             if let modelObject = self[i] as? ModelObject {
-                serialized.append(modelObject.uuid.UUIDString)
+                serialized.append(modelObject.uuid.UUIDString.lowercaseString)
             }
         }
         return serialized
@@ -294,7 +294,7 @@ extension Array: ModelValue {
 extension ModelObject: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return self == value as ModelObject }
     
-    func serialize() -> AnyObject { return self.uuid.UUIDString }
+    func serialize() -> AnyObject { return self.uuid.UUIDString.lowercaseString }
     
     class func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
         if let uuidString = value as? String {

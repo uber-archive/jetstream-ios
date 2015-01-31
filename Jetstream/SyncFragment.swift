@@ -91,7 +91,7 @@ private var classPrefix: String?
     public func serialize() -> [String: AnyObject] {
         var dictionary = [String: AnyObject]()
         dictionary["type"] = type.rawValue
-        dictionary["uuid"] = objectUUID.UUIDString
+        dictionary["uuid"] = objectUUID.UUIDString.lowercaseString
         if clsName != nil {
             dictionary["clsName"] = clsName!
         }
