@@ -79,8 +79,8 @@ public enum ChangeSetState {
         self.procedure = procedure
         self.atomic = atomic
         
-        var attachedObjectUUIDs = [String]();
-        var addedObjects = [String: SyncFragment]();
+        var attachedObjectUUIDs = [String]()
+        var addedObjects = [String: SyncFragment]()
         
         for syncFragment in syncFragments {
             if let modelObject = scope.getObjectById(syncFragment.objectUUID) {
