@@ -191,7 +191,9 @@ import Foundation
                 return changeSet
             }
         }
-        onChanges.fire(changeSet)
+        if changeSet.syncFragments.count > 0 {
+            onChanges.fire(changeSet)
+        }
         return changeSet
     }
     
@@ -323,7 +325,9 @@ import Foundation
             var syncFragments = getAndClearSyncFragments()
             if syncFragments.count > 0 {
                 let changeSet = ChangeSet(syncFragments: syncFragments, scope: self)
-                onChanges.fire(changeSet)
+                if changeSet.syncFragments.count > 0 {
+                    onChanges.fire(changeSet)
+                }
             }
         }
     }
