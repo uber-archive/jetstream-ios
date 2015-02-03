@@ -115,4 +115,19 @@ class ChangeSetTests: XCTestCase {
         changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         XCTAssertEqual(changeSet.syncFragments.count, 2, "Add fragment created")
     }
+    
+    func testRemovalOfAddFragmentsWhenNotAttachedToAnyProperties() {
+        root.localModel = TestModel()
+        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        XCTAssertEqual(changeSet.syncFragments.count, 0, "Add fragment should have been removed")
+        
+        root.localModelArray = [TestModel(), TestModel()]
+        changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        XCTAssertEqual(changeSet.syncFragments.count, 0, "Add fragment should have been removed")
+        
+        root.localModel = TestModel()
+        root.localModelArray = [TestModel(), TestModel()]
+        changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        XCTAssertEqual(changeSet.syncFragments.count, 0, "Add fragment should have been removed")
+    }
 }

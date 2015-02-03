@@ -53,7 +53,7 @@ public enum ChangeSetState {
     public private(set) var atomic: Bool = false
     
     /// The sync fragments associated with the ChangeSet.
-    public let syncFragments: [SyncFragment]
+    public private(set) var syncFragments: [SyncFragment]
     
     var changeSetQueue: ChangeSetQueue?
     var touches = [ModelObject: [String: AnyObject]]()
@@ -79,19 +79,44 @@ public enum ChangeSetState {
         self.procedure = procedure
         self.atomic = atomic
         
+        var attachedObjectUUIDs = [String]()
+        var addedObjects = [String: SyncFragment]()
+        
         for syncFragment in syncFragments {
-            if syncFragment.type == .Change {
-                if let modelObject = scope.getObjectById(syncFragment.objectUUID) {
-                    var properties = touches[modelObject] != nil ? touches[modelObject]! : [String: AnyObject]()
-                    
-                    if let definiteProperties = syncFragment.properties {
-                        for (key, _) in definiteProperties {
-                            if let value: AnyObject = syncFragment.originalProperties?[key] {
-                                properties[key] = value
+            if let modelObject = scope.getObjectById(syncFragment.objectUUID) {
+                var properties = touches[modelObject] != nil ? touches[modelObject]! : [String: AnyObject]()
+                
+                if let definiteProperties = syncFragment.properties {
+                    for (key, newValue) in definiteProperties {
+                        if let value: AnyObject = syncFragment.originalProperties?[key] {
+                            properties[key] = value
+                        }
+                        
+                        if let propertyInfo = modelObject.properties[key] {
+                            if propertyInfo.valueType == .ModelObject {
+                                if let uuid = newValue as? String {
+                                    attachedObjectUUIDs.append(newValue as String)
+                                }
+                            } else if propertyInfo.valueType == .Array {
+                                if let uuids = newValue as? [String] {
+                                    attachedObjectUUIDs += uuids
+                                }
                             }
                         }
                     }
+                }
+                if syncFragment.type == .Change {
                     touches[modelObject] = properties
+                } else if syncFragment.type == .Add {
+                    addedObjects[syncFragment.objectUUID.UUIDString.lowercaseString] = syncFragment
+                }
+            }
+        }
+ 
+        for (uuid, syncFragment) in addedObjects {
+            if find(attachedObjectUUIDs, uuid) == nil {
+                if let index = find(self.syncFragments, syncFragment) {
+                    self.syncFragments.removeAtIndex(index)
                 }
             }
         }

@@ -44,6 +44,8 @@ import Jetstream
     dynamic var color: UIColor?
     dynamic var image: UIImage?
     dynamic var localString: String?
+    dynamic var localModel: ModelObject?
+    dynamic var localModelArray: [ModelObject] = []
     
     dynamic var array: [TestModel] = []
     dynamic var array2: [TestModel] = []
@@ -63,6 +65,8 @@ import Jetstream
     override public class func getPropertyAttributes() -> [String: [PropertyAttribute]] {
         return [
             "localString": [.Local],
+            "localModel": [.Local],
+            "localModelArray": [.Local],
             "compositeProperty": [.Composite(["float32", "anotherArray"])],
             "throttledProperty": [.MinSyncInterval(0.05)]
         ]
