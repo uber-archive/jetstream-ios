@@ -108,7 +108,7 @@ public enum ChangeSetState {
                 if syncFragment.type == .Change {
                     touches[modelObject] = properties
                 } else if syncFragment.type == .Add {
-                    addedObjects[syncFragment.objectUUID.UUIDString] = syncFragment
+                    addedObjects[syncFragment.objectUUID.UUIDString.lowercaseString] = syncFragment
                 }
             }
         }
@@ -120,7 +120,6 @@ public enum ChangeSetState {
                 }
             }
         }
-        
         
         onError.listen(self) { [weak self] error in
             if let definiteSelf = self {
