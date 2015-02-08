@@ -47,27 +47,28 @@ public class NetworkMessage {
     }
     
     public class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
-        let type: AnyObject? = dictionary["type"]
-        if let definiteType = type as? String {
-            switch definiteType {
-            case SessionCreateMessage.messageType:
-                return SessionCreateMessage.unserialize(dictionary)
-            case SessionCreateReplyMessage.messageType:
-                return SessionCreateReplyMessage.unserialize(dictionary)
-            case SessionCreateReplyMessage.messageType:
-                return SessionCreateReplyMessage.unserialize(dictionary)
-            case ScopeFetchReplyMessage.messageType:
-                return ScopeFetchReplyMessage.unserialize(dictionary)
-            case ScopeStateMessage.messageType:
-                return ScopeStateMessage.unserialize(dictionary)
-            case ScopeSyncMessage.messageType:
-                return ScopeSyncMessage.unserialize(dictionary)
-            case ScopeSyncReplyMessage.messageType:
-                return ScopeSyncReplyMessage.unserialize(dictionary)
-            case PingMessage.messageType:
-                return PingMessage.unserialize(dictionary)
-            default:
-                return nil
+        if let typeIndex = dictionary.indexForKey("type") {
+            if let definiteType = dictionary[typeIndex].1 as? String {
+                switch definiteType {
+                case SessionCreateMessage.messageType:
+                    return SessionCreateMessage.unserialize(dictionary)
+                case SessionCreateReplyMessage.messageType:
+                    return SessionCreateReplyMessage.unserialize(dictionary)
+                case SessionCreateReplyMessage.messageType:
+                    return SessionCreateReplyMessage.unserialize(dictionary)
+                case ScopeFetchReplyMessage.messageType:
+                    return ScopeFetchReplyMessage.unserialize(dictionary)
+                case ScopeStateMessage.messageType:
+                    return ScopeStateMessage.unserialize(dictionary)
+                case ScopeSyncMessage.messageType:
+                    return ScopeSyncMessage.unserialize(dictionary)
+                case ScopeSyncReplyMessage.messageType:
+                    return ScopeSyncReplyMessage.unserialize(dictionary)
+                case PingMessage.messageType:
+                    return PingMessage.unserialize(dictionary)
+                default:
+                    return nil
+                }
             }
         }
         return nil
