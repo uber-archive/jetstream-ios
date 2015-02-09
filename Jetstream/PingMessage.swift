@@ -57,7 +57,7 @@ public class PingMessage: NetworkMessage {
         return dictionary
     }
 
-    public override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
+    public class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index = dictionary["index"] as? UInt
         var ack = dictionary["ack"] as? UInt
         var resendMissing = dictionary["resendMissing"] as? Bool
