@@ -51,7 +51,7 @@ class ScopeSyncReplyMessage: ReplyMessage {
         assertionFailure("ScopeSyncReplyMessage cannot serialize itself")
     }
     
-    override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
+    class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index = dictionary["index"] as? UInt
         var replyTo = dictionary["replyTo"] as? UInt
         var serializedFragmentReplies = dictionary["fragmentReplies"] as? [[String: AnyObject]]

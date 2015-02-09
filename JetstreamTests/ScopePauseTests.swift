@@ -70,7 +70,7 @@ class ScopePauseTest: XCTestCase {
             ]
         ]
         
-        firstMessage = NetworkMessage.unserialize(json) as ScopeStateMessage
+        firstMessage = NetworkMessage.unserializeDictionary(json) as ScopeStateMessage
         client.receivedMessage(firstMessage)
     }
     
@@ -94,7 +94,7 @@ class ScopePauseTest: XCTestCase {
         ]
         
         root.scope?.pauseIncomingMessages()
-        client.receivedMessage(NetworkMessage.unserialize(json)!)
+        client.receivedMessage(NetworkMessage.unserializeDictionary(json)!)
         XCTAssertEqual(root.string!, "set correctly", "Property not yet changed")
 
         root.scope?.resumeIncomingMessages()
@@ -117,7 +117,7 @@ class ScopePauseTest: XCTestCase {
                 ]
             ]
         ]
-        client.receivedMessage(NetworkMessage.unserialize(json)!)
+        client.receivedMessage(NetworkMessage.unserializeDictionary(json)!)
         
         json = [
             "type": "ScopeSync",
@@ -132,7 +132,7 @@ class ScopePauseTest: XCTestCase {
                 ]
             ]
         ]
-        client.receivedMessage(NetworkMessage.unserialize(json)!)
+        client.receivedMessage(NetworkMessage.unserializeDictionary(json)!)
         
         XCTAssertEqual(root.string!, "set correctly", "Property not yet changed")
         XCTAssertEqual(root.integer, 10, "Property not yet changed")

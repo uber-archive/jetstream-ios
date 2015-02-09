@@ -46,7 +46,7 @@ public class NetworkMessage {
         return ["type": type, "index": index]
     }
     
-    public class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
+    public class func unserializeDictionary(dictionary: [String: AnyObject]) -> NetworkMessage? {
         let type: AnyObject? = dictionary["type"]
         if let definiteType = type as? String {
             switch definiteType {

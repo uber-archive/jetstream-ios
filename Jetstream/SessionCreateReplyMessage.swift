@@ -41,7 +41,7 @@ class SessionCreateReplyMessage: NetworkMessage {
         super.init(index: index)
     }
     
-    override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
+    class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index = dictionary["index"] as? UInt
         var sessionToken = dictionary["sessionToken"] as? String
         

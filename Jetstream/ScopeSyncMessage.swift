@@ -70,7 +70,7 @@ class ScopeSyncMessage: NetworkMessage {
         return dictionary
     }
     
-    override class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
+    class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
         var index: UInt?
         var scopeIndex: UInt?
         var syncFragments: [SyncFragment]?

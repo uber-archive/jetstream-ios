@@ -179,7 +179,7 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
     
     func tryReadSerializedMessage(object: AnyObject) {
         if let dictionary = object as? [String: AnyObject] {
-            let message = NetworkMessage.unserialize(dictionary)
+            let message = NetworkMessage.unserializeDictionary(dictionary)
             if message != nil {
                 switch message! {
                 case let pingMessage as PingMessage:
