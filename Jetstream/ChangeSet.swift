@@ -55,6 +55,7 @@ public enum ChangeSetState {
     /// The sync fragments associated with the ChangeSet.
     public private(set) var syncFragments: [SyncFragment]
     
+    let logger = Logging.loggerFor("ChangeSet")
     var changeSetQueue: ChangeSetQueue?
     var touches = [ModelObject: [String: AnyObject]]()
     var error: NSError?
@@ -212,7 +213,7 @@ public enum ChangeSetState {
     
     func processFragmentReplies(fragmentReplies: [SyncFragmentReply], scope: Scope) {
         if fragmentReplies.count != syncFragments.count {
-            Logging.loggerFor("Sync").error("Fragment mismatch, reverting ChangeSet")
+            logger.error("Fragment mismatch, reverting ChangeSet")
             revertOnScope(scope)
         } else {
             var error: NSError?
