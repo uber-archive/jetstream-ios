@@ -54,6 +54,7 @@ class ChangeSetTests: XCTestCase {
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         changeSet.revertOnScope(scope)
         
+        XCTAssertEqual(scope.getAndClearSyncFragments().count, 0, "Should have reverted without generating Sync fragments")
         XCTAssertEqual(root.integer, 10, "Change set reverted")
         XCTAssertEqual(root.float32, Float(10.0), "Change set reverted")
         XCTAssertEqual(root.string!, "test", "Change set reverted")
@@ -65,6 +66,7 @@ class ChangeSetTests: XCTestCase {
         
         changeSet.revertOnScope(scope)
         
+        XCTAssertEqual(scope.getAndClearSyncFragments().count, 0, "Should have reverted without generating Sync fragments")
         XCTAssert(root.childModel == nil, "Change set reverted")
         XCTAssertEqual(scope.modelObjects.count, 1 , "Scope knows correct models")
     }
@@ -78,6 +80,7 @@ class ChangeSetTests: XCTestCase {
         
         changeSet.revertOnScope(scope)
         
+        XCTAssertEqual(scope.getAndClearSyncFragments().count, 0, "Should have reverted without generating Sync fragments")
         XCTAssert(root.childModel == child, "Change set reverted")
         XCTAssertEqual(scope.modelObjects.count, 2 , "Scope knows correct models")
     }
@@ -87,9 +90,9 @@ class ChangeSetTests: XCTestCase {
         var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         XCTAssertEqual(changeSet.syncFragments.count, 2, "Correct number of sync fragments")
         
-        
         changeSet.revertOnScope(scope)
         
+        XCTAssertEqual(scope.getAndClearSyncFragments().count, 0, "Should have reverted without generating Sync fragments")
         XCTAssertEqual(root.array.count, 0, "Change set reverted")
         XCTAssertEqual(scope.modelObjects.count, 1 , "Scope knows correct models")
     }
