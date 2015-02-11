@@ -217,28 +217,31 @@ public enum ChangeSetState {
         } else {
             var error: NSError?
             var index = 0
-            for reply in fragmentReplies {
-                let syncFragment = syncFragments[index]
-                if !reply.accepted {
-                    // TODO: Should gather up failed fragments in the errors userInfo
-                    error = errorWithUserInfo(.SyncFragmentApplyError, [NSLocalizedDescriptionKey: "Failed to apply sync fragments"])
-                    
-                    if let modelObject = scope.getObjectById(syncFragment.objectUUID) {
-                        if syncFragment.type != .Change || syncFragment.properties == nil {
-                            continue
-                        }
-                        for key in syncFragment.properties!.keys {
-                            if let value: AnyObject = touches[modelObject]?[key] {
-                                setProperty(key, onModelObject: modelObject, toValue: value)
+            
+            scope.startApplyingRemote {
+                for reply in fragmentReplies {
+                    let syncFragment = self.syncFragments[index]
+                    if !reply.accepted {
+                        // TODO: Should gather up failed fragments in the errors userInfo
+                        error = errorWithUserInfo(.SyncFragmentApplyError, [NSLocalizedDescriptionKey: "Failed to apply sync fragments"])
+                        
+                        if let modelObject = scope.getObjectById(syncFragment.objectUUID) {
+                            if syncFragment.type != .Change || syncFragment.properties == nil {
+                                continue
+                            }
+                            for key in syncFragment.properties!.keys {
+                                if let value: AnyObject = self.touches[modelObject]?[key] {
+                                    self.setProperty(key, onModelObject: modelObject, toValue: value)
+                                }
                             }
                         }
+                        index++
                     }
-                    index++
-                }
-                if let modifications = reply.modifications {
-                    if let modelObject = scope.getObjectById(syncFragment.objectUUID) {
-                        for (key, value) in modifications {
-                            setProperty(key, onModelObject: modelObject, toValue: value)
+                    if let modifications = reply.modifications {
+                        if let modelObject = scope.getObjectById(syncFragment.objectUUID) {
+                            for (key, value) in modifications {
+                                self.setProperty(key, onModelObject: modelObject, toValue: value)
+                            }
                         }
                     }
                 }
@@ -258,9 +261,11 @@ public enum ChangeSetState {
     }
     
     func revertOnScope(scope: Scope) {
-        for (modelObject, properties) in touches {
-            for (key, value) in properties {
-                setProperty(key, onModelObject: modelObject, toValue: value)
+        scope.startApplyingRemote {
+            for (modelObject, properties) in self.touches {
+                for (key, value) in properties {
+                    self.setProperty(key, onModelObject: modelObject, toValue: value)
+                }
             }
         }
         state = .Reverted
