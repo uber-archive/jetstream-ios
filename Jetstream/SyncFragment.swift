@@ -53,7 +53,7 @@ private var classPrefix: String?
     
     /// A dictionary of key-value pairs to apply to the object associated with the fragment.
     public var properties: [String: AnyObject]?
-    
+
     var originalProperties: [String: AnyObject]?
     
     /// Creates a new fragment.
@@ -111,8 +111,8 @@ private var classPrefix: String?
         var clsName: String?
         var properties: [String: AnyObject]?
         
-        let logger = Logging.loggerFor("Transport")
-
+        let logger = Logging.loggerFor("SyncFragment")
+        
         for (key, value) in dictionary {
             switch key {
             case "type":

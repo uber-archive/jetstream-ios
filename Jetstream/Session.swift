@@ -29,7 +29,7 @@ public class Session {
     /// The token of the session
     public let token: String
     
-    let logger = Logging.loggerFor("Client")
+    let logger = Logging.loggerFor("Session")
     let client: Client
     var nextMessageIndex: UInt = 1
     var serverIndex: UInt = 0
