@@ -72,6 +72,8 @@ class TransactionTests: XCTestCase {
             ]
         ]
         
+        client.session?.dispatchSerialSync {} // Wait serial queue to be empty
+        
         var reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
 
@@ -105,6 +107,8 @@ class TransactionTests: XCTestCase {
             ]
         ]
         
+        client.session?.dispatchSerialSync {} // Wait serial queue to be empty
+        
         var reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
         
@@ -133,7 +137,9 @@ class TransactionTests: XCTestCase {
             "replyTo": 1,
             "fragmentReplies": [[String: AnyObject]]()
         ]
-
+        
+        client.session?.dispatchSerialSync {} // Wait serial queue to be empty
+        
         var reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
         
@@ -155,12 +161,15 @@ class TransactionTests: XCTestCase {
             didCall = true
         }
         
-        client.transport.messageReceived(ReplyMessage(index: 2, replyTo: 1))
-
+        client.session?.dispatchSerialSync {} // Wait for serial queue to be empty
+        
+        self.client.transport.messageReceived(ReplyMessage(index: 2, replyTo: 1))
+        
         XCTAssertEqual(didCall, true, "Did invoke completion block")
         XCTAssertEqual(self.root.integer, 0, "Did rollback")
         XCTAssert(self.root.float32 == 0.0, "Did rollback")
         XCTAssertNil(self.root.string, "Did rollback")
+        
     }
     
     func testSpecificFragmentReversal() {
@@ -189,8 +198,23 @@ class TransactionTests: XCTestCase {
             ]
         ]
         
+        client.session?.dispatchSerialSync {} // Wait serial queue to be empty
+        
         var reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
         XCTAssertEqual(didCall, true, "Did invoke completion block")
+    }
+    
+    func testScopePerformance() {
+        self.measureBlock() {
+            for i in 0..<100 {
+                self.root.scope!.modify {
+                    self.root.integer = i
+                    self.root.string = "\(i)"
+                }.observeCompletion(self) { error in
+                    // No-op
+                }
+            }
+        }
     }
 }

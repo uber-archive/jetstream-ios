@@ -28,6 +28,11 @@ import UIKit
 typealias ScopesWithFetchParams = (scope: Scope, fetchParams: [String: AnyObject])
 
 public class Session {
+    
+    struct Static {
+        static var serialProcessingQueue = dispatch_queue_create("Jetstream shared session", DISPATCH_QUEUE_SERIAL)
+    }
+    
     /// The token of the session
     public let token: String
     
@@ -144,7 +149,9 @@ public class Session {
         scope.onChanges.listen(self) {
             [weak self] changeSet in
             if let definiteSelf = self {
-                definiteSelf.scopeChanges(scope, atIndex: scopeIndex, changeSet: changeSet)
+                definiteSelf.dispatchSerialAsync {
+                    definiteSelf.scopeChanges(scope, atIndex: scopeIndex, changeSet: changeSet)
+                }
             }
         }
     }
@@ -171,5 +178,13 @@ public class Session {
         }
         scopes.removeAll(keepCapacity: false)
         closed = true
+    }
+    
+    func dispatchSerialAsync(callback: () -> ()) {
+        dispatch_async(Static.serialProcessingQueue, callback)
+    }
+    
+    func dispatchSerialSync(callback: () -> ()) {
+        dispatch_sync(Static.serialProcessingQueue, callback)
     }
 }
