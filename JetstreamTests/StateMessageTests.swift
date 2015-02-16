@@ -29,7 +29,7 @@ import Jetstream
 class StateMessageTests: XCTestCase {
     var root = TestModel()
     var scope = Scope(name: "Testing")
-    var client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
+    var client = Client(transportAdapterFactory: { TestTransportAdapter() })
     var firstMessage: ScopeStateMessage!
     let uuid = NSUUID()
 
@@ -39,18 +39,17 @@ class StateMessageTests: XCTestCase {
         root.setScopeAndMakeRootModel(scope)
         XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope to start with")
         
-        client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
+        client = Client(transportAdapterFactory: { TestTransportAdapter() })
         var msg = SessionCreateReplyMessage(index: 1, sessionToken: "jeah", error: nil)
         client.receivedMessage(msg)
-        client.session!.scopeAttach(scope, scopeIndex: 1)
-
+        client.session!.scopeAttach(scope, scopeIndex: 0)
         
         let childUUID = NSUUID()
         
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 1,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
@@ -105,7 +104,7 @@ class StateMessageTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
@@ -127,7 +126,7 @@ class StateMessageTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
@@ -164,7 +163,7 @@ class StateMessageTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
@@ -209,7 +208,7 @@ class StateMessageTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
