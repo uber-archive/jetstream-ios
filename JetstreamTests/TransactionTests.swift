@@ -30,7 +30,7 @@ class TransactionTests: XCTestCase {
     var root = TestModel()
     var child = TestModel()
     var scope = Scope(name: "Testing")
-    var client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
+    var client = Client(transportAdapterFactory: { TestTransportAdapter() })
     var firstMessage: ScopeStateMessage!
     
     override func setUp() {
@@ -41,10 +41,10 @@ class TransactionTests: XCTestCase {
         root.setScopeAndMakeRootModel(scope)
         scope.getAndClearSyncFragments()
  
-        client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
+        client = Client(transportAdapterFactory: { TestTransportAdapter() })
         var msg = SessionCreateReplyMessage(index: 1, sessionToken: "jeah", error: nil)
         client.receivedMessage(msg)
-        client.session!.scopeAttach(scope, scopeIndex: 1)
+        client.session!.scopeAttach(scope, scopeIndex: 0)
     }
     
     override func tearDown() {
@@ -169,10 +169,10 @@ class TransactionTests: XCTestCase {
         let changeSet = root.scope!.modify {
             self.root.integer = 20
             self.child.integer = 20
-            }.observeCompletion(self) { error in
-                XCTAssertEqual(self.root.integer, 0, "Kept change")
-                XCTAssertEqual(self.child.integer, 20, "Reverted change")
-                didCall = true
+        }.observeCompletion(self) { error in
+            XCTAssertEqual(self.root.integer, 0, "Kept change")
+            XCTAssertEqual(self.child.integer, 20, "Reverted change")
+            didCall = true
         }
         
         var json: [String: AnyObject] = [

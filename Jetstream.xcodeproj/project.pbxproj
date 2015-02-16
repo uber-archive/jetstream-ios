@@ -14,6 +14,8 @@
 		11A348441A5768C8009B2794 /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11372DDE1A573DD200FBA922 /* Constraint.swift */; };
 		11A629891A58DE4300A83ABA /* ObjectiveCScopeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A629881A58DE4300A83ABA /* ObjectiveCScopeTests.m */; };
 		11D7C7951A6C60CE00F3B7DA /* Jetstream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 722555F619F819D90016D8F8 /* Jetstream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		11F8D82F1A9133F400653B6D /* ClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F8D82E1A9133F400653B6D /* ClientTests.swift */; };
+		11F8D83C1A9145A100653B6D /* TestTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F8D83B1A9145A100653B6D /* TestTransportAdapter.swift */; };
 		72126CAC1A311F480006CD29 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAB1A311F480006CD29 /* Signal.swift */; };
 		72126CAE1A311F620006CD29 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAD1A311F620006CD29 /* WebSocket.swift */; };
 		72126CAF1A3121410006CD29 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAD1A311F620006CD29 /* WebSocket.swift */; };
@@ -147,6 +149,8 @@
 		11372DE61A575EF800FBA922 /* ConstraintTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintTests.swift; sourceTree = "<group>"; };
 		11A629881A58DE4300A83ABA /* ObjectiveCScopeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCScopeTests.m; sourceTree = "<group>"; };
 		11EC72531A58CABB00C7D186 /* ObjectiveCPropertyListenerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCPropertyListenerTests.m; sourceTree = "<group>"; };
+		11F8D82E1A9133F400653B6D /* ClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientTests.swift; sourceTree = "<group>"; };
+		11F8D83B1A9145A100653B6D /* TestTransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTransportAdapter.swift; sourceTree = "<group>"; };
 		72126CAB1A311F480006CD29 /* Signal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Signal.swift; path = Signals/Signals/Signal.swift; sourceTree = "<group>"; };
 		72126CAD1A311F620006CD29 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebSocket.swift; path = Starscream/WebSocket.swift; sourceTree = "<group>"; };
 		7216634E19F83FD3007704D2 /* ChangeSetQueueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeSetQueueTests.swift; sourceTree = "<group>"; };
@@ -217,6 +221,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11F8D83A1A91458E00653B6D /* Transports */ = {
+			isa = PBXGroup;
+			children = (
+				11F8D83B1A9145A100653B6D /* TestTransportAdapter.swift */,
+			);
+			name = Transports;
+			sourceTree = "<group>";
+		};
 		72126C961A311ED10006CD29 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
@@ -307,6 +319,7 @@
 				72226A791A0C0748008EE330 /* Jetstream-bridging-header.h */,
 				7216634E19F83FD3007704D2 /* ChangeSetQueueTests.swift */,
 				7225561E19F81AA10016D8F8 /* ChangeSetTests.swift */,
+				11F8D82E1A9133F400653B6D /* ClientTests.swift */,
 				11372DE61A575EF800FBA922 /* ConstraintTests.swift */,
 				7225561419F81AA10016D8F8 /* DependencyTests.swift */,
 				7225561619F81AA10016D8F8 /* ImmediatePropertyListeners.swift */,
@@ -322,6 +335,7 @@
 				7225561F19F81AA10016D8F8 /* TreeChangeTests.swift */,
 				7225568D19F81BE20016D8F8 /* Helpers */,
 				7225568E19F81BF10016D8F8 /* Models */,
+				11F8D83A1A91458E00653B6D /* Transports */,
 				72EFCC3719F9B64D0054BC18 /* Resources */,
 				7225560619F819DA0016D8F8 /* Supporting Files */,
 			);
@@ -584,6 +598,7 @@
 			files = (
 				11372DE71A575EF800FBA922 /* ConstraintTests.swift in Sources */,
 				7225568319F81B430016D8F8 /* Session.swift in Sources */,
+				11F8D82F1A9133F400653B6D /* ClientTests.swift in Sources */,
 				722F9ACD1A4394F300A2369A /* ScopeTests.swift in Sources */,
 				111B59E71A58D44E0017702B /* TestModel.swift in Sources */,
 				7225568919F81B430016D8F8 /* Transport.swift in Sources */,
@@ -595,6 +610,7 @@
 				723A39801A07F8E900FD47A0 /* ScopeFetchReplyMessage.swift in Sources */,
 				722F9AD01A4394F300A2369A /* TransactionTests.swift in Sources */,
 				7225568419F81B430016D8F8 /* SessionCreateMessage.swift in Sources */,
+				11F8D83C1A9145A100653B6D /* TestTransportAdapter.swift in Sources */,
 				7225567619F81B430016D8F8 /* Constants.swift in Sources */,
 				7225567A19F81B430016D8F8 /* NetworkMessage.swift in Sources */,
 				722F9ACB1A4394F300A2369A /* PropertyListenerTests.swift in Sources */,
