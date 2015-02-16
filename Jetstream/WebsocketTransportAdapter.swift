@@ -334,7 +334,7 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
         var interventionRequired: Bool = (flags & UInt32(kSCNetworkFlagsInterventionRequired)) != 0
         var isLocalAddress: Bool = (flags & UInt32(kSCNetworkFlagsIsLocalAddress)) != 0
         var isDirect: Bool = (flags & UInt32(kSCNetworkFlagsIsDirect)) != 0
-        
-        return isReachable && !needsConnection && !transientConnection
+
+        return isReachable && !needsConnection && (!transientConnection || !interventionRequired)        
     }
 }
