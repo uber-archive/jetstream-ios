@@ -23,7 +23,6 @@
 //  THE SOFTWARE.
 
 import Foundation
-import Signals
 
 class TestConnectionOptions: ConnectionOptions {
     var url: NSURL { return NSURL(string: "http://localhost")! }

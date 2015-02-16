@@ -79,7 +79,6 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
     let restartSessionOnFatalError: Bool
     var transport: Transport
     var sessionCreateParams = [String: AnyObject]()
-    var explicitlyClosed = false
     
     // MARK: - Public interface
     
@@ -191,7 +190,7 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
     }
     
     func reinitializeTransportAndRestartSession() {
-        var scopesAndFetchParams = [(Scope, [String: AnyObject])]()
+        var scopesAndFetchParams = [ScopesWithFetchParams]()
         if let scopesByIndex = session?.scopes {
             scopesAndFetchParams = scopesByIndex.values.array
         }

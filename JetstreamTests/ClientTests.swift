@@ -25,7 +25,6 @@
 import Foundation
 import UIKit
 import XCTest
-import Signals
 
 class ClientTests: XCTestCase {
     func testRestartSessionOnFatalError() {
@@ -66,8 +65,8 @@ class ClientTests: XCTestCase {
         
         var msg = SessionCreateReplyMessage(index: 1, sessionToken: sessionToken1, error: nil)
         client.receivedMessage(msg)
-        client.session!.scopeAttach(scope1, scopeIndex: 0, params: scope1FetchParams)
-        client.session!.scopeAttach(scope2, scopeIndex: 1, params: scope2FetchParams)
+        client.session!.scopeAttach(scope1, scopeIndex: 0, fetchParams: scope1FetchParams)
+        client.session!.scopeAttach(scope2, scopeIndex: 1, fetchParams: scope2FetchParams)
 
         XCTAssertEqual(client.session!.token, sessionToken1, "Did set correct session token")
         XCTAssertEqual(client.session!.scopes.count, 2, "Did load scopes")
