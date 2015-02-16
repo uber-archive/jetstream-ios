@@ -169,6 +169,9 @@ private var classPrefix: String?
             }
             for (key, value) in definiteProperties {
                 if let propertyInfo = modelObject.properties[key] {
+                    if propertyInfo.dontSync {
+                        continue
+                    }
                     if let convertedValue: AnyObject = unserializeModelValue(value, scope, propertyInfo.valueType) {
                         modelObject.setValue(convertedValue, forKey: key)
                     } else {
