@@ -49,7 +49,7 @@ class StateMessageTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 1,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
@@ -104,7 +104,7 @@ class StateMessageTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
@@ -126,7 +126,7 @@ class StateMessageTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
@@ -163,7 +163,7 @@ class StateMessageTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
@@ -208,7 +208,7 @@ class StateMessageTests: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [

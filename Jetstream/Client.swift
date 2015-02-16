@@ -84,7 +84,7 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
     
     /// Constructs a client.
     ///
-    /// :param: transportAdapter The transport adapter to use to connect to the Jetstream server.
+    /// :param: transportAdapterFactory The factory used to create a transport adapter to connect to a Jetstream server.
     /// :param: restartSessionOnFatalError Whether to restart a session on a fatal session or transport error.
     public init(transportAdapterFactory: TransportAdapterFactory, restartSessionOnFatalError: Bool = true) {
         self.transportAdapterFactory = transportAdapterFactory

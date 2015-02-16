@@ -109,7 +109,8 @@ public class Session {
         
         switch message {
         case let scopeStateMessage as ScopeStateMessage:
-            if let scope = scopes[scopeStateMessage.scopeIndex]?.scope {
+            if let scopeAndFetchParams = scopes[scopeStateMessage.scopeIndex] {
+                let scope = scopeAndFetchParams.scope
                 if scope.root != nil {
                     scope.startApplyingRemote {
                         scope.applyFullStateFromFragments(scopeStateMessage.syncFragments, rootUUID: scopeStateMessage.rootUUID)
@@ -121,7 +122,8 @@ public class Session {
                 logger.error("Received state message without having local scope")
             }
         case let scopeSyncMessage as ScopeSyncMessage:
-            if let scope = scopes[scopeSyncMessage.scopeIndex]?.scope {
+            if let scopeAndFetchParams = scopes[scopeSyncMessage.scopeIndex] {
+                let scope = scopeAndFetchParams.scope
                 if scope.root != nil {
                     if scopeSyncMessage.syncFragments.count > 0 {
                         scope.startApplyingRemote {

@@ -48,7 +48,7 @@ class ScopePauseTest: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 1,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "rootUUID": uuid.UUIDString,
             "fragments": [
                 [
@@ -82,7 +82,7 @@ class ScopePauseTest: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeSync",
             "index": 2,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "fragments": [
                 [
                     "type": "change",
@@ -107,7 +107,7 @@ class ScopePauseTest: XCTestCase {
         var json: [String: AnyObject] = [
             "type": "ScopeSync",
             "index": 2,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "fragments": [
                 [
                     "type": "change",
@@ -122,7 +122,7 @@ class ScopePauseTest: XCTestCase {
         json = [
             "type": "ScopeSync",
             "index": 3,
-            "scopeIndex": 1,
+            "scopeIndex": 0,
             "fragments": [
                 [
                     "type": "change",
