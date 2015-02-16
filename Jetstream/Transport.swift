@@ -96,8 +96,8 @@ class Transport {
     }
     
     func unbindListeners() {
-        onStatusChanged.removeListener(self)
-        onMessage.removeListener(self)
+        onStatusChanged.removeAllListeners()
+        onMessage.removeAllListeners()
     }
     
     func fatallyClose() {
