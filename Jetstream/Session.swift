@@ -25,7 +25,14 @@
 import Foundation
 import UIKit
 
+typealias ScopesWithFetchParams = (scope: Scope, fetchParams: [String: AnyObject])
+
 public class Session {
+    
+    struct Static {
+        static var serialProcessingQueue = dispatch_queue_create("Jetstream shared session", DISPATCH_QUEUE_SERIAL)
+    }
+    
     /// The token of the session
     public let token: String
     
@@ -33,14 +40,13 @@ public class Session {
     let client: Client
     var nextMessageIndex: UInt = 1
     var serverIndex: UInt = 0
-    var scopes = [UInt: Scope]()
+    var scopes = [UInt: ScopesWithFetchParams]()
     var closed = false
     let changeSetQueue = ChangeSetQueue()
     
     init(client: Client, token: String) {
         self.client = client
         self.token = token
-        // TODO: start timer that pings at regular interval
     }
     
     // MARK: - Public interface
@@ -70,7 +76,7 @@ public class Session {
                     if definiteSelf.closed {
                         return callback(error(.SessionBecameClosed, localizedDescription: "Session became closed"))
                     }
-                    definiteSelf.scopeAttach(scope, scopeIndex: scopeFetchReply.scopeIndex!)
+                    definiteSelf.scopeAttach(scope, scopeIndex: scopeFetchReply.scopeIndex!, fetchParams: params)
                     callback(nil)
                 } else {
                     callback(error(.ScopeFetchError, localizedDescription: "Invalid reply message"))
@@ -108,7 +114,8 @@ public class Session {
         
         switch message {
         case let scopeStateMessage as ScopeStateMessage:
-            if let scope = scopes[scopeStateMessage.scopeIndex] {
+            if let scopeAndFetchParams = scopes[scopeStateMessage.scopeIndex] {
+                let scope = scopeAndFetchParams.scope
                 if scope.root != nil {
                     scope.startApplyingRemote {
                         scope.applyFullStateFromFragments(scopeStateMessage.syncFragments, rootUUID: scopeStateMessage.rootUUID)
@@ -120,7 +127,8 @@ public class Session {
                 logger.error("Received state message without having local scope")
             }
         case let scopeSyncMessage as ScopeSyncMessage:
-            if let scope = scopes[scopeSyncMessage.scopeIndex] {
+            if let scopeAndFetchParams = scopes[scopeSyncMessage.scopeIndex] {
+                let scope = scopeAndFetchParams.scope
                 if scope.root != nil {
                     if scopeSyncMessage.syncFragments.count > 0 {
                         scope.startApplyingRemote {
@@ -136,12 +144,14 @@ public class Session {
         }
     }
     
-    func scopeAttach(scope: Scope, scopeIndex: UInt) {
-        scopes[scopeIndex] = scope
+    func scopeAttach(scope: Scope, scopeIndex: UInt, fetchParams: [String: AnyObject] = [String: AnyObject]()) {
+        scopes[scopeIndex] = (scope: scope, fetchParams: fetchParams)
         scope.onChanges.listen(self) {
             [weak self] changeSet in
             if let definiteSelf = self {
-                definiteSelf.scopeChanges(scope, atIndex: scopeIndex, changeSet: changeSet)
+                definiteSelf.dispatchSerialAsync {
+                    definiteSelf.scopeChanges(scope, atIndex: scopeIndex, changeSet: changeSet)
+                }
             }
         }
     }
@@ -163,10 +173,18 @@ public class Session {
     }
     
     func close() {
-        for (_, scope) in scopes {
-            scope.onChanges.removeListener(self)
+        for (_, entry) in scopes {
+            entry.scope.onChanges.removeListener(self)
         }
         scopes.removeAll(keepCapacity: false)
         closed = true
+    }
+    
+    func dispatchSerialAsync(callback: () -> ()) {
+        dispatch_async(Static.serialProcessingQueue, callback)
+    }
+    
+    func dispatchSerialSync(callback: () -> ()) {
+        dispatch_sync(Static.serialProcessingQueue, callback)
     }
 }

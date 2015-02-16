@@ -39,18 +39,28 @@ public struct WebSocketConnectionOptions: ConnectionOptions {
     }
 }
 
+enum WebSocketTransportAdapterErrorCode: Int {
+    case DeniedConnection = 4096
+    case ClosedConnection = 4097
+}
+
 /// A transport adapter that connects to the the jetstream service via a persistent Websocket.
 public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDelegate {
     struct Static {
         static let className = "WebsocketTransportAdapter"
         static let inactivityPingIntervalSeconds: NSTimeInterval = 10
         static let inactivityPingIntervalVarianceSeconds: NSTimeInterval = 2
+        static let fatalErrorCodes = [
+            WebSocketTransportAdapterErrorCode.DeniedConnection.rawValue,
+            WebSocketTransportAdapterErrorCode.ClosedConnection.rawValue
+        ]
     }
     
     public let onStatusChanged = Signal<(TransportStatus)>()
     public let onMessage = Signal<(NetworkMessage)>()
     public let adapterName = Static.className
     public let options: ConnectionOptions
+    let websocketOptions: WebSocketConnectionOptions
     
     public internal(set) var status: TransportStatus = .Closed {
         didSet {
@@ -59,7 +69,7 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
     }
 
     let logger = Logging.loggerFor(Static.className)
-    let socket: WebSocket
+    var socket: WebSocket
     var explicitlyClosed = false
     var session: Session?
     var pingTimer: NSTimer?
@@ -70,13 +80,13 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
     /// :param: options Options to connect to the service with.
     public init(options: WebSocketConnectionOptions ) {
         self.options = options
+        websocketOptions = options
         socket = WebSocket(url: options.url)
         super.init()
         socket.delegate = self
         for (key, value) in options.headers {
             socket.headers[key] = value
         }
-
     }
 
     // MARK: - TransportAdapter
@@ -115,12 +125,11 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
     
     public func sessionEstablished(session: Session) {
         self.session = session
-        socket.headers["X-Jetstream-SessionToken"] = session.token
         startPingTimer()
     }
     
     // MARK: - WebsocketDelegate
-    public func websocketDidConnect() {
+    public func websocketDidConnect(socket: WebSocket) {
         status = .Connected
         if session != nil {
             // Request missed messages
@@ -130,10 +139,22 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
         }
     }
     
-    public func websocketDidDisconnect(error: NSError?) {
+    public func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
         // Starscream sometimes dispatches this on another thread
         dispatch_async(dispatch_get_main_queue()) {
+            if let definiteError = error {
+                self.didReceiveWebsocketError(definiteError)
+            }
             self.didDisconnect()
+        }
+    }
+    
+    func didReceiveWebsocketError(error: NSError) {
+        if error.domain == "Websocket" && contains(Static.fatalErrorCodes, error.code) {
+            // Declare as fatal and close everything up
+            explicitlyClosed = true
+            socket.delegate = nil
+            status = .Fatal
         }
     }
     
@@ -143,20 +164,40 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
             status = .Closed
         }
         if !explicitlyClosed {
+            resetSocket()
             connect()
         }
     }
     
-    public func websocketDidWriteError(error: NSError?) {
-        if error != nil {
+    func resetSocket() {
+        socket.delegate = nil
+        
+        socket = WebSocket(url: options.url)
+        socket.delegate = self
+        for (key, value) in websocketOptions.headers {
+            socket.headers[key] = value
+        }
+        if let definiteSession = session {
+            socket.headers["X-Jetstream-SessionToken"] = definiteSession.token
+        }
+    }
+    
+    public func websocketDidWriteError(socket: WebSocket, error: NSError?) {
+        if let definiteError = error {
+            // Starscream sometimes dispatches this on another thread
+            dispatch_async(dispatch_get_main_queue()) {
+                if let definiteError = error {
+                    self.didReceiveWebsocketError(definiteError)
+                }
+            }
             logger.error("socket error: \(error!.localizedDescription)")
         }
     }
     
-    public func websocketDidReceiveMessage(str: String) {
-        logger.debug("received: \(str)")
+    public func websocketDidReceiveMessage(socket: WebSocket, text: String) {
+        logger.debug("received: \(text)")
         
-        let data = str.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        let data = text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         
         if data != nil {
             let error = NSErrorPointer()
@@ -192,7 +233,7 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
         }
     }
     
-    public func websocketDidReceiveData(data: NSData) {
+    public func websocketDidReceiveData(socket: WebSocket, data: NSData) {
         logger.debug("received data (len=\(data.length)")
     }
     

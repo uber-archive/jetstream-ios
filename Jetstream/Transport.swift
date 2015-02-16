@@ -30,10 +30,16 @@ public protocol ConnectionOptions {
     var url: NSURL { get }
 }
 
+/// Status of the transport state.
 public enum TransportStatus {
+    /// Not open.
     case Closed
+    /// Connecting.
     case Connecting
+    /// Connected.
     case Connected
+    /// Fatally closed and cannot be reconnected.
+    case Fatal
 }
 
 public protocol TransportAdapter {
@@ -63,9 +69,10 @@ class Transport {
     let onMessage: Signal<NetworkMessage>
     let adapter: TransportAdapter
     var waitingReply = [UInt: ReplyCallback]()
+    var fatallyClosed = false
     
     var status: TransportStatus {
-        return adapter.status
+        return fatallyClosed ? .Fatal : adapter.status
     }
 
     init(adapter: TransportAdapter) {
@@ -88,6 +95,17 @@ class Transport {
         }
     }
     
+    func unbindListeners() {
+        onStatusChanged.removeAllListeners()
+        onMessage.removeAllListeners()
+    }
+    
+    func fatallyClose() {
+        fatallyClosed = true
+        unbindListeners()
+        disconnect()
+    }
+    
     func statusChanged(status: TransportStatus) {
         switch status {
         case .Closed:
@@ -96,6 +114,9 @@ class Transport {
             logger.info("Connecting using \(self.adapter.adapterName) to \(self.adapter.options.url)")
         case .Connected:
             logger.info("Connected")
+        case .Fatal:
+            fatallyClose()
+            logger.info("Fatally closed")
         }
     }
     

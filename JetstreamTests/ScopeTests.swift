@@ -353,4 +353,19 @@ class ScopeTests: XCTestCase {
         }
         XCTAssertEqual(syncFragmentCount, 3, "Only 3 fragments created")
     }
+    
+    func testScopePerformance() {
+        self.measureBlock() {
+            
+            self.parent.setScopeAndMakeRootModel(self.scope)
+            self.scope.getAndClearSyncFragments()
+            
+            self.scope.onChanges.listen(self, callback: { changeSet in
+               // No-op
+            })
+            for i in 0..<100 {
+                self.parent.string = "\(i)"
+            }
+        }
+    }
 }

@@ -30,7 +30,7 @@ class TransactionTests: XCTestCase {
     var root = TestModel()
     var child = TestModel()
     var scope = Scope(name: "Testing")
-    var client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
+    var client = Client(transportAdapterFactory: { TestTransportAdapter() })
     var firstMessage: ScopeStateMessage!
     
     override func setUp() {
@@ -41,10 +41,10 @@ class TransactionTests: XCTestCase {
         root.setScopeAndMakeRootModel(scope)
         scope.getAndClearSyncFragments()
  
-        client = Client(transportAdapter: WebSocketTransportAdapter(options: WebSocketConnectionOptions(url: NSURL(string: "localhost")!)))
+        client = Client(transportAdapterFactory: { TestTransportAdapter() })
         var msg = SessionCreateReplyMessage(index: 1, sessionToken: "jeah", error: nil)
         client.receivedMessage(msg)
-        client.session!.scopeAttach(scope, scopeIndex: 1)
+        client.session!.scopeAttach(scope, scopeIndex: 0)
     }
     
     override func tearDown() {
@@ -71,6 +71,8 @@ class TransactionTests: XCTestCase {
                 [String: AnyObject](),
             ]
         ]
+        
+        client.session?.dispatchSerialSync {} // Wait serial queue to be empty
         
         var reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
@@ -105,6 +107,8 @@ class TransactionTests: XCTestCase {
             ]
         ]
         
+        client.session?.dispatchSerialSync {} // Wait serial queue to be empty
+        
         var reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
         
@@ -133,7 +137,9 @@ class TransactionTests: XCTestCase {
             "replyTo": 1,
             "fragmentReplies": [[String: AnyObject]]()
         ]
-
+        
+        client.session?.dispatchSerialSync {} // Wait serial queue to be empty
+        
         var reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
         
@@ -155,12 +161,15 @@ class TransactionTests: XCTestCase {
             didCall = true
         }
         
-        client.transport.messageReceived(ReplyMessage(index: 2, replyTo: 1))
-
+        client.session?.dispatchSerialSync {} // Wait for serial queue to be empty
+        
+        self.client.transport.messageReceived(ReplyMessage(index: 2, replyTo: 1))
+        
         XCTAssertEqual(didCall, true, "Did invoke completion block")
         XCTAssertEqual(self.root.integer, 0, "Did rollback")
         XCTAssert(self.root.float32 == 0.0, "Did rollback")
         XCTAssertNil(self.root.string, "Did rollback")
+        
     }
     
     func testSpecificFragmentReversal() {
@@ -169,10 +178,10 @@ class TransactionTests: XCTestCase {
         let changeSet = root.scope!.modify {
             self.root.integer = 20
             self.child.integer = 20
-            }.observeCompletion(self) { error in
-                XCTAssertEqual(self.root.integer, 0, "Kept change")
-                XCTAssertEqual(self.child.integer, 20, "Reverted change")
-                didCall = true
+        }.observeCompletion(self) { error in
+            XCTAssertEqual(self.root.integer, 0, "Kept change")
+            XCTAssertEqual(self.child.integer, 20, "Reverted change")
+            didCall = true
         }
         
         var json: [String: AnyObject] = [
@@ -189,8 +198,23 @@ class TransactionTests: XCTestCase {
             ]
         ]
         
+        client.session?.dispatchSerialSync {} // Wait serial queue to be empty
+        
         var reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
         XCTAssertEqual(didCall, true, "Did invoke completion block")
+    }
+    
+    func testScopePerformance() {
+        self.measureBlock() {
+            for i in 0..<100 {
+                self.root.scope!.modify {
+                    self.root.integer = i
+                    self.root.string = "\(i)"
+                }.observeCompletion(self) { error in
+                    // No-op
+                }
+            }
+        }
     }
 }

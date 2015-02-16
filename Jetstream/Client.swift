@@ -35,6 +35,9 @@ public enum ClientStatus {
     case Online
 }
 
+/// A function that when invoked creates a TransportAdapter for use.
+public typealias TransportAdapterFactory = () -> TransportAdapter
+
 /// A Client is used to initiate a connection between the application model and the remote Jetstream
 /// server. A client uses a TransportAdapter to establish a connection to the server.
 @objc public class Client: NSObject {
@@ -72,16 +75,21 @@ public enum ClientStatus {
     }
     
     let logger = Logging.loggerFor("Client")
-    let transport: Transport
+    let transportAdapterFactory: TransportAdapterFactory
+    let restartSessionOnFatalError: Bool
+    var transport: Transport
     var sessionCreateParams = [String: AnyObject]()
     
     // MARK: - Public interface
     
     /// Constructs a client.
     ///
-    /// :param: transportAdapter The transport adapter to use to connect to the Jetstream server.
-    public init(transportAdapter: TransportAdapter) {
-        transport = Transport(adapter: transportAdapter)
+    /// :param: transportAdapterFactory The factory used to create a transport adapter to connect to a Jetstream server.
+    /// :param: restartSessionOnFatalError Whether to restart a session on a fatal session or transport error.
+    public init(transportAdapterFactory: TransportAdapterFactory, restartSessionOnFatalError: Bool = true) {
+        self.transportAdapterFactory = transportAdapterFactory
+        self.transport = Transport(adapter: transportAdapterFactory())
+        self.restartSessionOnFatalError = restartSessionOnFatalError
         super.init()
         bindListeners()
     }
@@ -113,6 +121,10 @@ public enum ClientStatus {
                 this.statusChanged(status)
             }
         }
+        bindTransportListeners()
+    }
+    
+    func bindTransportListeners() {
         transport.onStatusChanged.listen(self) { [weak self] (status) in
             if let this = self {
                 this.transportStatusChanged(status)
@@ -125,6 +137,11 @@ public enum ClientStatus {
                 }
             }
         }
+    }
+    
+    func unbindTransportListeners() {
+        transport.onStatusChanged.removeListener(self)
+        transport.onMessage.removeListener(self)
     }
     
     func statusChanged(clientStatus: ClientStatus) {
@@ -147,6 +164,11 @@ public enum ClientStatus {
             status = .Offline
         case .Connected:
             status = .Online
+        case .Fatal:
+            status = .Offline
+            if restartSessionOnFatalError && session != nil {
+                reinitializeTransportAndRestartSession()
+            }
         }
     }
     
@@ -165,5 +187,34 @@ public enum ClientStatus {
         default:
             session?.receivedMessage(message)
         }
+    }
+    
+    func reinitializeTransportAndRestartSession() {
+        var scopesAndFetchParams = [ScopesWithFetchParams]()
+        if let scopesByIndex = session?.scopes {
+            scopesAndFetchParams = scopesByIndex.values.array
+        }
+        
+        session?.close()
+        session = nil
+        
+        onSession.listenOnce(self) { [weak self] session in
+            if let this = self {
+                for (scope, params) in scopesAndFetchParams {
+                    session.fetch(scope, params: params) { error in
+                        if let definiteError = error {
+                            this.logger.error("Received error refetching scope '\(scope.name)': \(error)")
+                        }
+                    }
+                }
+            }
+        }
+        
+        unbindTransportListeners()
+
+        transport = Transport(adapter: transportAdapterFactory())
+        bindTransportListeners()
+
+        connect()
     }
 }

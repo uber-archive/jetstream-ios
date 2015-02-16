@@ -24,7 +24,7 @@
 
 import Foundation
 
-/// A function that when invoked canceles the associated observer.
+/// A function that when invoked cancels the associated observer.
 public typealias CancelObserver = (() -> (Void))!
 
 public struct ParentRelationship: Equatable {
@@ -312,15 +312,15 @@ public class ModelObject: NSObject, Observable {
     /// You can provide params for both the session it creates and the scope fetch request that is issued.
     ///
     /// :param: scopeName The scope name.
-    /// :param: adapter The transport adapter the sync client should use.
+    /// :param: adapterFactory The transport adapter factory the sync client should use.
     /// :param: sessionCreateParams Any params that should be sent along with the session create request.
     /// :param: scopeFetchParams Any params that should be sent along with the scope fetch request.
     /// :param: scopeFetchAttemptCallback Will be called once either the session was either denied or accepted and syncing began.
-    public func syncWithScopeName(scopeName: String, adapter: TransportAdapter, sessionCreateParams: [String: AnyObject], scopeFetchParams: [String: AnyObject], scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
+    public func syncWithScopeName(scopeName: String, adapterFactory: TransportAdapterFactory, sessionCreateParams: [String: AnyObject], scopeFetchParams: [String: AnyObject], scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
         let scope = Scope(name: scopeName)
         setScopeAndMakeRootModel(scope)
         
-        let client = Client(transportAdapter: adapter)
+        let client = Client(transportAdapterFactory: adapterFactory)
         client.connectWithSessionCreateParams(sessionCreateParams)
         
         var sessionAcceptedListener: SignalListener<Session>?
@@ -342,11 +342,11 @@ public class ModelObject: NSObject, Observable {
     /// You can provide params for the session it creates.
     ///
     /// :param: scopeName The scope name.
-    /// :param: adapter The transport adapter the sync client should use.
+    /// :param: adapterFactory The transport adapter factory the sync client should use.
     /// :param: scopeFetchAttemptCallback Will be called once either the session was either denied or accepted and syncing began.
-    public func syncWithScopeName(scopeName: String, adapter: TransportAdapter, scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
+    public func syncWithScopeName(scopeName: String, adapterFactory: TransportAdapterFactory, scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
         syncWithScopeName(scopeName,
-            adapter: adapter,
+            adapterFactory: adapterFactory,
             sessionCreateParams: [String: AnyObject](),
             scopeFetchParams: [String: AnyObject](),
             scopeFetchAttemptCallback: scopeFetchAttemptCallback)
@@ -356,12 +356,12 @@ public class ModelObject: NSObject, Observable {
     /// a scope fetch request and begin syncing this ModelObject with the server on the specified scope.
     ///
     /// :param: scopeName The scope name.
-    /// :param: adapter The transport adapter the sync client should use.
+    /// :param: adapterFactory The transport adapter factory the sync client should use.
     /// :param: sessionCreateParams Any params that should be sent along with the session create request.
     /// :param: scopeFetchAttemptCallback Will be called once either the session was either denied or accepted and syncing began.
-    public func syncWithScopeName(scopeName: String, adapter: TransportAdapter, sessionCreateParams: [String: AnyObject], scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
+    public func syncWithScopeName(scopeName: String, adapterFactory: TransportAdapterFactory, sessionCreateParams: [String: AnyObject], scopeFetchAttemptCallback: (NSError?, Client) -> ()) {
         syncWithScopeName(scopeName,
-            adapter: adapter,
+            adapterFactory: adapterFactory,
             sessionCreateParams: sessionCreateParams,
             scopeFetchParams: [String: AnyObject](),
             scopeFetchAttemptCallback: scopeFetchAttemptCallback)

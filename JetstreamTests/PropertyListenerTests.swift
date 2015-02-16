@@ -281,4 +281,21 @@ class PropertyListenerTests: XCTestCase {
 
         XCTAssertEqual(changedCount, 1, "correct change count")
     }
+
+    func testPerformanceFiring() {
+        self.measureBlock() {
+            var model = TestModel()
+            var lastValue: NSString? = ""
+            var dispatchCount = 0
+
+            for i in 0..<10 {
+                model.observeChangeImmediately(self) {
+                    dispatchCount += 1
+                }
+            }
+            for i in 0..<10 {
+                model.string = "\(i)"
+            }
+        }
+    }
 }
