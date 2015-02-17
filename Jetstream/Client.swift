@@ -167,7 +167,13 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
         case .Fatal:
             status = .Offline
             if restartSessionOnFatalError && session != nil {
-                reinitializeTransportAndRestartSession()
+                // Avoid removing listeners synchronously as issues occur when trying to remove listeners that are weak
+                // reinitializeTransportAndRestartSession() will call unbindTransportListeners
+                asyncMain { [weak self] in
+                    if let definiteSelf = self {
+                        definiteSelf.reinitializeTransportAndRestartSession()
+                    }
+                }
             }
         }
     }
@@ -209,7 +215,7 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
                 }
             }
         }
-        
+
         unbindTransportListeners()
 
         transport = Transport(adapter: transportAdapterFactory())

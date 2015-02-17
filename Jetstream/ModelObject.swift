@@ -243,7 +243,7 @@ public class ModelObject: NSObject, Observable {
             if internalTreeInvalidated != newValue {
                 internalTreeInvalidated = newValue
                 if internalTreeInvalidated == true {
-                    delay(0.0) { [weak self] () -> () in
+                    asyncMain { [weak self] () -> () in
                         if let definiteSelf = self {
                             definiteSelf.treeInvalidated = false
                             definiteSelf.onTreeChange.fire()

@@ -96,8 +96,8 @@ class Transport {
     }
     
     func unbindListeners() {
-        onStatusChanged.removeAllListeners()
-        onMessage.removeAllListeners()
+        onStatusChanged.removeListener(self)
+        onMessage.removeListener(self)
     }
     
     func fatallyClose() {
@@ -115,8 +115,15 @@ class Transport {
         case .Connected:
             logger.info("Connected")
         case .Fatal:
-            fatallyClose()
             logger.info("Fatally closed")
+            
+            // Avoid removing listeners synchronously as it causes issues when trying to remove listeners that are weak
+            // fatallyClose() will call unbindListeners()
+            asyncMain { [weak self] in
+                if let definiteSelf = self {
+                    definiteSelf.fatallyClose()
+                }
+            }
         }
     }
     
