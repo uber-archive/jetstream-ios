@@ -53,7 +53,7 @@ class ScopeFetchReplyMessage: ReplyMessage {
         
         var error: NSError?
         if let serializedError = dictionary["error"] as? [String: AnyObject] {
-            error = errorFromDictionary(.SyncFragmentApplyError, serializedError)
+            error = errorFromDictionary(.ScopeFetchError, serializedError)
         }
         
         if index == nil || replyTo == nil || (scopeIndex == nil && error == nil) {
