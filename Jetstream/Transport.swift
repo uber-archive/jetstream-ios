@@ -96,8 +96,8 @@ class Transport {
     }
     
     func unbindListeners() {
-        onStatusChanged.removeAllListeners()
-        onMessage.removeAllListeners()
+        onStatusChanged.removeListener(self)
+        onMessage.removeListener(self)
     }
     
     func fatallyClose() {
@@ -115,8 +115,8 @@ class Transport {
         case .Connected:
             logger.info("Connected")
         case .Fatal:
-            fatallyClose()
             logger.info("Fatally closed")
+            fatallyClose()
         }
     }
     

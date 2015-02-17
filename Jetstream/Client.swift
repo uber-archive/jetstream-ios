@@ -209,7 +209,7 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
                 }
             }
         }
-        
+
         unbindTransportListeners()
 
         transport = Transport(adapter: transportAdapterFactory())
