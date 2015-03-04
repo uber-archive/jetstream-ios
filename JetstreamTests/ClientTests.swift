@@ -27,6 +27,26 @@ import UIKit
 import XCTest
 
 class ClientTests: XCTestCase {
+    func testOnWaitingRepliesCountChanged() {
+        let client = Client(transportAdapterFactory: { TestTransportAdapter() })
+        var waitingReplyCount = 0
+        client.onWaitingRepliesCountChanged.listen(self) { count in
+            waitingReplyCount = Int(count)
+        }
+        
+        client.transport.sendMessage(PingMessage(index: 0, ack: 0, resendMissing: false)) { response in }
+        XCTAssertEqual(waitingReplyCount, 1, "Did fire waiting reply with count 1")
+        
+        client.transport.sendMessage(PingMessage(index: 1, ack: 0, resendMissing: false)) { response in }
+        XCTAssertEqual(waitingReplyCount, 2, "Did fire waiting reply with count 2")
+        
+        client.transport.messageReceived(ReplyMessage(index: 0, replyTo: 0))
+        XCTAssertEqual(waitingReplyCount, 1, "Did fire waiting reply with count 1")
+
+        client.transport.messageReceived(ReplyMessage(index: 1, replyTo: 1))
+        XCTAssertEqual(waitingReplyCount, 0, "Did fire waiting reply with count 0")
+    }
+    
     func testRestartSessionOnFatalError() {
         var adapter = TestTransportAdapter()
         let onSendMessage = Signal<NetworkMessage>()
