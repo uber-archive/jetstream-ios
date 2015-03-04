@@ -67,6 +67,7 @@ class Transport {
     let logger = Logging.loggerFor("Transport")
     let onStatusChanged: Signal<(TransportStatus)>
     let onMessage: Signal<NetworkMessage>
+    let onWaitingRepliesCountChanged = Signal<(UInt)>()
     let adapter: TransportAdapter
     var waitingReply = [UInt: ReplyCallback]()
     var fatallyClosed = false
@@ -123,10 +124,7 @@ class Transport {
     func messageReceived(message: NetworkMessage) {
         switch message {
         case let replyMessage as ReplyMessage:
-            if let callback = waitingReply[replyMessage.replyTo] {
-                callback(replyMessage)
-                waitingReply.removeValueForKey(replyMessage.replyTo)
-            }
+            didReceiveMessageResponseWaitingReply(replyMessage)
         default:
             break
         }
@@ -150,6 +148,19 @@ class Transport {
     
     func sendMessage(message: NetworkMessage, withCallback: ReplyCallback) {
         adapter.sendMessage(message)
-        waitingReply[message.index] = withCallback
+        didSendMessageWaitingReply(message.index, withCallback: withCallback)
+    }
+    
+    func didSendMessageWaitingReply(index: UInt, withCallback: ReplyCallback) {
+        waitingReply[index] = withCallback
+        onWaitingRepliesCountChanged.fire(UInt(waitingReply.count))
+    }
+    
+    func didReceiveMessageResponseWaitingReply(replyMessage: ReplyMessage) {
+        if let callback = waitingReply[replyMessage.replyTo] {
+            callback(replyMessage)
+            waitingReply.removeValueForKey(replyMessage.replyTo)
+            onWaitingRepliesCountChanged.fire(UInt(waitingReply.count))
+        }
     }
 }

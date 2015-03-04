@@ -46,12 +46,16 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
     /// new status for the client.
     public let onStatusChanged = Signal<(ClientStatus)>()
     
-    /// Signal that fires whenever the clients gets a new session. THe fired data contains the
+    /// Signal that fires whenever the clients gets a new session. The fired data contains the
     /// new session.
     public let onSession = Signal<(Session)>()
     
     /// Signal that fires whenever a session was denied.
     public let onSessionDenied = Signal<()>()
+    
+    /// Signal that fires whenever a message is sent that is waiting an acknowledgment from the 
+    /// server.  This can be observed to tell when server has a lot of messages it has not replied to.
+    public let onWaitingRepliesCountChanged: Signal<(UInt)>
 
     // MARK: - Properties
 
@@ -89,6 +93,7 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
     public init(transportAdapterFactory: TransportAdapterFactory, restartSessionOnFatalError: Bool = true) {
         self.transportAdapterFactory = transportAdapterFactory
         self.transport = Transport(adapter: transportAdapterFactory())
+        self.onWaitingRepliesCountChanged = transport.onWaitingRepliesCountChanged
         self.restartSessionOnFatalError = restartSessionOnFatalError
         super.init()
         bindListeners()
