@@ -30,7 +30,6 @@ public typealias CancelObserver = (() -> (Void))!
 public struct ParentRelationship: Equatable {
     var parent: ModelObject
     var key: String
-    var listener: SignalListener<(key: String, oldValue: AnyObject?, value: AnyObject?)>?
     
     init(parent: ModelObject, key: String) {
         self.parent = parent
@@ -676,28 +675,7 @@ public class ModelObject: NSObject, Observable {
         if find(parents, parentRelationship) == nil {
             assert(scope == nil || scope === parentRelationship.parent.scope, "Attaching a model object to two scopes is currently not supported")
             
-            var relationship = parentRelationship
-           
-            relationship.listener = relationship.parent.onPropertyChange.listen(self) { [weak self] (key, oldValue, value) -> Void in
-                if let strongSelf = self {
-                    if key == relationship.key {
-                        if let definitePropertyInfo = strongSelf.properties[key] {
-                            if definitePropertyInfo.valueType == ModelValueType.ModelObject {
-                                if value !== strongSelf {
-                                    strongSelf.removeParentRelationship(relationship)
-                                }
-                            } else if definitePropertyInfo.valueType == ModelValueType.Array {
-                                if let arrayContents = value as? [ModelObject] {
-                                    if !contains(arrayContents, strongSelf) {
-                                        strongSelf.removeParentRelationship(relationship)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            parents.append(relationship)
+            parents.append(parentRelationship)
             
             onAddedParent.fire((parent: parentRelationship.parent, key: parentRelationship.key))
 
@@ -705,14 +683,11 @@ public class ModelObject: NSObject, Observable {
                 scope = parentRelationship.parent.scope
             }
         }
-    }    
+    }
     
     func removeParentRelationship(parentRelationship: ParentRelationship) {
         if let index = find(parents, parentRelationship) {
             parents.removeAtIndex(index)
-            if let definiteListener = parentRelationship.listener {
-                definiteListener.cancel()
-            }
             parentRelationship.parent.removeChildAtKey(parentRelationship.key, child: self)
 
             onRemovedParent.fire((parent: parentRelationship.parent, key: parentRelationship.key))
@@ -751,7 +726,10 @@ public class ModelObject: NSObject, Observable {
             for index in 0 ..< oldArray!.count {
                 if !contains(newArray!, oldArray![index]) {
                     let model = oldArray![index]
-                    model.removeParentRelationship(ParentRelationship(parent: self, key: key))
+                    
+                    if let parentRelationship = model.getParentRelationship(self, key: key) {
+                        model.removeParentRelationship(parentRelationship)
+                    }
                     onModelRemovedFromCollection.fire(key: key, element: model as AnyObject, atIndex: index)
                 }
             }
@@ -762,8 +740,15 @@ public class ModelObject: NSObject, Observable {
                     onModelAddedToCollection.fire(key: key, element: model as AnyObject, atIndex: index)
                 }
             }
-        } else if let modelObject = newValue as? ModelObject {
-            modelObject.addParentRelationship(ParentRelationship(parent: self, key: key))
+        } else {
+            if let modelObject = oldValue as? ModelObject {
+                if let parentRelationship = modelObject.getParentRelationship(self, key: key) {
+                    modelObject.removeParentRelationship(parentRelationship)
+                }
+            }
+            if let modelObject = newValue as? ModelObject {
+                modelObject.addParentRelationship(ParentRelationship(parent: self, key: key))
+            }
         }
         
         onPropertyChange.fire(key: key, oldValue: oldValue, value: newValue)
@@ -774,6 +759,15 @@ public class ModelObject: NSObject, Observable {
             }
         }
         treeInvalidated = true
+    }
+    
+    func getParentRelationship(withParent: ModelObject, key: String) -> ParentRelationship? {
+        for relationship in parents {
+            if relationship.parent === withParent && relationship.key == key {
+                return relationship
+            }
+        }
+        return nil
     }
 
     override public func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
