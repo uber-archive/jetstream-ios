@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		111B59E71A58D44E0017702B /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561D19F81AA10016D8F8 /* TestModel.swift */; };
+		111B59E71A58D44E0017702B /* TestModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561D19F81AA10016D8F8 /* TestModels.swift */; };
 		111B59E81A58D47B0017702B /* ObjectiveCPropertyListenerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11EC72531A58CABB00C7D186 /* ObjectiveCPropertyListenerTests.m */; };
 		11372DDF1A573DD200FBA922 /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11372DDE1A573DD200FBA922 /* Constraint.swift */; };
 		11372DE71A575EF800FBA922 /* ConstraintTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11372DE61A575EF800FBA922 /* ConstraintTests.swift */; };
@@ -169,7 +169,7 @@
 		7225561A19F81AA10016D8F8 /* StateMessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMessageTests.swift; sourceTree = "<group>"; };
 		7225561B19F81AA10016D8F8 /* SyncFragmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncFragmentTests.swift; sourceTree = "<group>"; };
 		7225561C19F81AA10016D8F8 /* TestHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
-		7225561D19F81AA10016D8F8 /* TestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
+		7225561D19F81AA10016D8F8 /* TestModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModels.swift; sourceTree = "<group>"; };
 		7225561E19F81AA10016D8F8 /* ChangeSetTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeSetTests.swift; sourceTree = "<group>"; };
 		7225561F19F81AA10016D8F8 /* TreeChangeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeChangeTests.swift; sourceTree = "<group>"; };
 		7225562E19F81AE20016D8F8 /* Signals.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Signals.xcodeproj; path = Jetstream/Signals/Signals.xcodeproj; sourceTree = "<group>"; };
@@ -393,7 +393,7 @@
 			isa = PBXGroup;
 			children = (
 				7225561519F81AA10016D8F8 /* JetstreamTestEnumerations.h */,
-				7225561D19F81AA10016D8F8 /* TestModel.swift */,
+				7225561D19F81AA10016D8F8 /* TestModels.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -600,7 +600,7 @@
 				7225568319F81B430016D8F8 /* Session.swift in Sources */,
 				11F8D82F1A9133F400653B6D /* ClientTests.swift in Sources */,
 				722F9ACD1A4394F300A2369A /* ScopeTests.swift in Sources */,
-				111B59E71A58D44E0017702B /* TestModel.swift in Sources */,
+				111B59E71A58D44E0017702B /* TestModels.swift in Sources */,
 				7225568919F81B430016D8F8 /* Transport.swift in Sources */,
 				72126CB01A3121410006CD29 /* Signal.swift in Sources */,
 				7225568219F81B430016D8F8 /* ScopeSyncMessage.swift in Sources */,

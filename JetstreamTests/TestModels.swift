@@ -52,6 +52,7 @@ import Jetstream
     dynamic var anotherArray: [AnotherTestModel] = []
     dynamic var childModel: TestModel?
     dynamic var childModel2: TestModel?
+    dynamic var anotherChildModel: AnotherTestModel?
     
     dynamic var throttledProperty: Int = 0
     

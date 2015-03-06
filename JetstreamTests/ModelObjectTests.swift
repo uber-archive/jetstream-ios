@@ -56,4 +56,19 @@ class ModelObjectTests: XCTestCase {
         XCTAssertNotNil(find(model.childModelObjects, model4), "Model should be found")
         XCTAssertNotNil(find(model.childModelObjects, model5), "Model should be found")
     }
+    
+    func testModelObjectPropertyRemoveParentUsingDifferingParentAndChildTypes() {
+        var model = TestModel()
+        var model2 = AnotherTestModel()
+        
+        model.anotherArray = [model2]
+        model.anotherChildModel = model2
+        XCTAssertEqual(model2.parents.count, 2, "Should add parent when set as child model")
+        
+        model.anotherArray = []
+        XCTAssertEqual(model2.parents.count, 1, "Should remove parent when unset as child model")
+        
+        model.anotherChildModel = nil
+        XCTAssertEqual(model2.parents.count, 0, "Should remove parent when unset as child model")
+    }
 }
