@@ -16,6 +16,7 @@
 		11D7C7951A6C60CE00F3B7DA /* Jetstream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 722555F619F819D90016D8F8 /* Jetstream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		11F8D82F1A9133F400653B6D /* ClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F8D82E1A9133F400653B6D /* ClientTests.swift */; };
 		11F8D83C1A9145A100653B6D /* TestTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F8D83B1A9145A100653B6D /* TestTransportAdapter.swift */; };
+		720B11CF1ADC28DB004A5D09 /* ModelValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720B11CE1ADC28DB004A5D09 /* ModelValueTests.swift */; };
 		72126CAC1A311F480006CD29 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAB1A311F480006CD29 /* Signal.swift */; };
 		72126CAE1A311F620006CD29 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAD1A311F620006CD29 /* WebSocket.swift */; };
 		72126CAF1A3121410006CD29 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAD1A311F620006CD29 /* WebSocket.swift */; };
@@ -151,6 +152,7 @@
 		11EC72531A58CABB00C7D186 /* ObjectiveCPropertyListenerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCPropertyListenerTests.m; sourceTree = "<group>"; };
 		11F8D82E1A9133F400653B6D /* ClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientTests.swift; sourceTree = "<group>"; };
 		11F8D83B1A9145A100653B6D /* TestTransportAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTransportAdapter.swift; sourceTree = "<group>"; };
+		720B11CE1ADC28DB004A5D09 /* ModelValueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelValueTests.swift; sourceTree = "<group>"; };
 		72126CAB1A311F480006CD29 /* Signal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Signal.swift; path = Signals/Signals/Signal.swift; sourceTree = "<group>"; };
 		72126CAD1A311F620006CD29 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebSocket.swift; path = Starscream/WebSocket.swift; sourceTree = "<group>"; };
 		7216634E19F83FD3007704D2 /* ChangeSetQueueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeSetQueueTests.swift; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 				11F8D83A1A91458E00653B6D /* Transports */,
 				72EFCC3719F9B64D0054BC18 /* Resources */,
 				7225560619F819DA0016D8F8 /* Supporting Files */,
+				720B11CE1ADC28DB004A5D09 /* ModelValueTests.swift */,
 			);
 			path = JetstreamTests;
 			sourceTree = "<group>";
@@ -520,7 +523,7 @@
 		72126CA61A311ED80006CD29 /* StarscreamOSX.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = StarscreamOSX.framework;
+			path = Starscream.framework;
 			remoteRef = 72126CA51A311ED80006CD29 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -619,6 +622,7 @@
 				7225567B19F81B430016D8F8 /* ModelObject.swift in Sources */,
 				7225568019F81B430016D8F8 /* ScopeFetchMessage.swift in Sources */,
 				722F9ACC1A4394F300A2369A /* ScopePauseTests.swift in Sources */,
+				720B11CF1ADC28DB004A5D09 /* ModelValueTests.swift in Sources */,
 				7225567919F81B430016D8F8 /* Logging.swift in Sources */,
 				7225567419F81B430016D8F8 /* Client.swift in Sources */,
 				7225568519F81B430016D8F8 /* SessionCreateReplyMessage.swift in Sources */,

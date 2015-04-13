@@ -49,7 +49,7 @@ class ScopeSyncReplyMessage: ReplyMessage {
     
     override func serialize() -> [String: AnyObject] {
         assertionFailure("ScopeSyncReplyMessage cannot serialize itself")
-        return [String: AnyObject]();
+        return [String: AnyObject]()
     }
     
     class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
