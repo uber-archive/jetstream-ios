@@ -28,7 +28,7 @@ import UIKit
 protocol ModelValue {
     func equalTo(value: ModelValue) -> Bool
     func serialize() -> AnyObject
-    class func unserialize(value: AnyObject, scope: Scope) -> AnyObject?
+    static func unserialize(value: AnyObject, scope: Scope) -> AnyObject?
 }
 
 enum ModelValueType: String {
@@ -116,7 +116,7 @@ func modelValueIsNillable(type: ModelValueType) -> Bool {
 }
 
 extension String: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as String }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! String }
     func serialize() -> AnyObject { return self }
     func unserailizeFromTransport() -> ModelValue { return self}
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
@@ -125,73 +125,73 @@ extension String: ModelValue {
 }
 
 extension UInt: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as UInt }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! UInt }
     func serialize() -> AnyObject { return self }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? UInt }
 }
 
 extension Int: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as Int }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! Int }
     func serialize() -> AnyObject { return self }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension UInt8: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as UInt8 }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! UInt8 }
     func serialize() -> AnyObject { return UInt(self) }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension Int8: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as Int8 }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! Int8 }
     func serialize() -> AnyObject { return Int(self) }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension UInt16: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as UInt16 }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! UInt16 }
     func serialize() -> AnyObject { return UInt(self) }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension Int16: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as Int16 }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! Int16 }
     func serialize() -> AnyObject { return Int(self) }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension UInt32: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as UInt32 }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! UInt32 }
     func serialize() -> AnyObject { return UInt(self) }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension Int32: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as Int32 }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! Int32 }
     func serialize() -> AnyObject { return Int(self) }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Int }
 }
 
 extension Float: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as Float }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! Float }
     func serialize() -> AnyObject { return self }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Float}
 }
 
 extension Double: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as Double }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! Double }
     func serialize() -> AnyObject { return self }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Double }
 }
 
 extension Bool: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as Bool }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! Bool }
     func serialize() -> AnyObject { return self }
     static func unserialize(value: AnyObject, scope: Scope) -> AnyObject? { return value as? Bool }
 }
 
 extension UIColor: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as UIColor }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! UIColor }
     
     func serialize() -> AnyObject {
         var comp: [CGFloat] = Array(count: 4, repeatedValue: 0);
@@ -220,7 +220,7 @@ extension UIColor: ModelValue {
 }
 
 extension NSDate: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self.timeIntervalSinceDate(value as NSDate) == 0 }
+    func equalTo(value: ModelValue) -> Bool { return self.timeIntervalSinceDate(value as! NSDate) == 0 }
     func serialize() -> AnyObject { return self.timeIntervalSince1970 }
     
     class func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
@@ -257,7 +257,7 @@ extension Array: ModelValue {
                 return false
             }
             for i in 0..<self.count {
-                if self[i] as ModelObject !== newContent[i] {
+                if self[i] as! ModelObject !== newContent[i] {
                     return false
                 }
             }
@@ -292,7 +292,7 @@ extension Array: ModelValue {
 }
 
 extension ModelObject: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as ModelObject }
+    func equalTo(value: ModelValue) -> Bool { return self == value as! ModelObject }
     
     func serialize() -> AnyObject { return self.uuid.UUIDString.lowercaseString }
     

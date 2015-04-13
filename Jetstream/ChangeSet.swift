@@ -96,7 +96,7 @@ public enum ChangeSetState {
                         if let propertyInfo = modelObject.properties[key] {
                             if propertyInfo.valueType == .ModelObject {
                                 if let uuid = newValue as? String {
-                                    attachedObjectUUIDs.append(newValue as String)
+                                    attachedObjectUUIDs.append(uuid)
                                 }
                             } else if propertyInfo.valueType == .Array {
                                 if let uuids = newValue as? [String] {
@@ -241,7 +241,7 @@ public enum ChangeSetState {
                     if let modifications = reply.modifications {
                         if let modelObject = scope.getObjectById(syncFragment.objectUUID) {
                             for (key, value) in modifications {
-                                self.setProperty(key, onModelObject: modelObject, toValue: value)
+                                self.setProperty(key as String, onModelObject: modelObject, toValue: value)
                             }
                         }
                     }

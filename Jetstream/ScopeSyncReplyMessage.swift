@@ -40,7 +40,7 @@ class ScopeSyncReplyMessage: ReplyMessage {
         return ScopeSyncReplyMessage.messageType
     }
     
-    let fragmentReplies = [SyncFragmentReply]()
+    let fragmentReplies: [SyncFragmentReply]
     
     init(index: UInt, replyTo: UInt, fragmentReplies: [SyncFragmentReply]) {
         self.fragmentReplies = fragmentReplies
@@ -49,6 +49,7 @@ class ScopeSyncReplyMessage: ReplyMessage {
     
     override func serialize() -> [String: AnyObject] {
         assertionFailure("ScopeSyncReplyMessage cannot serialize itself")
+        return [String: AnyObject]();
     }
     
     class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {

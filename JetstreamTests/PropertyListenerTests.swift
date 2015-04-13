@@ -32,7 +32,7 @@ class PropertyListenerTests: XCTestCase {
         
         model.onPropertyChange.listen(self, callback: {(key, oldValue, value) in
             if key == "string" {
-                lastValue = value as String
+                lastValue = value as! String
             }
         })
         

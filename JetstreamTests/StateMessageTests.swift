@@ -70,7 +70,7 @@ class StateMessageTests: XCTestCase {
             ]
         ]
         
-        firstMessage = NetworkMessage.unserializeDictionary(json) as ScopeStateMessage
+        firstMessage = NetworkMessage.unserializeDictionary(json) as! ScopeStateMessage
         client.receivedMessage(firstMessage)
         
         XCTAssertEqual(root.uuid, uuid, "Message applied")
