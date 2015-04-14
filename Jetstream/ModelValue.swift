@@ -292,7 +292,7 @@ extension Array: ModelValue {
 }
 
 extension ModelObject: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self as? ModelObject != nil && self == value as! ModelObject }
+    func equalTo(value: ModelValue) -> Bool { return value as? ModelObject != nil && self == value as! ModelObject }
     
     func serialize() -> AnyObject { return self.uuid.UUIDString.lowercaseString }
     
