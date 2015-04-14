@@ -275,6 +275,7 @@ import Foundation
                 }
             }
             applySyncFragments(fragments, applyDefaults: true)
+            propertyUpdateDates.removeAll(keepCapacity: false)
         }
     }
     
