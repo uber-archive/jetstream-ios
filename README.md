@@ -16,7 +16,7 @@ Jetstream for iOS is an elegant MVC model framework written in Swift. It include
 ### Requirements
 
 - iOS 7.0+ / Mac OS X 10.9+
-- Xcode 6.1
+- Xcode 6.3
 
 ### Installation
 
