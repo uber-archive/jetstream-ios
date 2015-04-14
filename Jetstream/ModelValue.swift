@@ -257,7 +257,7 @@ extension Array: ModelValue {
                 return false
             }
             for i in 0..<self.count {
-                if self[i] as! ModelObject !== newContent[i] {
+                if self[i] as? ModelObject == nil || self[i] as! ModelObject !== newContent[i] {
                     return false
                 }
             }
@@ -292,7 +292,7 @@ extension Array: ModelValue {
 }
 
 extension ModelObject: ModelValue {
-    func equalTo(value: ModelValue) -> Bool { return self == value as! ModelObject }
+    func equalTo(value: ModelValue) -> Bool { return self as? ModelObject != nil && self == value as! ModelObject }
     
     func serialize() -> AnyObject { return self.uuid.UUIDString.lowercaseString }
     
