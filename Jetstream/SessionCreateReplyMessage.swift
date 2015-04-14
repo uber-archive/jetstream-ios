@@ -33,8 +33,8 @@ class SessionCreateReplyMessage: NetworkMessage {
         return SessionCreateReplyMessage.messageType
     }
 
-    let sessionToken: String?
-    let error: NSError?
+    var sessionToken: String?
+    var error: NSError?
     
     init(index: UInt, sessionToken: String?, error: NSError?) {
         self.sessionToken = sessionToken

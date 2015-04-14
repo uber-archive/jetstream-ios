@@ -266,7 +266,7 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
         
         if let definiteJSON = json {
             if let str = NSString(data: definiteJSON, encoding: NSUTF8StringEncoding) {
-                socket.writeString(str)
+                socket.writeString(str as String)
                 logger.debug("sent: \(str)")
             }
         }

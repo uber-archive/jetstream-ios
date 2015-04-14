@@ -258,15 +258,15 @@ public class ModelObject: NSObject, Observable {
 
     public override init() {
         uuid = NSUUID()
-        super.init()
         className = ModelObject.classNameWithType(self.dynamicType)
+        super.init()
         setupPropertyListeners()
     }
     
     required public init(uuid: NSUUID) {
         self.uuid = uuid
-        super.init()
         className = ModelObject.classNameWithType(self.dynamicType)
+        super.init()
         setupPropertyListeners()
     }
     
@@ -604,9 +604,9 @@ public class ModelObject: NSObject, Observable {
             for i in 0..<Int(propertyCount) {
                 var propertyCName = property_getName(propertyList[i])
                 if propertyCName != nil {
-                    let propertyName = NSString(CString: propertyCName, encoding: NSString.defaultCStringEncoding()) as String
+                    let propertyName = NSString(CString: propertyCName, encoding: NSString.defaultCStringEncoding()) as! String
                     let propertyAttributes = property_getAttributes(propertyList[i])
-                    let attributes = NSString(CString: propertyAttributes, encoding: NSString.defaultCStringEncoding()) as String
+                    let attributes = NSString(CString: propertyAttributes, encoding: NSString.defaultCStringEncoding()) as! String
                     
                     let components = attributes.componentsSeparatedByString(",")
                     
@@ -619,7 +619,7 @@ public class ModelObject: NSObject, Observable {
                         
                         if let asArray = self.valueForKey(propertyName) as? [ModelObject] {
                             valueType = .Array
-                        } else if let definiteValueType = ModelValueType(rawValue: type) {
+                        } else if let definiteValueType = ModelValueType(rawValue: type as String) {
                             valueType = definiteValueType
                         } else if type.rangeOfString("@\"").location != NSNotFound {
                             // Assuming that every custom object type extends from ModelObject
