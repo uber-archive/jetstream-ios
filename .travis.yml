@@ -1,6 +1,6 @@
 language: objective-c
 xcode_project: Jetstream.xcodeproj
 xcode_scheme: Jetstream
-xcode_sdk: iphonesimulator8.3
+osx_image: xcode6.4
 notifications:
   email: false
