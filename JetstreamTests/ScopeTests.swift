@@ -271,7 +271,7 @@ class ScopeTests: XCTestCase {
         scope.onChanges.listen(self, callback: { changeSet in
             XCTAssertEqual(changeSet.syncFragments.count, 1, "Created a fragment")
             var fragment = changeSet.syncFragments[0]
-            XCTAssertEqual(fragment.properties!["color"]! as! Int, 0xFF3F7F3F, "Fragment is correct")
+            XCTAssertEqual(fragment.properties!["color"]! as! UInt, 0xFF3F7F3F, "Fragment is correct")
             
             expectation.fulfill()
         })
