@@ -151,7 +151,7 @@ public class Logger {
     func log<T>(level: LogLevel, message: T) {
         let str = "\(name): \(message)"
         if Logging.Static.consoleEnabled {
-            println("\(level) \(str)")
+            print("\(level) \(str)")
         }
 
         Logging.Static.onMessage.fire((level: level, message: str))

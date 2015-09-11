@@ -61,5 +61,5 @@ func errorFromDictionary(code: ErrorCode, error: [NSString: AnyObject]) -> NSErr
     if let errorType = error["type"] as? String {
         userInfo[NSLocalizedFailureReasonErrorKey] = errorType
     }
-    return errorWithUserInfo(code, userInfo)
+    return errorWithUserInfo(code, userInfo: userInfo)
 }

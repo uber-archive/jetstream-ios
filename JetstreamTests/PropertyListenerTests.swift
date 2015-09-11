@@ -27,7 +27,7 @@ import XCTest
 
 class PropertyListenerTests: XCTestCase {
     func testGenericPropertyListeners() {
-        var model = TestModel()
+        let model = TestModel()
         var lastValue = ""
         
         model.onPropertyChange.listen(self, callback: {(key, oldValue, value) in
@@ -42,7 +42,7 @@ class PropertyListenerTests: XCTestCase {
     }
     
     func testSpecificPropertyListeners() {
-        var model = TestModel()
+        let model = TestModel()
         var dispatchCount = 0
         
         model.observeChangeImmediately(self, key: "string") {
@@ -61,10 +61,10 @@ class PropertyListenerTests: XCTestCase {
     }
     
     func testCancelPropertyListeners() {
-        var model = TestModel()
+        let model = TestModel()
         var dispatchCount = 0
         
-        var cancel = model.observeChangeImmediately(self, key: "string") {
+        let cancel = model.observeChangeImmediately(self, key: "string") {
             dispatchCount += 1
         }
         
@@ -79,8 +79,7 @@ class PropertyListenerTests: XCTestCase {
     }
     
     func testMultiPropertyListeners() {
-        var model = TestModel()
-        var lastValue: NSString? = ""
+        let model = TestModel()
         var dispatchCount = 0
         
         model.observeChangeImmediately(self, keys: ["string", "integer"]) {
@@ -95,8 +94,7 @@ class PropertyListenerTests: XCTestCase {
     }
     
     func testNoDispatchForNoChange() {
-        var model = TestModel()
-        var lastValue: NSString? = ""
+        let model = TestModel()
         var dispatchCount = 0
         
         model.observeChangeImmediately(self) {
@@ -182,7 +180,7 @@ class PropertyListenerTests: XCTestCase {
     }
 
     func testArrayListeners() {
-        var model = TestModel()
+        let model = TestModel()
         var changedCount = 0
         var addedCount = 0
         var removedCount = 0
@@ -214,9 +212,9 @@ class PropertyListenerTests: XCTestCase {
     func testTreeListeners() {
         let expectation = expectationWithDescription("onChange")
         
-        var parent = TestModel()
-        var child = TestModel()
-        var child2 = TestModel()
+        let parent = TestModel()
+        let child = TestModel()
+        let child2 = TestModel()
         
         var changedCount1 = 0
         var changedCount2 = 0
@@ -268,8 +266,8 @@ class PropertyListenerTests: XCTestCase {
     }
 
     func testRemoveParent() {
-        var parent = TestModel()
-        var child = TestModel()
+        let parent = TestModel()
+        let child = TestModel()
         var changedCount = 0
 
         child.observeRemovedFromParent(self, callback: { (parent, key) -> Void in

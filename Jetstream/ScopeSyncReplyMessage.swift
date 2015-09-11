@@ -53,9 +53,9 @@ class ScopeSyncReplyMessage: ReplyMessage {
     }
     
     class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
-        var index = dictionary["index"] as? UInt
-        var replyTo = dictionary["replyTo"] as? UInt
-        var serializedFragmentReplies = dictionary["fragmentReplies"] as? [[String: AnyObject]]
+        let index = dictionary["index"] as? UInt
+        let replyTo = dictionary["replyTo"] as? UInt
+        let serializedFragmentReplies = dictionary["fragmentReplies"] as? [[String: AnyObject]]
         
         if index == nil || replyTo == nil || serializedFragmentReplies == nil {
             return nil
@@ -68,14 +68,14 @@ class ScopeSyncReplyMessage: ReplyMessage {
                 
                 if let serializedError = serializedFragmentReply["error"] as? [String: AnyObject] {
                     accepted = false
-                    error = errorFromDictionary(.SyncFragmentApplyError, serializedError)
+                    error = errorFromDictionary(.SyncFragmentApplyError, error: serializedError)
                 }
                 
                 if let serializedModifications = serializedFragmentReply["modifications"] as? [String: AnyObject] {
                     modifications = serializedModifications
                 }
                 
-                var fragmentReply = SyncFragmentReply(accepted: accepted, error: error, modifications: modifications)
+                let fragmentReply = SyncFragmentReply(accepted: accepted, error: error, modifications: modifications)
                 fragmentReplies.append(fragmentReply)
             }
             

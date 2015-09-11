@@ -43,7 +43,7 @@ public class ChangeSetQueue {
     
     // MARK: - Private interface
     func addChangeSet(changeSet: ChangeSet) {
-        assert(find(changeSets, changeSet) == nil, "ChangeSet already in queue")
+        assert(changeSets.indexOf(changeSet) == nil, "ChangeSet already in queue")
         
         changeSet.changeSetQueue = self
         changeSets.append(changeSet)
@@ -55,7 +55,7 @@ public class ChangeSetQueue {
                 if state == .Completed {
                     definiteSelf.removeChangeSet(changeSet)
                 } else if state == .Reverted {
-                    if let index = find(definiteSelf.changeSets, changeSet) {
+                    if let index = definiteSelf.changeSets.indexOf(changeSet) {
                         if index < definiteSelf.changeSets.count - 1 {
                             definiteSelf.changeSets[index+1].rebaseOnChangeSet(definiteSelf.changeSets[0])
                         }
@@ -67,7 +67,7 @@ public class ChangeSetQueue {
     }
     
     func removeChangeSet(changeSet: ChangeSet) {
-        if let index = find(changeSets, changeSet) {
+        if let index = changeSets.indexOf(changeSet) {
             changeSets.removeAtIndex(index)
             onChangeSetRemoved.fire(changeSet)
         }

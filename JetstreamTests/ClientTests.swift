@@ -55,7 +55,7 @@ class ClientTests: XCTestCase {
         var transportAdapterDisconnectCallCount: Int = 0
         var sendMessageCallCount = 0
 
-        var client = Client(transportAdapterFactory: {
+        let client = Client(transportAdapterFactory: {
             factoryCallCount++
             adapter = TestTransportAdapter()
             adapter.onDisconnectCalled.listen(self) {
@@ -69,19 +69,19 @@ class ClientTests: XCTestCase {
             return adapter
         })
         
-        var scope1 = Scope(name: "Testing1")
-        var scope1FetchParams: [String: AnyObject] = ["param0": 0, "param1": "param"]
+        let scope1 = Scope(name: "Testing1")
+        let scope1FetchParams: [String: AnyObject] = ["param0": 0, "param1": "param"]
         
-        var scope2 = Scope(name: "Testing2")
-        var scope2FetchParams: [String: AnyObject] = ["param0": 0, "param1": "param"]
+        let scope2 = Scope(name: "Testing2")
+        let scope2FetchParams: [String: AnyObject] = ["param0": 0, "param1": "param"]
         
-        var scopesAndFetchParams: [(Scope, [String: AnyObject])] = [
+        let scopesAndFetchParams: [(Scope, [String: AnyObject])] = [
             (scope1, scope1FetchParams),
             (scope2, scope2FetchParams)
         ]
         
-        var sessionToken1 = "sessionToken1"
-        var sessionToken2 = "sessionToken2"
+        let sessionToken1 = "sessionToken1"
+        let sessionToken2 = "sessionToken2"
         
         var msg = SessionCreateReplyMessage(index: 1, sessionToken: sessionToken1, error: nil)
         client.receivedMessage(msg)
@@ -92,8 +92,8 @@ class ClientTests: XCTestCase {
         XCTAssertEqual(client.session!.scopes.count, 2, "Did load scopes")
         
         // Capture state before fatal close
-        var transportBeforeFatalClose = client.transport
-        var sendMessageCountBeforeFatalClose = sendMessageCallCount
+        let transportBeforeFatalClose = client.transport
+        let sendMessageCountBeforeFatalClose = sendMessageCallCount
         var sessionCreateMessage: NetworkMessage? = nil
         onSendMessage.listenOnce(self) { networkMessage in
             sessionCreateMessage = networkMessage
@@ -139,7 +139,7 @@ class ClientTests: XCTestCase {
                         continue
                     }
                     for (key, value) in params {
-                        var fetchMessageValue: AnyObject = fetchMessage.params[key]!
+                        let fetchMessageValue: AnyObject = fetchMessage.params[key]!
                         XCTAssertTrue(fetchMessageValue === value, "Did send correct fetch params")
                     }
                 } else {

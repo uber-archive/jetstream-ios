@@ -69,8 +69,8 @@ public class Constraint {
     
     /// Validates that a set of constraints matches a set of SyncFragments.
     ///
-    /// :param: constraints The constraints to apply.
-    /// :param: syncFragments The sync fragments to apply the constraints on.
+    /// - parameter constraints: The constraints to apply.
+    /// - parameter syncFragments: The sync fragments to apply the constraints on.
     public class func matchesAllConstraints(constraints: [Constraint], syncFragments: [SyncFragment]) -> Bool {
         var unmatchedFragments = syncFragments
         
@@ -84,10 +84,10 @@ public class Constraint {
     
     /// Constructs the Constraint.
     ///
-    /// :param: type The type of SyncFragment to target for constraint.
-    /// :param: clsName The model class name to target for constraint.
-    /// :param: properties The property values that must match for this constraint to pass.
-    /// :param: allowAdditionalProperties Whether to allow additional properties than specified to pass the constraint.
+    /// - parameter type: The type of SyncFragment to target for constraint.
+    /// - parameter clsName: The model class name to target for constraint.
+    /// - parameter properties: The property values that must match for this constraint to pass.
+    /// - parameter allowAdditionalProperties: Whether to allow additional properties than specified to pass the constraint.
     public init(type: SyncFragmentType, clsName: String, properties: [String: AnyObject] = [String: AnyObject](), allowAdditionalProperties: Bool = true) {
         self.type = type
         self.clsName = clsName
@@ -97,7 +97,7 @@ public class Constraint {
     
     /// Validates that the constraint matches a SyncFragment.
     ///
-    /// :param: syncFragment The sync fragment to validate the constraint matches.
+    /// - parameter syncFragment: The sync fragment to validate the constraint matches.
     public func matches(syncFragment: SyncFragment) -> Bool {
         if type != syncFragment.type || syncFragment.clsName == nil || clsName != syncFragment.clsName! {
             // Does not match constraint type and class
@@ -132,7 +132,7 @@ public class Constraint {
                         if let value: AnyObject = fragmentProperties[constraintKey] {
                             if let propertyInfo = propertyInfos[constraintKey] {
                                 // Check value matches constraint
-                                if let hasNewValueConstraintValue = constraintValue as? HasNewValuePropertyConstraint {
+                                if let _ = constraintValue as? HasNewValuePropertyConstraint {
                                     // Allow all cases where constraintValue is HasNewValuePropertyConstraint
                                 } else if let arrayConstraintValue = constraintValue as? ArrayPropertyConstraint {
                                     // Apply an array constraint value
@@ -163,8 +163,8 @@ public class Constraint {
                                     if constraintValue === NSNull() && value === NSNull() {
                                         // Allow case where constraint is nil and explicit nil matches
                                     } else {
-                                        let constraintModelValue = convertAnyObjectToModelValue(constraintValue, propertyInfo.valueType)
-                                        let fragmentModelValue = convertAnyObjectToModelValue(value, propertyInfo.valueType)
+                                        let constraintModelValue = convertAnyObjectToModelValue(constraintValue, type: propertyInfo.valueType)
+                                        let fragmentModelValue = convertAnyObjectToModelValue(value, type: propertyInfo.valueType)
                                         if constraintModelValue == nil || fragmentModelValue == nil {
                                             return false
                                         } else if !constraintModelValue!.equalTo(fragmentModelValue!) {

@@ -31,7 +31,7 @@ public enum ChangeSetState {
     case Reverted
 }
 
-@objc public class ChangeSet: Equatable {
+public class ChangeSet: Equatable {
     /// A signal that fires whenever the state of the change set changes.
     public let onStateChange = Signal<ChangeSetState>()
     public let onCompletion = Signal<Void>()
@@ -62,7 +62,7 @@ public enum ChangeSetState {
     
     var pendingChangeSets: [ChangeSet] {
         if let definiteChangeSetQueue = changeSetQueue {
-            if let index = find(definiteChangeSetQueue.changeSets, self) {
+            if let index = definiteChangeSetQueue.changeSets.indexOf(self) {
                 return [ChangeSet](definiteChangeSetQueue.changeSets[index + 1..<definiteChangeSetQueue.count])
             }
         }
@@ -71,10 +71,10 @@ public enum ChangeSetState {
     
     /// Constructs the ChangeSet.
     ///
-    /// :param: syncFragments An array of sync fragments that make up the ChangeSet.
-    /// :param: procedure Name of procedure if a ChangeSet is performing one.
-    /// :param: atomic Whether the ChangeSet should be applied atomically (either all fragments are applied sucessfully or none are applied successfully).
-    /// :param: scope The scope of the change set.
+    /// - parameter syncFragments: An array of sync fragments that make up the ChangeSet.
+    /// - parameter procedure: Name of procedure if a ChangeSet is performing one.
+    /// - parameter atomic: Whether the ChangeSet should be applied atomically (either all fragments are applied sucessfully or none are applied successfully).
+    /// - parameter scope: The scope of the change set.
     public init(syncFragments: [SyncFragment], procedure: String?, atomic: Bool, scope: Scope) {
         self.syncFragments = syncFragments
         self.procedure = procedure
@@ -115,8 +115,8 @@ public enum ChangeSetState {
         }
  
         for (uuid, syncFragment) in addedObjects {
-            if find(attachedObjectUUIDs, uuid) == nil {
-                if let index = find(self.syncFragments, syncFragment) {
+            if attachedObjectUUIDs.indexOf(uuid) == nil {
+                if let index = self.syncFragments.indexOf(syncFragment) {
                     self.syncFragments.removeAtIndex(index)
                 }
             }
@@ -138,10 +138,10 @@ public enum ChangeSetState {
     /// Invokes a callback whenever the ChangeSet has completed synchronizing with the Jetstream server. For this to occur, the scope of the ChangeSet
     /// needs to have a Client that transmits the ChangeSet to a Jetstream server.
     ///
-    /// :param: observer A listener to attach to the event.
-    /// :param: callback A closure that gets executed whenever any property or collection on the object has changed. The closure will be called
+    /// - parameter observer: A listener to attach to the event.
+    /// - parameter callback: A closure that gets executed whenever any property or collection on the object has changed. The closure will be called
     /// with an optional error argument, which describes what went wrong applying the ChangeSet on the Jetstream server.
-    /// :returns: A function that cancels the observation when invoked.
+    /// - returns: A function that cancels the observation when invoked.
     public func observeCompletion(observer: AnyObject, callback: (error: NSError?) -> Void) -> CancelObserver {
         // If already completed or failed then fire immediately
         if state != .Syncing {
@@ -176,7 +176,7 @@ public enum ChangeSetState {
     // MARK: - Internal Interface
     func rebaseOnChangeSet(changeSet: ChangeSet) {
         for (rebaseModelObject, rebaseProperties) in changeSet.touches {
-            for (modelObject, properties) in touches {
+            for (modelObject, _) in touches {
                 if modelObject.uuid != rebaseModelObject.uuid {
                     continue
                 }
@@ -190,11 +190,11 @@ public enum ChangeSetState {
     
     func removeTouchesFromChangeSet(changeSet: ChangeSet) {
         for (overrideModelObject, overrideProperties) in changeSet.touches {
-            for (modelObject, properties) in touches {
+            for (modelObject, _) in touches {
                 if modelObject.uuid != overrideModelObject.uuid {
                     continue
                 }
-                for (key, value) in overrideProperties {
+                for (key, _) in overrideProperties {
                     touches[modelObject]!.removeValueForKey(key)
                 }
                 if touches[modelObject]!.count == 0 {
@@ -224,7 +224,7 @@ public enum ChangeSetState {
                     let syncFragment = self.syncFragments[index]
                     if !reply.accepted {
                         // TODO: Should gather up failed fragments in the errors userInfo
-                        error = errorWithUserInfo(.SyncFragmentApplyError, [NSLocalizedDescriptionKey: "Failed to apply sync fragments"])
+                        error = errorWithUserInfo(.SyncFragmentApplyError, userInfo: [NSLocalizedDescriptionKey: "Failed to apply sync fragments"])
                         
                         if let modelObject = scope.getObjectById(syncFragment.objectUUID) {
                             if syncFragment.type != .Change || syncFragment.properties == nil {
@@ -273,7 +273,7 @@ public enum ChangeSetState {
         
         onError.fire(errorWithUserInfo(
             .SyncFragmentApplyError,
-            [NSLocalizedDescriptionKey: "Failed to apply change set"]))
+            userInfo: [NSLocalizedDescriptionKey: "Failed to apply change set"]))
     }
     
     func setProperty(key: String, onModelObject modelObject: ModelObject, toValue value: AnyObject) {

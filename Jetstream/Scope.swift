@@ -70,8 +70,8 @@ import Foundation
     
     /// Constructs a scope.
     ///
-    /// :param: name The name of the scope.
-    /// :param: changeInterval Time interval between which to capture and fire changes without explict modifications.
+    /// - parameter name: The name of the scope.
+    /// - parameter changeInterval: Time interval between which to capture and fire changes without explict modifications.
     public init(name: String, changeInterval: NSTimeInterval = 0.01) {
         self.name = name
         self.changeInterval = changeInterval
@@ -82,7 +82,7 @@ import Foundation
     /// Retrieves all sync fragments that have been generated since this function was last called. Calling
     /// this method will clear out all sync fragments.
     ///
-    /// :returns: An Array of sync fragments that have been observed in the scope.
+    /// - returns: An Array of sync fragments that have been observed in the scope.
     public func getAndClearSyncFragments() -> [SyncFragment] {
         let fragments = syncFragments
         syncFragments.removeAll(keepCapacity: false)
@@ -101,15 +101,17 @@ import Foundation
     
     /// Applies sync fragments to the model.
     ///
-    /// :param: syncFragments An array of sync fragments to apply.
-    /// :param: applyDefaults Whether to apply default values for model objects in add fragments.
+    /// - parameter syncFragments: An array of sync fragments to apply.
+    /// - parameter applyDefaults: Whether to apply default values for model objects in add fragments.
     public func applySyncFragments(syncFragments: [SyncFragment], applyDefaults: Bool = false) {
         for fragment in syncFragments {
             if let modelObject = fragment.createObjectForScopeIfNecessary(self) {
                 tempModelHash[modelObject.uuid] = modelObject
             }
         }
-        syncFragments.map { $0.applyChangesToScope(self, applyDefaults: applyDefaults) }
+        for syncFragment in syncFragments {
+            syncFragment.applyChangesToScope(self, applyDefaults: applyDefaults)
+        }
         tempModelHash.removeAll(keepCapacity: false)
         if applyingRemote {
             onRemoteSync.fire()
@@ -118,8 +120,8 @@ import Foundation
     
     /// Retrieve an object by it's uuid.
     ///
-    /// :param: The uuid of the object to get.
-    /// :returns: The model object with the given uuid.
+    /// - parameter The: uuid of the object to get.
+    /// - returns: The model object with the given uuid.
     public func getObjectById(uuid: NSUUID) -> ModelObject? {
         if let modelObject = modelHash[uuid] {
             return modelObject
@@ -129,8 +131,8 @@ import Foundation
     
     /// Retrieve an object by it's uuid.
     ///
-    /// :param: The string representing the uuid of the object to get.
-    /// :returns: The model object with the given uuid.
+    /// - parameter The: string representing the uuid of the object to get.
+    /// - returns: The model object with the given uuid.
     public func getObjectByIdString(uuidString: String) -> ModelObject? {
         if let uuid = NSUUID(UUIDString: uuidString) {
             return getObjectById(uuid)
@@ -157,23 +159,23 @@ import Foundation
     
     /// Modify the scope with an explict set of changes.
     ///
-    /// :param: changes The set of changes to send together.
+    /// - parameter changes: The set of changes to send together.
     public func modify(changes: () -> Void) -> ChangeSet {
         return createChangeSet(false, procedure: nil, constraints: nil, changes: changes)
     }
 
     /// Modify the scope with an explict set of changes and request it be applied atomically.
     ///
-    /// :param: changes The set of changes to send together.
+    /// - parameter changes: The set of changes to send together.
     public func modifyAtomically(changes: () -> Void) -> ChangeSet {
         return createChangeSet(true, procedure: nil, constraints: nil, changes: changes)
     }
 
     /// Modify the scope with an explict set of changes and procedure, it will also request to be applied atomically.
     ///
-    /// :param: procedure The name of the procedure to call with the changes.
-    /// :param: constraints Optionally the constraints the changes should adhere to perform validation.
-    /// :param: changes The set of changes to send together.
+    /// - parameter procedure: The name of the procedure to call with the changes.
+    /// - parameter constraints: Optionally the constraints the changes should adhere to perform validation.
+    /// - parameter changes: The set of changes to send together.
     public func modifyWithProcedure(procedure: String, constraints: [Constraint]?, changes: () -> Void) -> ChangeSet {
         return createChangeSet(true, procedure: procedure, constraints: constraints, changes: changes)
     }
@@ -183,7 +185,7 @@ import Foundation
     func createChangeSet(atomic: Bool, procedure: String?, constraints: [Constraint]?, changes: () -> Void) -> ChangeSet {
         sendChanges()
         changes()
-        var syncFragments = getAndClearSyncFragments()
+        let syncFragments = getAndClearSyncFragments()
         let changeSet = ChangeSet(syncFragments: syncFragments, procedure: procedure, atomic: atomic, scope: self)
         if let definiteConstraints = constraints {
             if !Constraint.matchesAllConstraints(definiteConstraints, syncFragments: syncFragments) {
@@ -233,7 +235,7 @@ import Foundation
                     
                     var modelValue: ModelValue?
                     if value != nil {
-                        modelValue = convertAnyObjectToModelValue(value!, property.valueType)
+                        modelValue = convertAnyObjectToModelValue(value!, type: property.valueType)
                     }
                     if let fragment = this.syncFragmentWithType(.Change, modelObject: modelObject) {
                         fragment.newValueForKeyFromModelObject(key, newValue: modelValue, oldValue: oldValue, modelObject: modelObject)
@@ -244,7 +246,7 @@ import Foundation
         }
         
         if modelObject.parents.count > 0 {
-            if let index = find(removedModelObjects, modelObject) {
+            if let index = removedModelObjects.indexOf(modelObject) {
                 removedModelObjects.removeAtIndex(index)
             } else if !applyingRemote {
                 self.syncFragmentWithType(.Add, modelObject: modelObject)
@@ -268,7 +270,7 @@ import Foundation
             updateUUIDForModel(definiteRoot, uuid: rootUUID)
             
             let uuids = fragments.map { $0.objectUUID }
-            let removals = modelHash.keys.filter { !contains(uuids, $0) && $0 != rootUUID }
+            let removals = modelHash.keys.filter { !uuids.contains($0) && $0 != rootUUID }
             for removeUUID in removals {
                 if let model = modelHash[removeUUID] {
                     model.detach()
@@ -303,7 +305,7 @@ import Foundation
     }
     
     private func removeFragment(fragment: SyncFragment) {
-        if let index = find(syncFragments, fragment) {
+        if let index = syncFragments.indexOf(fragment) {
             syncFragments.removeAtIndex(index)
             syncFragmentLookup.removeValueForKey(fragment.objectUUID)
         }
@@ -323,7 +325,7 @@ import Foundation
     private func sendChanges() {
         if changesQueued {
             changesQueued = false
-            var syncFragments = getAndClearSyncFragments()
+            let syncFragments = getAndClearSyncFragments()
             if syncFragments.count > 0 {
                 let changeSet = ChangeSet(syncFragments: syncFragments, scope: self)
                 if changeSet.syncFragments.count > 0 {

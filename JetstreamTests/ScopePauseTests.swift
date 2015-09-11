@@ -39,13 +39,13 @@ class ScopePauseTest: XCTestCase {
         XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope to start with")
         
         client = Client(transportAdapterFactory: { TestTransportAdapter() })
-        var msg = SessionCreateReplyMessage(index: 1, sessionToken: "jeah", error: nil)
+        let msg = SessionCreateReplyMessage(index: 1, sessionToken: "jeah", error: nil)
         client.receivedMessage(msg)
         client.session!.scopeAttach(scope, scopeIndex: 0)
         
         let childUUID = NSUUID()
         
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 1,
             "scopeIndex": 0,
@@ -79,7 +79,7 @@ class ScopePauseTest: XCTestCase {
     }
     
     func testPause() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeSync",
             "index": 2,
             "scopeIndex": 0,

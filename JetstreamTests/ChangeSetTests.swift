@@ -51,7 +51,7 @@ class ChangeSetTests: XCTestCase {
         root.integer = 20
         root.float32 = 20.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         changeSet.revertOnScope(scope)
         
         XCTAssertEqual(scope.getAndClearSyncFragments().count, 0, "Should have reverted without generating Sync fragments")
@@ -62,7 +62,7 @@ class ChangeSetTests: XCTestCase {
     
     func testModelReversal() {
         root.childModel = child
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         
         changeSet.revertOnScope(scope)
         
@@ -76,7 +76,7 @@ class ChangeSetTests: XCTestCase {
         scope.getAndClearSyncFragments()
         
         root.childModel = nil
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         
         changeSet.revertOnScope(scope)
         
@@ -87,7 +87,7 @@ class ChangeSetTests: XCTestCase {
     
     func testArrayReversal() {
         root.array.append(child)
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         XCTAssertEqual(changeSet.syncFragments.count, 2, "Correct number of sync fragments")
         
         changeSet.revertOnScope(scope)

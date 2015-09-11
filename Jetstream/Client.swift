@@ -88,8 +88,8 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
     
     /// Constructs a client.
     ///
-    /// :param: transportAdapterFactory The factory used to create a transport adapter to connect to a Jetstream server.
-    /// :param: restartSessionOnFatalError Whether to restart a session on a fatal session or transport error.
+    /// - parameter transportAdapterFactory: The factory used to create a transport adapter to connect to a Jetstream server.
+    /// - parameter restartSessionOnFatalError: Whether to restart a session on a fatal session or transport error.
     public init(transportAdapterFactory: TransportAdapterFactory, restartSessionOnFatalError: Bool = true) {
         self.transportAdapterFactory = transportAdapterFactory
         self.transport = Transport(adapter: transportAdapterFactory())
@@ -106,7 +106,7 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
     
     /// Starts connecting the client to the server with params to supply to server when creating a session.
     ///
-    /// :param: sessionCreateParams The params that should be sent along with the session create request.
+    /// - parameter sessionCreateParams: The params that should be sent along with the session create request.
     public func connectWithSessionCreateParams(sessionCreateParams: [String: AnyObject]) {
         self.sessionCreateParams = sessionCreateParams
         connect()
@@ -197,7 +197,7 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
     func reinitializeTransportAndRestartSession() {
         var scopesAndFetchParams = [ScopesWithFetchParams]()
         if let scopesByIndex = session?.scopes {
-            scopesAndFetchParams = scopesByIndex.values.array
+            scopesAndFetchParams = Array(scopesByIndex.values)
         }
         
         session?.close()
@@ -207,7 +207,7 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
             if let this = self {
                 for (scope, params) in scopesAndFetchParams {
                     session.fetch(scope, params: params) { error in
-                        if let definiteError = error {
+                        if let _ = error {
                             this.logger.error("Received error refetching scope '\(scope.name)': \(error)")
                         }
                     }

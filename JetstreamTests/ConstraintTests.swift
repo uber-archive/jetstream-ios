@@ -29,7 +29,7 @@ import Jetstream
 
 class ConstraintTests: XCTestCase {
     func testMultipleMatching() {
-        var json: [[String: AnyObject]] = [
+        let json: [[String: AnyObject]] = [
             [
                 "type": "add",
                 "uuid": NSUUID().UUIDString,
@@ -49,19 +49,19 @@ class ConstraintTests: XCTestCase {
                 "properties": ["integer": 3]
             ]
         ]
-        var fragments = json.map { SyncFragment.unserialize($0)! }
+        let fragments = json.map { SyncFragment.unserialize($0)! }
         
         
-        var constraints1: [String: AnyObject] = [
+        let constraints1: [String: AnyObject] = [
             "string": "set correctly"
         ]
-        var constraints2: [String: AnyObject] = [
+        let constraints2: [String: AnyObject] = [
             "anotherString": "set correctly"
         ]
-        var constraints3: [String: AnyObject] = [
+        let constraints3: [String: AnyObject] = [
             "integer": 3
         ]
-        var constraints = [
+        let constraints = [
             Constraint(type: .Add, clsName: "TestModel", properties: constraints1, allowAdditionalProperties: false),
             Constraint(type: .Add, clsName: "AnotherTestModel", properties: constraints2, allowAdditionalProperties: false),
             Constraint(type: .Change, clsName: "TestModel", properties: constraints3, allowAdditionalProperties: false),
@@ -71,13 +71,13 @@ class ConstraintTests: XCTestCase {
     }
     
     func testSimpleValueExistsChangeMatching() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "change",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set new value", "integer": NSNull(), "childModel":"11111-11111-11111-11111-1111"]
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         
         let constraint = Constraint(type: .Change, clsName: "TestModel", properties: [
             "string": HasNewValuePropertyConstraint(),
@@ -90,65 +90,65 @@ class ConstraintTests: XCTestCase {
 
     
     func testSimpleAddMatching() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "add",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly"]
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         
         let constraint = Constraint(type: .Add, clsName: "TestModel")
         XCTAssertTrue(constraint.matches(fragment!), "Constraint should match fragment")
     }
     
     func testSimpleAddWithPropertiesMatching() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "add",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly"]
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         
         let constraint = Constraint(type: .Add, clsName: "TestModel", properties: ["string": "set correctly"], allowAdditionalProperties: false)
         XCTAssertTrue(constraint.matches(fragment!), "Constraint should match fragment")
     }
     
     func testSimpleAddWithPropertiesMatchingWithBadAdditionalProperties() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "add",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly", "integer": 3]
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         
         let constraint = Constraint(type: .Add, clsName: "TestModel", properties: ["string": "set correctly"], allowAdditionalProperties: false)
         XCTAssertFalse(constraint.matches(fragment!), "Constraint should match fragment")
     }
     
     func testSimpleAddWithPropertiesMatchingWithAllowedAdditionalProperties() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "add",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly", "integer": 3]
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         
         let constraint = Constraint(type: .Add, clsName: "TestModel", properties: ["string": "set correctly"], allowAdditionalProperties: true)
         XCTAssertTrue(constraint.matches(fragment!), "Constraint should match fragment")
     }
     
     func testSimpleAddWithArrayInsertPropertyMatching() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "add",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly", "array": [NSUUID().UUIDString]]
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         
         let constraint = Constraint(type: .Add, clsName: "TestModel", properties: [
             "string": "set correctly",
@@ -158,13 +158,13 @@ class ConstraintTests: XCTestCase {
     }
     
     func testSimpleChangeWithArrayInsertPropertyMatching() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "change",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly", "array": [NSUUID().UUIDString]]
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         fragment!.originalProperties = [
             "array": []
         ]
@@ -177,13 +177,13 @@ class ConstraintTests: XCTestCase {
     }
     
     func testSimpleChangeWithArrayInsertPropertyNotMatching() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "change",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly", "array": [NSUUID().UUIDString]]
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         fragment!.originalProperties = [
             "array": [NSUUID().UUIDString]
         ]
@@ -196,13 +196,13 @@ class ConstraintTests: XCTestCase {
     }
     
     func testSimpleChangeWithArrayRemovePropertyMatching() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "change",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly", "array": []]
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         fragment!.originalProperties = [
             "array": [NSUUID().UUIDString]
         ]
@@ -215,13 +215,13 @@ class ConstraintTests: XCTestCase {
     }
     
     func testSimpleChangeWithArrayRemovePropertyNotMatching() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "change",
             "uuid": NSUUID().UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly", "array": [NSUUID().UUIDString]]
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         fragment!.originalProperties = [
             "array": [NSUUID().UUIDString]
         ]
