@@ -207,7 +207,7 @@ public typealias TransportAdapterFactory = () -> TransportAdapter
             if let this = self {
                 for (scope, params) in scopesAndFetchParams {
                     session.fetch(scope, params: params) { error in
-                        if let _ = error {
+                        if let error = error {
                             this.logger.error("Received error refetching scope '\(scope.name)': \(error)")
                         }
                     }
