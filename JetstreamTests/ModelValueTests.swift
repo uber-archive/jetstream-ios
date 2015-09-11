@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import Jetstream
 
 class ModelValueTests: XCTestCase {
     

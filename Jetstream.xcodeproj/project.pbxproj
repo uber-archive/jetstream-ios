@@ -8,12 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		11372DDF1A573DD200FBA922 /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11372DDE1A573DD200FBA922 /* Constraint.swift */; };
-		11A348441A5768C8009B2794 /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11372DDE1A573DD200FBA922 /* Constraint.swift */; };
 		11D7C7951A6C60CE00F3B7DA /* Jetstream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 722555F619F819D90016D8F8 /* Jetstream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		72126CAC1A311F480006CD29 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAB1A311F480006CD29 /* Signal.swift */; };
 		72126CAE1A311F620006CD29 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAD1A311F620006CD29 /* WebSocket.swift */; };
-		72126CAF1A3121410006CD29 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAD1A311F620006CD29 /* WebSocket.swift */; };
-		72126CB01A3121410006CD29 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72126CAB1A311F480006CD29 /* Signal.swift */; };
 		722555FC19F819D90016D8F8 /* Jetstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 722555FB19F819D90016D8F8 /* Jetstream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7225560219F819DA0016D8F8 /* Jetstream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 722555F619F819D90016D8F8 /* Jetstream.framework */; };
 		7225565D19F81B040016D8F8 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564619F81B040016D8F8 /* Client.swift */; };
@@ -37,34 +34,10 @@
 		7225567119F81B040016D8F8 /* ChangeSetQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565A19F81B040016D8F8 /* ChangeSetQueue.swift */; };
 		7225567219F81B040016D8F8 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565B19F81B040016D8F8 /* Transport.swift */; };
 		7225567319F81B040016D8F8 /* WebsocketTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565C19F81B040016D8F8 /* WebsocketTransportAdapter.swift */; };
-		7225567419F81B430016D8F8 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564619F81B040016D8F8 /* Client.swift */; };
-		7225567619F81B430016D8F8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564819F81B040016D8F8 /* Constants.swift */; };
-		7225567819F81B430016D8F8 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564A19F81B040016D8F8 /* Functions.swift */; };
-		7225567919F81B430016D8F8 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564B19F81B040016D8F8 /* Logging.swift */; };
-		7225567A19F81B430016D8F8 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564C19F81B040016D8F8 /* NetworkMessage.swift */; };
-		7225567B19F81B430016D8F8 /* ModelObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564D19F81B040016D8F8 /* ModelObject.swift */; };
-		7225567C19F81B430016D8F8 /* ModelValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564E19F81B040016D8F8 /* ModelValue.swift */; };
-		7225567D19F81B430016D8F8 /* PingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225564F19F81B040016D8F8 /* PingMessage.swift */; };
-		7225567E19F81B430016D8F8 /* ReplyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565019F81B040016D8F8 /* ReplyMessage.swift */; };
-		7225567F19F81B430016D8F8 /* Scope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565119F81B040016D8F8 /* Scope.swift */; };
-		7225568019F81B430016D8F8 /* ScopeFetchMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565219F81B040016D8F8 /* ScopeFetchMessage.swift */; };
-		7225568119F81B430016D8F8 /* ScopeStateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565319F81B040016D8F8 /* ScopeStateMessage.swift */; };
-		7225568219F81B430016D8F8 /* ScopeSyncMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565419F81B040016D8F8 /* ScopeSyncMessage.swift */; };
-		7225568319F81B430016D8F8 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565519F81B040016D8F8 /* Session.swift */; };
-		7225568419F81B430016D8F8 /* SessionCreateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565619F81B040016D8F8 /* SessionCreateMessage.swift */; };
-		7225568519F81B430016D8F8 /* SessionCreateReplyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565719F81B040016D8F8 /* SessionCreateReplyMessage.swift */; };
-		7225568619F81B430016D8F8 /* SyncFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565819F81B040016D8F8 /* SyncFragment.swift */; };
-		7225568719F81B430016D8F8 /* ChangeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565919F81B040016D8F8 /* ChangeSet.swift */; };
-		7225568819F81B430016D8F8 /* ChangeSetQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565A19F81B040016D8F8 /* ChangeSetQueue.swift */; };
-		7225568919F81B430016D8F8 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565B19F81B040016D8F8 /* Transport.swift */; };
-		7225568A19F81B430016D8F8 /* WebsocketTransportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225565C19F81B040016D8F8 /* WebsocketTransportAdapter.swift */; };
 		723A39791A042A1E00FD47A0 /* ScopeSyncReplyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723A39781A042A1E00FD47A0 /* ScopeSyncReplyMessage.swift */; };
 		723A397F1A0446CB00FD47A0 /* ScopeFetchReplyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723A397E1A0446CB00FD47A0 /* ScopeFetchReplyMessage.swift */; };
-		723A39801A07F8E900FD47A0 /* ScopeFetchReplyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723A397E1A0446CB00FD47A0 /* ScopeFetchReplyMessage.swift */; };
-		723A39811A07F8E900FD47A0 /* ScopeSyncReplyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723A39781A042A1E00FD47A0 /* ScopeSyncReplyMessage.swift */; };
 		72EFCC3919F9B6700054BC18 /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72EFCC3819F9B6700054BC18 /* test.jpg */; };
 		72F379BA1BA270FE000BAA80 /* SSLSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F379B91BA270FE000BAA80 /* SSLSecurity.swift */; settings = {ASSET_TAGS = (); }; };
-		72FCB1BE1BA271E4002817E0 /* SSLSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F379B91BA270FE000BAA80 /* SSLSecurity.swift */; settings = {ASSET_TAGS = (); }; };
 		72FCB1BF1BA271F0002817E0 /* ChangeSetQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7216634E19F83FD3007704D2 /* ChangeSetQueueTests.swift */; settings = {ASSET_TAGS = (); }; };
 		72FCB1C01BA271F0002817E0 /* ChangeSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7225561E19F81AA10016D8F8 /* ChangeSetTests.swift */; settings = {ASSET_TAGS = (); }; };
 		72FCB1C11BA271F0002817E0 /* ClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F8D82E1A9133F400653B6D /* ClientTests.swift */; settings = {ASSET_TAGS = (); }; };
@@ -321,6 +294,7 @@
 				7225561419F81AA10016D8F8 /* DependencyTests.swift */,
 				7225561619F81AA10016D8F8 /* ImmediatePropertyListeners.swift */,
 				7225561719F81AA10016D8F8 /* ModelObjectTests.swift */,
+				720B11CE1ADC28DB004A5D09 /* ModelValueTests.swift */,
 				7225561819F81AA10016D8F8 /* PropertyListenerTests.swift */,
 				72A10BF11A38B9CC00FE7CEE /* ScopePauseTests.swift */,
 				7225561919F81AA10016D8F8 /* ScopeTests.swift */,
@@ -330,10 +304,9 @@
 				7225561F19F81AA10016D8F8 /* TreeChangeTests.swift */,
 				7225568D19F81BE20016D8F8 /* Helpers */,
 				7225568E19F81BF10016D8F8 /* Models */,
-				11F8D83A1A91458E00653B6D /* Transports */,
 				72EFCC3719F9B64D0054BC18 /* Resources */,
 				7225560619F819DA0016D8F8 /* Supporting Files */,
-				720B11CE1ADC28DB004A5D09 /* ModelValueTests.swift */,
+				11F8D83A1A91458E00653B6D /* Transports */,
 			);
 			path = JetstreamTests;
 			sourceTree = "<group>";
@@ -592,17 +565,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7225568319F81B430016D8F8 /* Session.swift in Sources */,
-				7225568919F81B430016D8F8 /* Transport.swift in Sources */,
 				72FCB1C31BA271F0002817E0 /* DependencyTests.swift in Sources */,
-				72126CB01A3121410006CD29 /* Signal.swift in Sources */,
 				72FCB1CD1BA271F0002817E0 /* TransactionTests.swift in Sources */,
-				7225568219F81B430016D8F8 /* ScopeSyncMessage.swift in Sources */,
-				7225568119F81B430016D8F8 /* ScopeStateMessage.swift in Sources */,
-				723A39801A07F8E900FD47A0 /* ScopeFetchReplyMessage.swift in Sources */,
 				72FCB1D01BA271F8002817E0 /* TestModels.swift in Sources */,
-				7225568419F81B430016D8F8 /* SessionCreateMessage.swift in Sources */,
-				7225567619F81B430016D8F8 /* Constants.swift in Sources */,
 				72FCB1C21BA271F0002817E0 /* ConstraintTests.swift in Sources */,
 				72FCB1C51BA271F0002817E0 /* ModelObjectTests.swift in Sources */,
 				72FCB1C41BA271F0002817E0 /* ImmediatePropertyListeners.swift in Sources */,
@@ -610,31 +575,12 @@
 				72FCB1CC1BA271F0002817E0 /* SyncFragmentTests.swift in Sources */,
 				72FCB1C01BA271F0002817E0 /* ChangeSetTests.swift in Sources */,
 				72FCB1C81BA271F0002817E0 /* PropertyListenerTests.swift in Sources */,
-				7225567A19F81B430016D8F8 /* NetworkMessage.swift in Sources */,
-				72126CAF1A3121410006CD29 /* WebSocket.swift in Sources */,
 				72FCB1BF1BA271F0002817E0 /* ChangeSetQueueTests.swift in Sources */,
-				7225567B19F81B430016D8F8 /* ModelObject.swift in Sources */,
-				7225568019F81B430016D8F8 /* ScopeFetchMessage.swift in Sources */,
-				7225567919F81B430016D8F8 /* Logging.swift in Sources */,
-				7225567419F81B430016D8F8 /* Client.swift in Sources */,
 				72FCB1C11BA271F0002817E0 /* ClientTests.swift in Sources */,
-				7225568519F81B430016D8F8 /* SessionCreateReplyMessage.swift in Sources */,
-				11A348441A5768C8009B2794 /* Constraint.swift in Sources */,
-				723A39811A07F8E900FD47A0 /* ScopeSyncReplyMessage.swift in Sources */,
 				72FCB1CB1BA271F0002817E0 /* StateMessageTests.swift in Sources */,
-				7225568719F81B430016D8F8 /* ChangeSet.swift in Sources */,
-				7225567D19F81B430016D8F8 /* PingMessage.swift in Sources */,
-				7225567E19F81B430016D8F8 /* ReplyMessage.swift in Sources */,
-				7225567F19F81B430016D8F8 /* Scope.swift in Sources */,
 				72FCB1C91BA271F0002817E0 /* ScopePauseTests.swift in Sources */,
 				72FCB1CE1BA271F0002817E0 /* TreeChangeTests.swift in Sources */,
-				7225567819F81B430016D8F8 /* Functions.swift in Sources */,
-				72FCB1BE1BA271E4002817E0 /* SSLSecurity.swift in Sources */,
 				72FCB1CF1BA271F4002817E0 /* TestHelpers.swift in Sources */,
-				7225567C19F81B430016D8F8 /* ModelValue.swift in Sources */,
-				7225568619F81B430016D8F8 /* SyncFragment.swift in Sources */,
-				7225568819F81B430016D8F8 /* ChangeSetQueue.swift in Sources */,
-				7225568A19F81B430016D8F8 /* WebsocketTransportAdapter.swift in Sources */,
 				72FCB1D21BA271FF002817E0 /* ModelValueTests.swift in Sources */,
 				72FCB1D11BA271FB002817E0 /* TestTransportAdapter.swift in Sources */,
 			);

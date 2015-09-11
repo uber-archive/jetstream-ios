@@ -22,9 +22,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import Foundation
-import UIKit
 import XCTest
+@testable import Jetstream
 
 class ChangeSetTests: XCTestCase {
     var root = TestModel()
