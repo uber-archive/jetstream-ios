@@ -1,7 +1,21 @@
 language: objective-c
-xcode_project: Jetstream.xcodeproj
-xcode_scheme: Jetstream
 osx_image: xcode7
+env:
+  global:
+  - LC_CTYPE=en_US.UTF-8
+  - LANG=en_US.UTF-8
+  matrix:
+    - DESTINATION="OS=8.1,name=iPhone 4S" SCHEME="Jetstream" SDK=iphonesimulator9.0
+    - DESTINATION="OS=8.2,name=iPhone 5" SCHEME="Jetstream" SDK=iphonesimulator9.0
+    - DESTINATION="OS=8.3,name=iPhone 5S" SCHEME="Jetstream" SDK=iphonesimulator9.0
+    - DESTINATION="OS=8.4,name=iPhone 6" SCHEME="Jetstream" SDK=iphonesimulator9.0
+    - DESTINATION="OS=9.0,name=iPhone 6 Plus" SCHEME="Jetstream" SDK=iphonesimulator9.0
+script:
+  - set -o pipefail
+  - xcodebuild -version
+  - xcodebuild -project Jetstream.xcodeproj -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" 
+    -configuration Debug ONLY_ACTIVE_ARCH=NO test | xcpretty -c
+  - xcodebuild -project Jetstream.xcodeproj -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" 
+    -configuration Release ONLY_ACTIVE_ARCH=NO test | xcpretty -c
 notifications:
   email: false
-
