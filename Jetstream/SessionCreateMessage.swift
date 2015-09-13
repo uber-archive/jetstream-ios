@@ -58,8 +58,8 @@ class SessionCreateMessage: NetworkMessage {
     }
     
     class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
-        var params = dictionary["params"] as? [String: AnyObject]
-        var version = dictionary["version"] as? String
+        let params = dictionary["params"] as? [String: AnyObject]
+        let version = dictionary["version"] as? String
         
         if params != nil && version != nil {
             return SessionCreateMessage(params: params!, version: version!)

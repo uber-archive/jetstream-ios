@@ -22,8 +22,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import UIKit
 import XCTest
+@testable import Jetstream
 
 class SyncFragmentTests: XCTestCase {
     var parent = TestModel()
@@ -43,7 +43,7 @@ class SyncFragmentTests: XCTestCase {
     }
     
     func testSerializationFailure() {
-        var uuid = NSUUID()
+        let uuid = NSUUID()
         
         var json: [String: AnyObject] = [
             "uuid": child.uuid.UUIDString
@@ -67,14 +67,14 @@ class SyncFragmentTests: XCTestCase {
     }
     
     func testChange() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "change",
             "uuid": child.uuid.UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "testing", "integer": 20]
             
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         XCTAssertEqual(fragment!.objectUUID, child.uuid , "UUID unserialized")
         XCTAssertEqual(fragment!.objectUUID, child.uuid , "UUID unserialized")
         XCTAssertEqual(fragment!.properties!.count, 2 , "Properties unserialized")
@@ -85,28 +85,28 @@ class SyncFragmentTests: XCTestCase {
     }
     
     func testAdd() {
-        var uuid = NSUUID()
+        let uuid = NSUUID()
 
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "add",
             "uuid": uuid.UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly"]
         ]
-        var fragment = SyncFragment.unserialize(json)
-        var json2: [String: AnyObject] = [
+        let fragment = SyncFragment.unserialize(json)
+        let json2: [String: AnyObject] = [
             "type": "change",
             "uuid": child.uuid.UUIDString,
             "clsName": "TestModel",
             "properties": ["childModel": uuid.UUIDString],
         ]
-        var fragment2 = SyncFragment.unserialize(json2)
+        let fragment2 = SyncFragment.unserialize(json2)
         
         XCTAssertEqual(fragment!.objectUUID, uuid , "UUID unserialized")
         XCTAssertEqual(fragment!.clsName!, "TestModel" , "Class name unserialized")
         
         scope.applySyncFragments([fragment!, fragment2!])
-        var testModel = child.childModel!
+        let testModel = child.childModel!
         
         XCTAssertEqual(child.childModel!, testModel, "Child added")
         XCTAssertEqual(testModel.parents[0].parent, child , "Child has correct parent")
@@ -116,25 +116,25 @@ class SyncFragmentTests: XCTestCase {
     }
     
     func testAddToArray() {
-        var uuid = NSUUID()
+        let uuid = NSUUID()
         
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "add",
             "uuid": uuid.UUIDString,
             "clsName": "TestModel",
             "properties": ["string": "set correctly"]
         ]
-        var fragment = SyncFragment.unserialize(json)
-        var json2: [String: AnyObject] = [
+        let fragment = SyncFragment.unserialize(json)
+        let json2: [String: AnyObject] = [
             "type": "change",
             "uuid": child.uuid.UUIDString,
             "clsName": "TestModel",
             "properties": ["array": [uuid.UUIDString]],
         ]
-        var fragment2 = SyncFragment.unserialize(json2)
+        let fragment2 = SyncFragment.unserialize(json2)
 
         scope.applySyncFragments([fragment!, fragment2!])
-        var testModel = child.array[0]
+        let testModel = child.array[0]
         
         XCTAssertEqual(child.array[0], testModel, "Child added")
         XCTAssertEqual(testModel.parents[0].parent, child , "Child has correct parent")
@@ -144,9 +144,7 @@ class SyncFragmentTests: XCTestCase {
     }
     
     func testNullValues() {
-        var uuid = NSUUID()
-
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "change",
             "uuid": child.uuid.UUIDString,
             "clsName": "TestModel",
@@ -158,7 +156,7 @@ class SyncFragmentTests: XCTestCase {
                 "int32": NSNull()
             ],
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         
         child.string = "test"
         child.integer = 10
@@ -174,9 +172,7 @@ class SyncFragmentTests: XCTestCase {
     }
     
     func testInvalidValues() {
-        var uuid = NSUUID()
-        
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "change",
             "uuid": child.uuid.UUIDString,
             "clsName": "TestModel",
@@ -187,7 +183,7 @@ class SyncFragmentTests: XCTestCase {
                 "int32": 5.5
             ],
         ]
-        var fragment = SyncFragment.unserialize(json)
+        let fragment = SyncFragment.unserialize(json)
         
         child.string = "test"
         child.integer = 10

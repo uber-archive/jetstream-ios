@@ -58,9 +58,9 @@ public class PingMessage: NetworkMessage {
     }
 
     public class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
-        var index = dictionary["index"] as? UInt
-        var ack = dictionary["ack"] as? UInt
-        var resendMissing = dictionary["resendMissing"] as? Bool
+        let index = dictionary["index"] as? UInt
+        let ack = dictionary["ack"] as? UInt
+        let resendMissing = dictionary["resendMissing"] as? Bool
         
         if index == nil || ack == nil || resendMissing == nil {
             return nil

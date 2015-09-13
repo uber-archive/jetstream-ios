@@ -22,9 +22,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import Foundation
-import UIKit
 import XCTest
+@testable import Jetstream
 
 class ChangeSetQueueTests: XCTestCase {
     var root = TestModel()
@@ -52,7 +51,7 @@ class ChangeSetQueueTests: XCTestCase {
         root.integer = 2
         root.float32 = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         changeSet.completed()
         
@@ -71,7 +70,7 @@ class ChangeSetQueueTests: XCTestCase {
         root.integer = 2
         root.float32 = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         changeSet.revertOnScope(scope)
         
@@ -90,13 +89,13 @@ class ChangeSetQueueTests: XCTestCase {
         root.integer = 2
         root.float32 = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         
         root.integer = 3
         root.float32 = 3.0
         root.string = "test 3"
-        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet2)
         
         changeSet.revertOnScope(scope)
@@ -120,18 +119,18 @@ class ChangeSetQueueTests: XCTestCase {
         scope.getAndClearSyncFragments()
         
         root.integer = 2
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         
         root.integer = 3
         root.float32 = 3.0
-        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet2)
         
         root.integer = 4
         root.float32 = 4.0
         root.string = "test 4"
-        var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet3)
         
         changeSet.revertOnScope(scope)
@@ -153,16 +152,16 @@ class ChangeSetQueueTests: XCTestCase {
         root.integer = 2
         root.float32 = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         
         root.integer = 3
         root.float32 = 3.0
-        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet2)
         
         root.integer = 4
-        var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet3)
         
         changeSet.revertOnScope(scope)
@@ -184,13 +183,13 @@ class ChangeSetQueueTests: XCTestCase {
         root.integer = 2
         root.float32 = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         
         root.integer = 3
         root.float32 = 3.0
         root.string = "test 3"
-        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet2)
         
         changeSet.revertOnScope(scope)
@@ -211,18 +210,18 @@ class ChangeSetQueueTests: XCTestCase {
         root.integer = 2
         root.float32 = 2.0
         root.string = "test 2"
-        var changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet)
         
         root.integer = 3
         root.string = "test 3"
-        var changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet2 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet2)
         
         root.integer = 4
         root.float32 = 4.0
         root.string = "test 4"
-        var changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
+        let changeSet3 = ChangeSet(syncFragments: scope.getAndClearSyncFragments(), scope: scope)
         queue.addChangeSet(changeSet3)
         
         changeSet.revertOnScope(scope)

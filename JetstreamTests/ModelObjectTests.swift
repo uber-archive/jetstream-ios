@@ -22,12 +22,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import UIKit
 import XCTest
+@testable import Jetstream
 
 class ModelObjectTests: XCTestCase {
     func testModelProperties() {
-        var model = TestModel()
+        let model = TestModel()
         
         var prop = model.properties["integer"]
         XCTAssertEqual(prop!.key, "integer" , "Property recognized")
@@ -40,26 +40,26 @@ class ModelObjectTests: XCTestCase {
     }
     
     func testChildModelObjectsAccessor() {
-        var model = TestModel()
-        var model2 = TestModel()
-        var model3 = TestModel()
-        var model4 = TestModel()
-        var model5 = TestModel()
+        let model = TestModel()
+        let model2 = TestModel()
+        let model3 = TestModel()
+        let model4 = TestModel()
+        let model5 = TestModel()
         
         model.childModel = model2
         model.childModel2 = model3
         model.array = [model4, model5]
         
         XCTAssertEqual(model.childModelObjects.count, 4 , "All child models should be returned")
-        XCTAssertNotNil(find(model.childModelObjects, model2), "Model should be found")
-        XCTAssertNotNil(find(model.childModelObjects, model3), "Model should be found")
-        XCTAssertNotNil(find(model.childModelObjects, model4), "Model should be found")
-        XCTAssertNotNil(find(model.childModelObjects, model5), "Model should be found")
+        XCTAssertNotNil(model.childModelObjects.indexOf(model2), "Model should be found")
+        XCTAssertNotNil(model.childModelObjects.indexOf(model3), "Model should be found")
+        XCTAssertNotNil(model.childModelObjects.indexOf(model4), "Model should be found")
+        XCTAssertNotNil(model.childModelObjects.indexOf(model5), "Model should be found")
     }
     
     func testModelObjectPropertyRemoveParentUsingDifferingParentAndChildTypes() {
-        var model = TestModel()
-        var model2 = AnotherTestModel()
+        let model = TestModel()
+        let model2 = AnotherTestModel()
         
         model.anotherArray = [model2]
         model.anotherChildModel = model2

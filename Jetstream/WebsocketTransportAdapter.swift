@@ -77,7 +77,7 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
 
     /// Constructor.
     ///
-    /// :param: options Options to connect to the service with.
+    /// - parameter options: Options to connect to the service with.
     public init(options: WebSocketConnectionOptions ) {
         self.options = options
         websocketOptions = options
@@ -150,7 +150,7 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
     }
     
     func didReceiveWebsocketError(error: NSError) {
-        if error.domain == "Websocket" && contains(Static.fatalErrorCodes, error.code) {
+        if error.domain == "Websocket" && Static.fatalErrorCodes.contains(error.code) {
             // Declare as fatal and close everything up
             explicitlyClosed = true
             socket.delegate = nil
@@ -183,7 +183,7 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
     }
     
     public func websocketDidWriteError(socket: WebSocket, error: NSError?) {
-        if let definiteError = error {
+        if let _ = error {
             // Starscream sometimes dispatches this on another thread
             dispatch_async(dispatch_get_main_queue()) {
                 if let definiteError = error {
@@ -201,10 +201,15 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
         
         if data != nil {
             let error = NSErrorPointer()
-            let json: AnyObject? = NSJSONSerialization.JSONObjectWithData(
-                data!,
-                options: NSJSONReadingOptions(0),
-                error: error)
+            let json: AnyObject?
+            do {
+                json = try NSJSONSerialization.JSONObjectWithData(
+                                data!,
+                                options: NSJSONReadingOptions(rawValue: 0))
+            } catch let error1 as NSError {
+                error.memory = error1
+                json = nil
+            }
             
             if json != nil {
                 if let array = json as? [AnyObject] {
@@ -259,10 +264,15 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
         
         let dictionary = message.serialize()
         let error = NSErrorPointer()
-        let json = NSJSONSerialization.dataWithJSONObject(
-            dictionary,
-            options: NSJSONWritingOptions(0),
-            error: error)
+        let json: NSData?
+        do {
+            json = try NSJSONSerialization.dataWithJSONObject(
+                        dictionary,
+                        options: NSJSONWritingOptions(rawValue: 0))
+        } catch let error1 as NSError {
+            error.memory = error1
+            json = nil
+        }
         
         if let definiteJSON = json {
             if let str = NSString(data: definiteJSON, encoding: NSUTF8StringEncoding) {
@@ -274,9 +284,9 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
     
     func startPingTimer() {
         stopPingTimer()
-        var varianceLowerBound = Static.inactivityPingIntervalSeconds - (Static.inactivityPingIntervalVarianceSeconds / 2)
-        var randomVariance = Double(arc4random_uniform(UInt32(Static.inactivityPingIntervalVarianceSeconds)))
-        var delay = varianceLowerBound + randomVariance
+        let varianceLowerBound = Static.inactivityPingIntervalSeconds - (Static.inactivityPingIntervalVarianceSeconds / 2)
+        let randomVariance = Double(arc4random_uniform(UInt32(Static.inactivityPingIntervalVarianceSeconds)))
+        let delay = varianceLowerBound + randomVariance
         
         pingTimer = NSTimer.scheduledTimerWithTimeInterval(
             delay,
@@ -319,21 +329,18 @@ public class WebSocketTransportAdapter: NSObject, TransportAdapter, WebSocketDel
         inet_pton(AF_INET, options.url.host!, &hostAddress.sin_addr)
         
         let defaultRouteReachability = withUnsafePointer(&hostAddress) {
-            SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0)).takeRetainedValue()
+            SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0))
         }
-        
-        var flags: SCNetworkReachabilityFlags = 0
-        if SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) == 0 {
+
+        var flags = SCNetworkReachabilityFlags.ConnectionAutomatic
+        if SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) == false {
             return false
         }
-        
-        var isReachable: Bool = (flags & UInt32(kSCNetworkFlagsReachable)) != 0
-        var needsConnection: Bool = (flags & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
-        var transientConnection: Bool = (flags & UInt32(kSCNetworkFlagsTransientConnection)) != 0
-        var connectionAutomatic: Bool = (flags & UInt32(kSCNetworkFlagsConnectionAutomatic)) != 0
-        var interventionRequired: Bool = (flags & UInt32(kSCNetworkFlagsInterventionRequired)) != 0
-        var isLocalAddress: Bool = (flags & UInt32(kSCNetworkFlagsIsLocalAddress)) != 0
-        var isDirect: Bool = (flags & UInt32(kSCNetworkFlagsIsDirect)) != 0
+
+        let isReachable: Bool = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
+        let needsConnection: Bool = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
+        let transientConnection: Bool = (flags.rawValue & UInt32(kSCNetworkFlagsTransientConnection)) != 0
+        let interventionRequired: Bool = (flags.rawValue & UInt32(kSCNetworkFlagsInterventionRequired)) != 0
 
         return isReachable && !needsConnection && (!transientConnection || !interventionRequired)        
     }

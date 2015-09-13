@@ -42,13 +42,13 @@ class SessionCreateReplyMessage: NetworkMessage {
     }
     
     class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
-        var index = dictionary["index"] as? UInt
-        var sessionToken = dictionary["sessionToken"] as? String
+        let index = dictionary["index"] as? UInt
+        let sessionToken = dictionary["sessionToken"] as? String
         
         
         var error: NSError?
         if let serializedError = dictionary["error"] as? [String: AnyObject] {
-            error = errorFromDictionary(.SyncFragmentApplyError, serializedError)
+            error = errorFromDictionary(.SyncFragmentApplyError, error: serializedError)
         }
         
         if index == nil || (sessionToken == nil && error == nil) {

@@ -22,12 +22,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import UIKit
 import XCTest
+@testable import Jetstream
 
 class ImmediatePropertyListenerTests: XCTestCase {
     func testSpecificPropertyListeners() {
-        var model = TestModel()
+        let model = TestModel()
         var dispatchCount = 0
         
         model.observeChange(self, key: "string") {
@@ -39,14 +39,13 @@ class ImmediatePropertyListenerTests: XCTestCase {
         model.integer = 1
         model.float32 = 2.5
         
-        delayTest(self, 0.01) {
+        delayTest(self, delay: 0.01) {
             XCTAssertEqual(dispatchCount, 1 , "Dispatched once")
         }
     }
     
     func testMultiPropertyListeners() {
-        var model = TestModel()
-        var lastValue: NSString? = ""
+        let model = TestModel()
         var dispatchCount = 0
         
         model.observeChange(self, keys: ["string", "integer"]) {
@@ -59,14 +58,13 @@ class ImmediatePropertyListenerTests: XCTestCase {
         model.integer = 1
         model.float32 = 2.5
         
-        delayTest(self, 0.01) {
+        delayTest(self, delay: 0.01) {
             XCTAssertEqual(dispatchCount, 1 , "Dispatched once")
         }
     }
     
     func testNoDispatchForNoChange() {
-        var model = TestModel()
-        var lastValue: NSString? = ""
+        let model = TestModel()
         var dispatchCount = 0
         
         model.observeChange(self) {
@@ -127,7 +125,7 @@ class ImmediatePropertyListenerTests: XCTestCase {
         model.testType = .Active
         model.testType = .Active
         
-        delayTest(self, 0.01) {
+        delayTest(self, delay: 0.01) {
             XCTAssertEqual(dispatchCount, 1 , "Dispatched once")
         }
     }

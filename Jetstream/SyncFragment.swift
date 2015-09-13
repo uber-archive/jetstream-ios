@@ -36,7 +36,7 @@ public enum SyncFragmentType: String {
 private let OnlyTransmitNonDefaultValues = false
 private var classPrefix: String?
 
-@objc public class SyncFragment: Equatable {
+public class SyncFragment: Equatable {
     /// The type of the fragment.
     public let type: SyncFragmentType
     
@@ -58,8 +58,8 @@ private var classPrefix: String?
     
     /// Creates a new fragment.
     ///
-    /// :param: type The type of the fragment
-    /// :param: objectUUID The UUID of the associated object.
+    /// - parameter type: The type of the fragment
+    /// - parameter objectUUID: The UUID of the associated object.
     /// :clsName: The name of the class to instantiate in case of an Add fragment.
     /// :properties: A dictionary of key-value pairs of properties to apply to the associated model object
     /// in case the fragment is not of type Remove.
@@ -72,8 +72,8 @@ private var classPrefix: String?
     
     /// Creates a new fragment.
     ///
-    /// :param: type The type of the fragment
-    /// :param: modelObject The model object to associate the fragment with. Properties will be copied over
+    /// - parameter type: The type of the fragment
+    /// - parameter modelObject: The model object to associate the fragment with. Properties will be copied over
     /// from the model object.
     init(type: SyncFragmentType, modelObject: ModelObject) {
         self.type = type
@@ -87,7 +87,7 @@ private var classPrefix: String?
     
     /// Serializes the sync fragment into an JSON-serializable dictionary.
     ///
-    /// :returns: A JSON-serializable dictionary representing the sync fragment.
+    /// - returns: A JSON-serializable dictionary representing the sync fragment.
     public func serialize() -> [String: AnyObject] {
         var dictionary = [String: AnyObject]()
         dictionary["type"] = type.rawValue
@@ -103,8 +103,8 @@ private var classPrefix: String?
     
     /// Creates a sync fragment from a dictionary.
     ///
-    /// :param: dictionary The dictionary to unserialize the sync fragment from.
-    /// :returns: A sync fragment if unserialization was successfull.
+    /// - parameter dictionary: The dictionary to unserialize the sync fragment from.
+    /// - returns: A sync fragment if unserialization was successfull.
     public class func unserialize(dictionary: [String: AnyObject]) -> SyncFragment? {
         var type: SyncFragmentType?
         var objectUUID: NSUUID?
@@ -158,7 +158,7 @@ private var classPrefix: String?
                     if property.dontSync {
                         continue
                     }
-                    if !contains(definiteProperties.keys, name) {
+                    if !definiteProperties.keys.contains(name) {
                         if property.defaultValue == nil {
                             definiteProperties[name] = NSNull()
                         } else {
@@ -172,7 +172,7 @@ private var classPrefix: String?
                     if propertyInfo.dontSync {
                         continue
                     }
-                    if let convertedValue: AnyObject = unserializeModelValue(value, scope, propertyInfo.valueType) {
+                    if let convertedValue: AnyObject = unserializeModelValue(value, scope: scope, type: propertyInfo.valueType) {
                         modelObject.setValue(convertedValue, forKey: key)
                     } else {
                         if propertyInfo.acceptsNil {
@@ -211,7 +211,7 @@ private var classPrefix: String?
                 continue
             }
             if let value: AnyObject = modelObject.valueForKey(property.key) {
-                if let modelValue = convertAnyObjectToModelValue(value, property.valueType) {
+                if let modelValue = convertAnyObjectToModelValue(value, type: property.valueType) {
                     if properties == nil {
                         properties = [String: AnyObject]()
                     }
@@ -219,8 +219,8 @@ private var classPrefix: String?
                     
                     if OnlyTransmitNonDefaultValues {
                         if let definiteDefaultValue: AnyObject = property.defaultValue {
-                            let modelValue = convertAnyObjectToModelValue(value, property.valueType)
-                            let defaultModelValue = convertAnyObjectToModelValue(definiteDefaultValue, property.valueType)
+                            let modelValue = convertAnyObjectToModelValue(value, type: property.valueType)
+                            let defaultModelValue = convertAnyObjectToModelValue(definiteDefaultValue, type: property.valueType)
                             
                             if modelValue != nil && defaultModelValue != nil {
                                 if modelValue!.equalTo(defaultModelValue!) {
@@ -243,7 +243,7 @@ private var classPrefix: String?
                 return existingModelObject
             } else if clsName != nil {
                 if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
-                    return cls(uuid: objectUUID)
+                    return cls.init(uuid: objectUUID)
                 }
             }
         }
@@ -266,7 +266,7 @@ private var classPrefix: String?
                 modelObject = existingModelObject
             } else if clsName != nil {
                 if let cls = ModelObject.Static.allTypes[clsName!] as? ModelObject.Type {
-                    modelObject = cls(uuid: objectUUID)
+                    modelObject = cls.init(uuid: objectUUID)
                 }
             }
             

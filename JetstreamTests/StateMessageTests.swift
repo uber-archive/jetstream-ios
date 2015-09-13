@@ -22,9 +22,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import UIKit
 import XCTest
-import Jetstream
+@testable import Jetstream
 
 class StateMessageTests: XCTestCase {
     var root = TestModel()
@@ -40,13 +39,13 @@ class StateMessageTests: XCTestCase {
         XCTAssertEqual(scope.modelObjects.count, 1, "Correct number of objects in scope to start with")
         
         client = Client(transportAdapterFactory: { TestTransportAdapter() })
-        var msg = SessionCreateReplyMessage(index: 1, sessionToken: "jeah", error: nil)
+        let msg = SessionCreateReplyMessage(index: 1, sessionToken: "jeah", error: nil)
         client.receivedMessage(msg)
         client.session!.scopeAttach(scope, scopeIndex: 0)
         
         let childUUID = NSUUID()
         
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 1,
             "scopeIndex": 0,
@@ -98,10 +97,7 @@ class StateMessageTests: XCTestCase {
     }
     
     func testReapplyingRemoval() {
-  
-        let childUUID = NSUUID()
-        
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
             "scopeIndex": 0,
@@ -123,7 +119,7 @@ class StateMessageTests: XCTestCase {
     }
     
     func testReapplyingMoving() {
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
             "scopeIndex": 0,
@@ -160,7 +156,7 @@ class StateMessageTests: XCTestCase {
         let childUUID = NSUUID()
         let childUUID2 = NSUUID()
         
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
             "scopeIndex": 0,
@@ -202,10 +198,7 @@ class StateMessageTests: XCTestCase {
     }
     
     func testModelValueTypes() {
-        let childUUID = NSUUID()
-        let childUUID2 = NSUUID()
-        
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeState",
             "index": 2,
             "scopeIndex": 0,
@@ -230,10 +223,10 @@ class StateMessageTests: XCTestCase {
        
         var comp: [CGFloat] = Array(count: 4, repeatedValue: 0);
         root.color!.getRed(&comp[0], green: &comp[1], blue: &comp[2], alpha: &comp[3])
-        var red = Int(comp[0] * 255)
-        var green = Int(comp[1] * 255)
-        var blue = Int(comp[2] * 255)
-        var alpha = Int(comp[3] * 255)
+        let red = Int(comp[0] * 255)
+        let green = Int(comp[1] * 255)
+        let blue = Int(comp[2] * 255)
+        let alpha = Int(comp[3] * 255)
         
         XCTAssertEqual(red, 0xFF, "Applied color")
         XCTAssertEqual(green, 0x10, "Applied color")

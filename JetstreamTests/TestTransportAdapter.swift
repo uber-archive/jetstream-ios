@@ -22,7 +22,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import Foundation
+@testable import Jetstream
 
 class TestConnectionOptions: ConnectionOptions {
     var url: NSURL { return NSURL(string: "http://localhost")! }

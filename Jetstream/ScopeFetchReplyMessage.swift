@@ -48,13 +48,13 @@ class ScopeFetchReplyMessage: ReplyMessage {
     }
     
     class func unserialize(dictionary: [String: AnyObject]) -> NetworkMessage? {
-        var index = dictionary["index"] as? UInt
-        var replyTo = dictionary["replyTo"] as? UInt
-        var scopeIndex = dictionary["scopeIndex"] as? UInt
+        let index = dictionary["index"] as? UInt
+        let replyTo = dictionary["replyTo"] as? UInt
+        let scopeIndex = dictionary["scopeIndex"] as? UInt
         
         var error: NSError?
         if let serializedError = dictionary["error"] as? [String: AnyObject] {
-            error = errorFromDictionary(.ScopeFetchError, serializedError)
+            error = errorFromDictionary(.ScopeFetchError, error: serializedError)
         }
         
         if index == nil || replyTo == nil || (scopeIndex == nil && error == nil) {

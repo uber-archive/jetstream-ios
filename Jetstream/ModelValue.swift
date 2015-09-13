@@ -45,7 +45,7 @@ enum ModelValueType: String {
     case Float = "f"
     case Double = "d"
     case Bool = "B"
-    case Str = "@"
+    case Str = "@\"NSString\""
     case Date = "@\"NSDate\""
     case Color = "@\"UIColor\""
     case Image = "@\"UIImage\""
@@ -197,21 +197,21 @@ extension UIColor: ModelValue {
         var comp: [CGFloat] = Array(count: 4, repeatedValue: 0)
         self.getRed(&comp[0], green: &comp[1], blue: &comp[2], alpha: &comp[3])
         
-        var red = UInt32(comp[0] * 255) << 24
-        var green = UInt32(comp[1] * 255) << 16
-        var blue = UInt32(comp[2] * 255) << 8
-        var alpha = UInt32(comp[3] * 255)
+        let red = UInt32(comp[0] * 255) << 24
+        let green = UInt32(comp[1] * 255) << 16
+        let blue = UInt32(comp[2] * 255) << 8
+        let alpha = UInt32(comp[3] * 255)
         
-        var color: UInt32 = red | green | blue | alpha
+        let color: UInt32 = red | green | blue | alpha
         return UInt(color)
     }
     
     class func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
         if let color = value as? UInt {
-            var red = CGFloat((color & 0xFF000000) >> 24) / 255.0
-            var green = CGFloat((color & 0xFF0000) >> 16) / 255.0
-            var blue = CGFloat((color & 0xFF00) >> 8) / 255.0
-            var alpha = CGFloat(color & 0xFF) / 255.0
+            let red = CGFloat((color & 0xFF000000) >> 24) / 255.0
+            let green = CGFloat((color & 0xFF0000) >> 16) / 255.0
+            let blue = CGFloat((color & 0xFF00) >> 8) / 255.0
+            let alpha = CGFloat(color & 0xFF) / 255.0
             
             return UIColor(red: red, green: green, blue: blue, alpha: alpha)
         }
@@ -235,20 +235,19 @@ extension UIImage: ModelValue {
     func equalTo(value: ModelValue) -> Bool { return false }
     func serialize() -> AnyObject {
         let data = UIImageJPEGRepresentation(self, 1.0)
-        return data.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(0))
+        return data!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
     }
     
     class func unserialize(value: AnyObject, scope: Scope) -> AnyObject? {
         if let stringValue = value as? String {
-            if let data = NSData(base64EncodedString: stringValue, options:NSDataBase64DecodingOptions(0)) {
-                var image = UIImage(data: data)
+            if let data = NSData(base64EncodedString: stringValue, options:NSDataBase64DecodingOptions(rawValue: 0)) {
+                let image = UIImage(data: data)
                 return image
             }
         }
         return nil
     }
 }
-
 
 extension Array: ModelValue {
     func equalTo(value: ModelValue) -> Bool {

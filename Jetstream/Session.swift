@@ -53,7 +53,7 @@ public class Session {
         if closed {
             return callback(errorWithUserInfo(
                 .SessionAlreadyClosed,
-                [NSLocalizedDescriptionKey: "Session already closed"]))
+                userInfo: [NSLocalizedDescriptionKey: "Session already closed"]))
         }
         
         let scopeFetchMessage = ScopeFetchMessage(session: self, name: scope.name, params: params)
@@ -155,7 +155,7 @@ public class Session {
         }
         changeSetQueue.addChangeSet(changeSet)
         client.transport.sendMessage(ScopeSyncMessage(session: self, scopeIndex: atIndex, procedure: changeSet.procedure, atomic: changeSet.atomic, syncFragments: changeSet.syncFragments)) { [weak self] reply in
-            if let definiteSelf = self {
+            if let _ = self {
                 if let syncReply = reply as? ScopeSyncReplyMessage {
                     changeSet.processFragmentReplies(syncReply.fragmentReplies, scope: scope)
                 } else {

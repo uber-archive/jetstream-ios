@@ -22,9 +22,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import Foundation
-import UIKit
 import XCTest
+@testable import Jetstream
 
 class TransactionTests: XCTestCase {
     var root = TestModel()
@@ -42,7 +41,7 @@ class TransactionTests: XCTestCase {
         scope.getAndClearSyncFragments()
  
         client = Client(transportAdapterFactory: { TestTransportAdapter() })
-        var msg = SessionCreateReplyMessage(index: 1, sessionToken: "jeah", error: nil)
+        let msg = SessionCreateReplyMessage(index: 1, sessionToken: "jeah", error: nil)
         client.receivedMessage(msg)
         client.session!.scopeAttach(scope, scopeIndex: 0)
     }
@@ -54,7 +53,7 @@ class TransactionTests: XCTestCase {
     func testChangeSetSuccessfulCompletionWithoutModifications() {
         var didCall = false
         
-        let changeSet = root.scope!.modify {
+        root.scope!.modify {
             self.root.integer = 10
             self.root.float32 = 10.0
             self.root.string = "test"
@@ -63,7 +62,7 @@ class TransactionTests: XCTestCase {
             didCall = true
         }
         
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeSyncReply",
             "index": 2,
             "replyTo": 1,
@@ -72,7 +71,7 @@ class TransactionTests: XCTestCase {
             ]
         ]
         
-        var reply = ScopeSyncReplyMessage.unserialize(json)
+        let reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
 
         XCTAssertEqual(didCall, true, "Did invoke completion block")
@@ -84,7 +83,7 @@ class TransactionTests: XCTestCase {
     func testChangeSetSuccessfulCompletionWithModifications() {
         var didCall = false
         
-        let changeSet = root.scope!.modify {
+        root.scope!.modify {
             self.root.integer = 10
             self.root.float32 = 10.0
             self.root.string = "test"
@@ -93,7 +92,7 @@ class TransactionTests: XCTestCase {
             didCall = true
         }
         
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeSyncReply",
             "index": 2,
             "replyTo": 1,
@@ -105,7 +104,7 @@ class TransactionTests: XCTestCase {
             ]
         ]
         
-        var reply = ScopeSyncReplyMessage.unserialize(json)
+        let reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
         
         XCTAssertEqual(didCall, true, "Did invoke completion block")
@@ -118,7 +117,7 @@ class TransactionTests: XCTestCase {
     func testChangeSetFragmentReplyMismatch() {
         var didCall = false
         
-        let changeSet = root.scope!.modify {
+        root.scope!.modify {
             self.root.integer = 10
             self.root.float32 = 10.0
             self.root.string = "test"
@@ -127,14 +126,14 @@ class TransactionTests: XCTestCase {
             didCall = true
         }
 
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeSyncReply",
             "index": 2,
             "replyTo": 1,
             "fragmentReplies": [[String: AnyObject]]()
         ]
 
-        var reply = ScopeSyncReplyMessage.unserialize(json)
+        let reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
         
         XCTAssertEqual(didCall, true, "Did invoke completion block")
@@ -146,7 +145,7 @@ class TransactionTests: XCTestCase {
     func testChangeInvalidMessageTypeError() {
         var didCall = false
         
-        let changeSet = root.scope!.modify {
+        root.scope!.modify {
             self.root.integer = 10
             self.root.float32 = 10.0
             self.root.string = "test"
@@ -166,7 +165,7 @@ class TransactionTests: XCTestCase {
     func testSpecificFragmentReversal() {
         var didCall = false
         
-        let changeSet = root.scope!.modify {
+        root.scope!.modify {
             self.root.integer = 20
             self.child.integer = 20
         }.observeCompletion(self) { error in
@@ -175,7 +174,7 @@ class TransactionTests: XCTestCase {
             didCall = true
         }
         
-        var json: [String: AnyObject] = [
+        let json: [String: AnyObject] = [
             "type": "ScopeSyncReply",
             "index": 2,
             "replyTo": 1,
@@ -189,7 +188,7 @@ class TransactionTests: XCTestCase {
             ]
         ]
         
-        var reply = ScopeSyncReplyMessage.unserialize(json)
+        let reply = ScopeSyncReplyMessage.unserialize(json)
         client.transport.messageReceived(reply!)
         XCTAssertEqual(didCall, true, "Did invoke completion block")
     }
