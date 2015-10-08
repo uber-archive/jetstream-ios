@@ -88,15 +88,16 @@ import Foundation
         syncFragments.removeAll(keepCapacity: false)
         syncFragmentLookup.removeAll(keepCapacity: false)
         removedModelObjects.removeAll(keepCapacity: false)
-        return fragments.filter { (fragment) -> Bool in
-            // Filter out any empty change fragments
+        var nonVoidFragments = [SyncFragment]()
+        for fragment in fragments {
             if fragment.type == .Change &&
                 (fragment.properties == nil ||
                     fragment.properties?.count == 0) {
-                        return false
+                        continue
             }
-            return true
+            nonVoidFragments.append(fragment)
         }
+        return nonVoidFragments
     }
     
     /// Applies sync fragments to the model.
