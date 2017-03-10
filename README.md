@@ -45,7 +45,7 @@ public class Canvas: ModelObject {
     dynamic var shapes = [Shape]()
 }
 ```
-Once you've defined your model classes, instante a canvas and mark it as a scope root.
+Once you've defined your model classes, instantiate a canvas and mark it as a scope root.
 
 ```swift
 var canvas = Canvas()
