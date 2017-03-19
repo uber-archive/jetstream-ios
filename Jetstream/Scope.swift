@@ -213,6 +213,11 @@ import Foundation
         modelObjects.append(modelObject)
         modelHash[modelObject.uuid] = modelObject
         
+        if contains(modelObject.dynamicType.getModelAttributes(), .Local) {
+            // Do not listen for changes and do not create fragments for this model as it is marked local
+            return
+        }
+        
         modelObject.onPropertyChange.listen(self) { [weak self] (key, oldValue, value) -> () in
             if let this = self {
                 if this.applyingRemote {

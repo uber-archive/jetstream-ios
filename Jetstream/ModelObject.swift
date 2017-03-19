@@ -72,6 +72,12 @@ public protocol Observable {
     func detach()
 }
 
+/// Used to definte additional attributes for a model.
+public enum ModelAttribute {
+    /// Marks the model as local. Changes to the local model can be observed, but are never synchronized to a server.
+    case Local
+}
+
 /// Used to define additional attributes for properties of your model.
 public enum PropertyAttribute {
     /// Marks the property as local. Changes to local properties can be observed, but are never synchronized to a server.
@@ -285,8 +291,16 @@ public class ModelObject: NSObject, Observable {
     }
     
     // MARK: - Model attributes
-        
-    /// Override this class function in yout subclasses to give additional information about the properties in your model.
+    
+    
+    /// Override this class function in your subclasses to give additional information about this model.
+    ///
+    /// :returns: An array defining attributes for this model.
+    public class func getModelAttributes() -> [ModelAttribute] {
+        return [ModelAttribute]()
+    }
+    
+    /// Override this class function in your subclasses to give additional information about the properties in your model.
     /// To declare attributes for properties, return a Dictionary where the key is the name of the property and the value 
     /// is an array of attributes.
     ///
@@ -595,7 +609,7 @@ public class ModelObject: NSObject, Observable {
             Static.propertiesInitialzedForClasses[className] = true
             
             var trackedProperties = [String: PropertyInfo]()
-            
+
             let additionalPropertyAttributes = self.dynamicType.getPropertyAttributes()
             
             var propertyCount: UInt32 = 0
